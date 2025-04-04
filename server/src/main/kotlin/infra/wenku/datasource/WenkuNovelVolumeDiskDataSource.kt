@@ -391,6 +391,17 @@ class VolumeAccessor(private val volumesDir: Path, val volumeId: String) {
                                     }
                                 }
                             }
+
+                        // NOTE(kuriko): 尝试修复破损的 EPUB
+                        // 1. 修复缺失的 <?xml version="1.0" encoding="utf-8"?>
+//                        if (doc.childNodes().none { it.nodeName() == "#declaration" }) {
+//                            // 创建 XML 声明节点
+//                            val xmlDeclaration = doc.createXmlDeclaration("1.0", "utf-8", "")
+//
+//                            // 将声明插入到文档最前面
+//                            doc.prependChild(xmlDeclaration)
+//                        }
+
                         doc.outputSettings().prettyPrint(true)
                         doc.html().toByteArray()
                     }
@@ -401,6 +412,12 @@ class VolumeAccessor(private val volumesDir: Path, val volumeId: String) {
                     doc
                         .selectFirst("spine")
                         ?.removeAttr("page-progression-direction")
+
+                    // NOTE(kuriko): 强制 epub 默认使用 zh，这可以有助于 iBooks 选择中文字体
+                    // See: https://github.com/your-repo/your-project/issues/85
+                    doc
+                        .selectFirst("dc:language")
+                        ?.text("zh")
 
                     doc.outputSettings().prettyPrint(true)
                     doc.html().toByteArray()

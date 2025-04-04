@@ -22,3 +22,6 @@ web/vite.config.ts.timestamp*
 
 # Web extension
 web-extension/src/_metadata/
+
+# Env secrets
+.env

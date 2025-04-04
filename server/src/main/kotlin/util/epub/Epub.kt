@@ -2,12 +2,14 @@ package util.epub
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.jsoup.nodes.TextNode
 import org.jsoup.parser.Parser
 import java.io.BufferedOutputStream
 import java.nio.file.FileSystem
 import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 import kotlin.io.path.isRegularFile
@@ -74,5 +76,25 @@ object Epub {
                     }
             }
         }
+    }
+
+    fun invalidXHtmlFix(doc: Document)  {
+        // Missing xml tag
+        val isMissingXml = doc.childNodes().none {
+            it.toString().lowercase(Locale.getDefault()).startsWith("<!xml")
+        }
+        if (isMissingXml) {
+            val xmlDeclaration = TextNode("""<?xml version="1.0" encoding="utf-8"?>""")
+            doc.prependChild(xmlDeclaration)
+        }
+
+        // Missing doctype
+        // val isMissingDoctype = doc.childNodes().any { node ->
+        //     node.toString().lowercase(Locale.getDefault()).startsWith("<!doctype")
+        // }
+        // if (isMissingDoctype) {
+        //     val doctypeDeclaration = TextNode("""<!DOCTYPE html>""")
+        //     doc.selectFirst("")
+        // }
     }
 }

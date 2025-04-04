@@ -10,7 +10,8 @@ services:
     restart: always
 
   server:
-    image: ghcr.io/fishhawk/wneg-server
+    #    image: ghcr.io/fishhawk/wneg-server
+    image: wneg-server:latest
     depends_on:
       - mongo
     environment:
