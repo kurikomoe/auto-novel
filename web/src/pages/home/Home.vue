@@ -241,7 +241,7 @@ const githubLink = 'https://github.com/FishHawk/auto-novel';
       中发帖讨论。
     </n-p>
     <n-p>支持的小说站如下:</n-p>
-    <n-p v-for="[name, link] of linkExample">
+    <n-p v-for="[name, link] of linkExample" :key="name + link">
       <b>{{ name }}</b>
       <br />
       <span v-html="link" />

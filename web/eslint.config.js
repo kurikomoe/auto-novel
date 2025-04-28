@@ -21,19 +21,33 @@ export default defineConfigWithVueTs(
   vueTsConfigs.recommended,
   {
     files: ['**/*.vue'],
-    languageOptions: { parserOptions: { parser: tseslint.parser } },
+    languageOptions: {
+      parserOptions: { parser: tseslint.parser },
+    },
   },
   compat.configs['flat/recommended'],
   eslintConfigPrettier,
   {
     rules: {
+      'no-undef': 'off',
       'no-unused-vars': 'off',
       'prefer-const': 'warn',
 
+      'vue/attributes-order': 'off',
       'vue/max-attributes-per-line': 'off',
+      'vue/multi-word-component-names': 'off',
+      'vue/no-mutating-props': ['error', { shallowOnly: true }],
+      'vue/no-v-text-v-html-on-component': [
+        'error',
+        {
+          allow: ['router-link', 'nuxt-link', 'n-el'],
+          ignoreElementNamespaces: true,
+        },
+      ],
 
-      '@typescript-eslint/no-namespace': 'warn',
-      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-namespace': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/no-empty-object-type': 'off',
     },
   },

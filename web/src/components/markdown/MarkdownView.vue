@@ -119,6 +119,8 @@ md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
 </script>
 
 <template>
+  // Since markdown-it's html is disabled. // eslint-disable-next-line
+  vue/no-v-html
   <n-el tag="div" class="markdown" v-html="md.render(source)" />
 </template>
 
