@@ -169,6 +169,7 @@ const showWebNovelsModal = ref(false);
         最新出版于
         <n-time :time="metadata.latestPublishAt * 1000" type="date" />
       </n-p>
+      <!-- eslint-disable-next-line vue/no-v-html -->
       <n-p v-html="metadata.introduction.replace(/\n/g, '<br />')" />
 
       <n-flex :size="[4, 4]">

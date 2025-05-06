@@ -88,15 +88,8 @@ export default defineConfig(({ command, mode }) => {
   return {
     server: serverOptions,
     build: {
+      target: ['es2015', 'edge88', 'firefox78', 'chrome87', 'safari14'],
       sourcemap: enableSourcemap,
-      target: [
-        'es2015',
-        'edge88',
-        'firefox78',
-        'chrome87',
-        'safari14',
-        'firefox70',
-      ],
       cssCodeSplit: false,
       rollupOptions: {
         treeshake: true,

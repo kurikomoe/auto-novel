@@ -244,6 +244,7 @@ const githubLink = 'https://github.com/FishHawk/auto-novel';
     <n-p v-for="[name, link] of linkExample" :key="name + link">
       <b>{{ name }}</b>
       <br />
+      <!-- eslint-disable-next-line vue/no-v-html -->
       <span v-html="link" />
     </n-p>
   </c-modal>

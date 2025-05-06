@@ -18,9 +18,6 @@ Object.keys(window.localStorage).forEach((key) => {
   }
 });
 
-const a = [1, 2, 3, 4, 5, 6, 7, 114514];
-console.log(a.at(1));
-
 // 主题
 const route = useRoute();
 const osThemeRef = useOsTheme();

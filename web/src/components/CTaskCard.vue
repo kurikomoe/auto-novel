@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { VueUtil } from '@/util';
 import { ScrollbarInst } from 'naive-ui';
 
 const props = defineProps<{
@@ -87,7 +88,10 @@ defineExpose({
         style="flex: auto; white-space: pre-wrap"
         :style="{ height: expandLog ? '540px' : '180px' }"
       >
-        <div v-for="(log, idx) of logs" :key="idx + '_' + log.message">
+        <div
+          v-for="(log, idx) of logs"
+          :key="VueUtil.buildKey(idx, log.message)"
+        >
           {{ log.message }}
           <span v-if="log.detail" @click="showDetail(log.message, log.detail!)">
             [详细]
@@ -104,7 +108,7 @@ defineExpose({
       <!-- selectedLogDetail is not dynamically changed, idx is safe. -->
       <n-p
         v-for="(line, idx) of selectedLogDetail"
-        :key="idx"
+        :key="VueUtil.buildKey(idx, line)"
         style="white-space: pre-wrap"
       >
         {{ line }}

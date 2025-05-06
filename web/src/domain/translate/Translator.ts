@@ -139,7 +139,8 @@ export class Translator {
     let cacheKey: string | undefined;
     if (this.segCache) {
       try {
-        let extra: any = { glossary };
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const extra: any = { glossary };
         if (this.segTranslator instanceof SakuraTranslator) {
           extra.version = this.segTranslator.version;
           extra.model = this.segTranslator.model;

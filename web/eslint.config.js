@@ -37,13 +37,7 @@ export default defineConfigWithVueTs(
       'vue/max-attributes-per-line': 'off',
       'vue/multi-word-component-names': 'off',
       'vue/no-mutating-props': ['error', { shallowOnly: true }],
-      'vue/no-v-text-v-html-on-component': [
-        'error',
-        {
-          allow: ['router-link', 'nuxt-link', 'n-el'],
-          ignoreElementNamespaces: true,
-        },
-      ],
+      'vue/no-v-text-v-html-on-component': 'off',
 
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-namespace': 'off',
