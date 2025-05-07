@@ -8,9 +8,12 @@ import Components from 'unplugin-vue-components/vite';
 import { PluginOption, ServerOptions, defineConfig, loadEnv } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import tsconfigPaths from 'vite-tsconfig-paths';
+
 import Sonda from 'sonda/vite';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 const enableSonda = process.env.ENABLE_SONDA === '1';
+const enableVisualizer = process.env.ENABLE_VISUALIZER === '1';
 const enableSourcemap = enableSonda;
 
 console.log(`sonda: ${enableSonda}`);
@@ -139,7 +142,42 @@ export default defineConfig(({ command, mode }) => {
         resolvers: [NaiveUiResolver()],
         dirs: ['./**/components/**'],
       }),
-      enableSonda ? Sonda() : {},
+      enableSonda
+        ? Sonda({
+            enable: enableSonda,
+            detailed: true,
+            sources: true,
+            gzip: true,
+            brotli: true,
+          })
+        : {},
+      enableVisualizer
+        ? visualizer({
+            gzipSize: true,
+            brotliSize: true,
+            emitFile: true,
+            filename: 'visualizer-sunbrust.html',
+            template: 'sunburst',
+          })
+        : {},
+      enableVisualizer
+        ? visualizer({
+            gzipSize: true,
+            brotliSize: true,
+            emitFile: true,
+            filename: 'visualizer-treemap.html',
+            template: 'treemap',
+          })
+        : {},
+      enableVisualizer
+        ? visualizer({
+            gzipSize: true,
+            brotliSize: true,
+            emitFile: true,
+            filename: 'visualizer-network.html',
+            template: 'network',
+          })
+        : {},
     ],
   };
 });

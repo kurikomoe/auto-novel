@@ -10,7 +10,7 @@
     "dev:local": "LOCAL=1 vite",
     "build": "vite build && vue-tsc --noEmit",
     "check": "vue-tsc --noEmit",
-    "check:size": "ENABLE_SONDA=1 vite build",
+    "check:size": "ENABLE_VISUALIZER=1 ENABLE_SONDA=1 vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "prepare": "cd .. && husky web/.husky"
@@ -28,6 +28,7 @@
     "husky": "^9.1.7",
     "prettier": "3.3.2",
     "pretty-quick": "^4.1.1",
+    "rollup-plugin-visualizer": "^5.14.0",
     "sonda": "^0.7.1",
     "typescript-eslint": "^8.31.0",
     "vite-bundle-visualizer": "^1.2.1",
