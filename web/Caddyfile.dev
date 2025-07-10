@@ -1,0 +1,39 @@
+:8080 {
+	log
+
+	encode gzip
+
+	handle {
+		root * ./dist
+		file_server
+		route {
+			try_files {path} /
+			header / Cache-Control "no-cache,no-store,max-age=0,must-revalidate"
+		}
+		header /assets/* Cache-Control "public, max-age=7776000"
+		header /*.png Cache-Control "public, max-age=7776000"
+		header /*.svg Cache-Control "public, max-age=7776000"
+		header /*.webp Cache-Control "public, max-age=7776000"
+	}
+
+	@filename {
+		query filename=*
+	}
+
+	handle_path /api* {
+		reverse_proxy 0.0.0.0:8081
+	}
+
+	handle_path /files-temp* {
+		root * /home/kuriko/Projects/SakuraLLM/AutoNovel/auto-novel/server/data/files-temp
+		file_server
+		header @filename Content-Disposition "attachment; filename=\"{http.request.uri.query.filename}\""
+	}
+
+	handle_path /files-extra* {
+		root * /home/kuriko/Projects/SakuraLLM/AutoNovel/auto-novel/server/data/files-extra
+		file_server
+		header /*.png Cache-Control "public, max-age=7776000"
+		header /*.webp Cache-Control "public, max-age=7776000"
+	}
+}
