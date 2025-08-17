@@ -7,6 +7,7 @@ import { AuthUrl } from '@/data/auth/AuthApi';
 const props = defineProps<{ from?: string }>();
 const router = useRouter();
 const authRepo = Locator.authRepository();
+const settingRepo = Locator.settingRepository();
 
 useEventListener('message', async (event: MessageEvent) => {
   if (event.origin === AuthUrl && event.data.type === 'login_success') {
@@ -20,7 +21,7 @@ useEventListener('message', async (event: MessageEvent) => {
 
 <template>
   <iframe
-    :src="AuthUrl + '?app=n'"
+    :src="AuthUrl + '?app=n&theme=' + settingRepo.setting.value.theme"
     frameborder="0"
     allowfullscreen
     style="
