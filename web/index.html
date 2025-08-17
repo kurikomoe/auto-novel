@@ -35,7 +35,6 @@
         div.innerHTML = `Error: ${lno}:${cno} ${msg
           .replace('<', '&lt;')
           .replace('>', '&gt;')} ${url}`;
-        div.style.position = 'fixed';
         document.body.appendChild(div);
         return false;
       };

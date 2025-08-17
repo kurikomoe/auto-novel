@@ -77,7 +77,7 @@ const filesProxyPlugin = (): PluginOption => ({
 export default defineConfig(({ command, mode }) => {
   const userConfig: UserConfig = {
     build: {
-      target: ['es2015', 'edge88', 'firefox78', 'chrome87', 'safari14'],
+      target: ['es2015'],
       cssCodeSplit: false,
       rollupOptions: {
         treeshake: true,
