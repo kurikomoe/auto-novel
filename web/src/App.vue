@@ -2,20 +2,20 @@
 import { darkTheme, dateZhCN, useOsTheme, zhCN } from 'naive-ui';
 
 import { Locator } from '@/data';
-import { RegexUtil } from '@/util';
+import { RegexUtil, useOpenCC } from '@/util';
 
 // 激活权限
 Locator.authRepository();
 
 const settingRepository = Locator.settingRepository();
-settingRepository.activateCC();
 
-// 清理pinia留下的垃圾
-Object.keys(window.localStorage).forEach((key) => {
-  if (key.startsWith('pubkey')) {
-    window.localStorage.removeItem(key);
-  }
-});
+watch(
+  () => settingRepository.setting.value.locale,
+  async (locale) => {
+    settingRepository.cc.value = await useOpenCC(locale);
+  },
+  { immediate: true },
+);
 
 // 主题
 const route = useRoute();

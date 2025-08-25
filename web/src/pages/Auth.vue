@@ -2,7 +2,7 @@
 import { useEventListener } from '@vueuse/core';
 
 import { Locator } from '@/data';
-import { AuthUrl } from '@/data/auth/AuthApi';
+import { AuthUrl } from '@/util';
 
 const props = defineProps<{ from?: string }>();
 const router = useRouter();

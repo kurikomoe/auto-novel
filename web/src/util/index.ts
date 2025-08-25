@@ -191,5 +191,6 @@ export namespace Humanize {
     unit(rawNum, ['B', 'KB', 'MB', 'GB', 'TB', 'PB'], 1024);
 }
 
-export * from './UseOpenCC';
-export * from './UseStorage';
+export * from './useOpenCC';
+export * from './useStorage';
+export * from './useUserData';
