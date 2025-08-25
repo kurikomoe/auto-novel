@@ -5,8 +5,7 @@ import { Locator } from '@/data';
 import { RegexUtil } from '@/util';
 
 // 激活权限
-const authRepository = Locator.authRepository();
-authRepository.startRefreshAuth();
+Locator.authRepository();
 
 const settingRepository = Locator.settingRepository();
 settingRepository.activateCC();

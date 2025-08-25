@@ -1,13 +1,13 @@
 import { jwtDecode } from 'jwt-decode';
 
 import { formatError } from '@/data/api';
-import { updateToken } from '@/data/api/client';
+import { setTokenGetter } from '@/data/api/client';
 import { UserRole } from '@/model/User';
 import { useLocalStorage } from '@/util';
 
-import { AuthApi } from './AuthApi';
 import { LSKey } from '../LocalStorage';
 import { AuthData, migrate } from './Auth';
+import { AuthApi } from './AuthApi';
 
 export const createAuthRepository = () => {
   const authData = useLocalStorage<AuthData>(LSKey.Auth, {
@@ -15,6 +15,14 @@ export const createAuthRepository = () => {
     adminMode: false,
   });
   migrate(authData.value);
+
+  // 清空过期 Access Token
+  if (
+    authData.value.profile &&
+    Date.now() > authData.value.profile.expiredAt * 1000
+  ) {
+    authData.value.profile = undefined;
+  }
 
   const whoami = computed(() => {
     const { profile, adminMode } = authData.value;
@@ -38,8 +46,8 @@ export const createAuthRepository = () => {
         banned: '封禁用户',
       };
       return (
-        roleToString[auth.profile.role] ??
-        '未知用户' + (auth.adminMode ? '+' : '')
+        (roleToString[auth.profile.role] ?? '未知用户') +
+        (auth.adminMode ? '+' : '')
       );
     };
 
@@ -62,11 +70,8 @@ export const createAuthRepository = () => {
     authData.value.adminMode = !authData.value.adminMode;
   };
 
-  let refreshTimer: number | undefined = undefined;
-
   const refresh = () =>
     AuthApi.refresh().then((token) => {
-      updateToken(token);
       const { sub, exp, role, iat, crat } = jwtDecode<{
         sub: string;
         exp: number;
@@ -85,14 +90,6 @@ export const createAuthRepository = () => {
     });
 
   const refreshIfNeeded = () => {
-    // 清空过期 Access Token
-    if (
-      authData.value.profile &&
-      Date.now() > authData.value.profile.expiredAt * 1000
-    ) {
-      authData.value.profile = undefined;
-    }
-
     // 刷新 Access Token，冷却时间为1小时
     const cooldown = 3600 * 1000;
     const sinceIssuedAt = Date.now() - (authData.value.profile?.issuedAt ?? 0);
@@ -104,30 +101,19 @@ export const createAuthRepository = () => {
     });
   };
 
-  const startRefreshAuth = () => {
-    watch(
-      () => authData.value.profile?.token,
-      (token) => updateToken(token),
-      { immediate: true },
-    );
-    refreshIfNeeded();
-    if (refreshTimer === undefined) {
-      refreshTimer = window.setInterval(refreshIfNeeded, 15 * 60 * 1000);
-    }
-  };
+  setTokenGetter(() => authData.value?.profile?.token ?? '');
+  refreshIfNeeded();
+  window.setInterval(refreshIfNeeded, 15 * 60 * 1000);
 
   const logout = () => {
-    updateToken();
-    return AuthApi.logout().then(() => {
-      authData.value.profile = undefined;
-    });
+    authData.value.profile = undefined;
+    return AuthApi.logout();
   };
 
   return {
     whoami,
     toggleManageMode,
     refresh,
-    startRefreshAuth,
     logout,
   };
 };

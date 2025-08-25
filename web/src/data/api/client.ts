@@ -1,21 +1,24 @@
 import ky from 'ky';
 
-let client = ky.create({ prefixUrl: '/api', timeout: 60000 });
-let authToken: string | undefined = undefined;
+let tokenGetter: () => string = () => '';
 
-export { client };
+export const client = ky.create({
+  prefixUrl: '/api',
+  timeout: 60000,
+  hooks: {
+    beforeRequest: [
+      (request) => {
+        const token = tokenGetter();
+        if (token) {
+          request.headers.set('Authorization', 'Bearer ' + token);
+        }
+      },
+    ],
+  },
+});
 
-export const updateToken = (token?: string) => {
-  authToken = token;
-  let headers;
-  if (token !== undefined) {
-    headers = { Authorization: 'Bearer ' + token };
-  } else {
-    headers = {};
-  }
-  client = client.extend({
-    headers,
-  });
+export const setTokenGetter = (getter: () => string) => {
+  tokenGetter = getter;
 };
 
 export const uploadFile = (
@@ -30,7 +33,10 @@ export const uploadFile = (
 
     const xhr = new XMLHttpRequest();
     xhr.open('POST', url);
-    xhr.setRequestHeader('Authorization', 'Bearer ' + authToken);
+    const token = tokenGetter();
+    if (token) {
+      xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+    }
     xhr.onload = () => {
       if (xhr.status === 200) {
         resolve(xhr.responseText);
