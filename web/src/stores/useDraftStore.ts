@@ -1,19 +1,20 @@
 import { throttle } from 'lodash-es';
 
+import { LSKey } from '@/data/LocalStorage';
 import { useLocalStorage } from '@/util';
-
-import { LSKey } from '../LocalStorage';
 
 export interface Draft {
   text: string;
   createdAt: Date;
 }
+
 interface DraftRegistry {
   [draftId: string]: { [createdAt: number]: string };
 }
 
-export const createDraftRepository = () => {
+export const useDraftStore = defineStore(LSKey.Draft, () => {
   const registry = useLocalStorage<DraftRegistry>(LSKey.Draft, {});
+  console.log('test');
 
   const getDraft = (draftId: string) => {
     if (!(draftId in registry.value)) return [];
@@ -68,4 +69,4 @@ export const createDraftRepository = () => {
     addDraft,
     removeDraft,
   };
-};
+});
