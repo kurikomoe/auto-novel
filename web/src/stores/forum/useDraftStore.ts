@@ -1,7 +1,7 @@
 import { throttle } from 'lodash-es';
 
 import { useLocalStorage } from '@/util';
-import { LSKey } from './key';
+import { LSKey } from '../key';
 
 export interface Draft {
   text: string;
@@ -14,9 +14,8 @@ interface DraftRegistry {
 
 export const useDraftStore = defineStore(LSKey.Draft, () => {
   const registry = useLocalStorage<DraftRegistry>(LSKey.Draft, {});
-  console.log('test');
 
-  const getDraft = (draftId: string) => {
+  function getDraft(draftId: string) {
     if (!(draftId in registry.value)) return [];
     return Object.entries(registry.value[draftId]).map(
       ([key, value]) =>
@@ -25,25 +24,22 @@ export const useDraftStore = defineStore(LSKey.Draft, () => {
           createdAt: new Date(Number(key)),
         },
     );
-  };
+  }
 
-  const addDraft = throttle(
-    (draftId: string, createdAt: number, text: string) => {
-      if (!(draftId in registry.value)) {
-        registry.value[draftId] = {};
-      }
-      if (text === undefined) {
-        delete registry.value[draftId][createdAt];
-      } else {
-        registry.value[draftId][createdAt] = text;
-      }
-    },
-    5000,
-  );
+  function addDraft(draftId: string, createdAt: number, text: string) {
+    if (!(draftId in registry.value)) {
+      registry.value[draftId] = {};
+    }
+    if (text === undefined) {
+      delete registry.value[draftId][createdAt];
+    } else {
+      registry.value[draftId][createdAt] = text;
+    }
+  }
 
-  const removeDraft = (draftId: string) => {
+  function removeDraft(draftId: string) {
     delete registry.value[draftId];
-  };
+  }
 
   const cleanupExpiredDrafts = () => {
     const expirationTime = 1000 * 60 * 60 * 24 * 3; // 3 day
@@ -66,7 +62,7 @@ export const useDraftStore = defineStore(LSKey.Draft, () => {
 
   return {
     getDraft,
-    addDraft,
+    addDraft: throttle(addDraft, 5000),
     removeDraft,
   };
 });

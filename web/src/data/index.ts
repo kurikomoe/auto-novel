@@ -16,7 +16,6 @@ import {
   createSettingRepository,
 } from './setting/SettingRepository';
 import {
-  createBlockUserCommentRepository,
   createGptWorkspaceRepository,
   createReadPositionRepository,
   createRuleViewedRepository,
@@ -80,7 +79,6 @@ export const Locator = {
   //
   favoredRepository: lazy(createFavoredRepository),
   readHistoryRepository: lazy(createReadHistoryRepository),
-  blockUserCommentRepository: lazy(createBlockUserCommentRepository),
 };
 
 export const WebNovelApi = WebNovelRepository;

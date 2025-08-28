@@ -1,13 +1,15 @@
 <script lang="ts" setup>
-import { Locator } from '@/data';
-import { copyToClipBoard } from '@/pages/util';
 import { DeleteOutlineOutlined } from '@vicons/material';
 
-const blockUserCommentRepository = Locator.blockUserCommentRepository();
+import { copyToClipBoard } from '@/pages/util';
+import { useBlacklistStore } from '@/stores';
+
+const blacklistStore = useBlacklistStore();
+const { blacklist } = storeToRefs(blacklistStore);
 
 const message = useMessage();
 
-const blockedUsers = ref(blockUserCommentRepository.ref.value.usernames);
+const blockedUsers = ref(blacklist.value.usernames);
 
 const userToAdd = ref('');
 
@@ -32,7 +34,7 @@ const deleteUser = (username: string) => {
 };
 
 const submitTable = () => {
-  blockUserCommentRepository.ref.value = {
+  blacklist.value = {
     usernames: [...blockedUsers.value],
   };
   showModal.value = false;
@@ -75,7 +77,7 @@ const importUserBlockList = () => {
       blockedUsers.value.push(user);
     }
   }
-  blockUserCommentRepository.ref.value = {
+  blacklist.value = {
     usernames: [...blockedUsers.value],
   };
   importListRaw.value = '';

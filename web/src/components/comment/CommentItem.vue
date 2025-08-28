@@ -5,9 +5,8 @@ import {
   MoreVertOutlined,
 } from '@vicons/material';
 
-import { Locator } from '@/data';
 import { Comment1 } from '@/model/Comment';
-import { useWhoamiStore } from '@/stores';
+import { useBlacklistStore, useWhoamiStore } from '@/stores';
 
 const { comment, topLevel } = defineProps<{
   comment: Comment1;
@@ -27,7 +26,9 @@ const emit = defineEmits<{
 const whoamiStore = useWhoamiStore();
 const { whoami } = storeToRefs(whoamiStore);
 
-const blockUserCommentRepository = Locator.blockUserCommentRepository();
+const blacklistStore = useBlacklistStore();
+const { blacklist } = storeToRefs(blacklistStore);
+
 const options = computed(() => {
   const options = [
     {
@@ -48,11 +49,7 @@ const options = computed(() => {
       });
     }
   }
-  if (
-    blockUserCommentRepository.ref.value.usernames.includes(
-      comment.user.username,
-    )
-  ) {
+  if (blacklist.value.usernames.includes(comment.user.username)) {
     options.push({
       label: '解除屏蔽',
       key: 'unblock',
@@ -91,9 +88,7 @@ const isDeletable = computed(() => {
 });
 
 const isBlocked = computed(() => {
-  return blockUserCommentRepository.ref.value.usernames.includes(
-    comment.user.username,
-  );
+  return blacklist.value.usernames.includes(comment.user.username);
 });
 </script>
 

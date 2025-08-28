@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useWhoamiStore } from '@/stores';
+import { useBlacklistStore, useWhoamiStore } from '@/stores';
 
 import { useArticleStore } from './ForumArticleStore';
 import { doAction } from '@/pages//util';
@@ -9,7 +9,8 @@ const { articleId } = defineProps<{ articleId: string }>();
 const whoamiStore = useWhoamiStore();
 const { whoami } = storeToRefs(whoamiStore);
 
-const blockUserCommentRepository = Locator.blockUserCommentRepository();
+const blacklistStore = useBlacklistStore();
+const { blacklist } = storeToRefs(blacklistStore);
 
 const message = useMessage();
 
@@ -25,7 +26,7 @@ store.loadArticle().then((result) => {
 const blockUserComment = async (username: string) =>
   doAction(
     (async () => {
-      blockUserCommentRepository.add(username);
+      blacklistStore.add(username);
     })(),
     '屏蔽用户',
     message,
@@ -34,7 +35,7 @@ const blockUserComment = async (username: string) =>
 const unblockUserComment = async (username: string) =>
   doAction(
     (async () => {
-      blockUserCommentRepository.remove(username);
+      blacklistStore.remove(username);
     })(),
     '解除屏蔽用户',
     message,
@@ -57,11 +58,7 @@ const unblockUserComment = async (username: string) =>
           </c-a>
         </template>
         <n-button
-          v-if="
-            blockUserCommentRepository.ref.value.usernames.includes(
-              article.user.username,
-            )
-          "
+          v-if="blacklistStore.isBlocked(article.user.username)"
           text
           type="primary"
           @click="unblockUserComment(article.user.username)"

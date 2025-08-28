@@ -4,4 +4,3 @@ export {
   createGptWorkspaceRepository,
   createSakuraWorkspaceRepository,
 } from './WorkspaceRepository';
-export { createBlockUserCommentRepository } from './BlockUserCommentRepository';

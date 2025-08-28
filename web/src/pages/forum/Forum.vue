@@ -5,7 +5,7 @@ import { Locator } from '@/data';
 import { ArticleRepository } from '@/data/api';
 import { ArticleCategory, ArticleSimplified } from '@/model/Article';
 import { doAction } from '@/pages/util';
-import { useWhoamiStore } from '@/stores';
+import { useBlacklistStore, useWhoamiStore } from '@/stores';
 import { runCatching } from '@/util/result';
 
 const props = defineProps<{
@@ -20,9 +20,7 @@ const message = useMessage();
 const whoamiStore = useWhoamiStore();
 const { whoami } = storeToRefs(whoamiStore);
 
-const blockUserCommentRepository = Locator.blockUserCommentRepository();
-const isBlocked = (userName: string) =>
-  blockUserCommentRepository.ref.value.usernames.includes(userName);
+const blacklistStore = useBlacklistStore();
 
 const articleCategoryOptions = [
   { value: 'General', label: '小说交流' },
@@ -150,7 +148,7 @@ const deleteArticle = (article: ArticleSimplified) =>
                 <c-a :to="`/forum/${article.id}`">
                   <n-text v-if="article.hidden" depth="3">[隐藏]</n-text>
                   <n-text
-                    v-else-if="isBlocked(article.user.username)"
+                    v-else-if="blacklistStore.isBlocked(article.user.username)"
                     depth="3"
                   >
                     [屏蔽]
