@@ -1,15 +1,13 @@
-import { Locator } from '@/data';
+import { WebNovelApi } from '@/data';
 import { WebNovelDto } from '@/model/WebNovel';
 import { Result, runCatching } from '@/util/result';
-
-const repo = Locator.webNovelRepository;
 
 type WebNovelStore = {
   novelResult: Result<WebNovelDto> | undefined;
 };
 
 export const useWebNovelStore = (providerId: string, novelId: string) => {
-  return defineStore(`WebNovel/${providerId}/${novelId}`, {
+  return defineStore(`web-novel/${providerId}/${novelId}`, {
     state: () =>
       <WebNovelStore>{
         novelResult: undefined,
@@ -21,14 +19,16 @@ export const useWebNovelStore = (providerId: string, novelId: string) => {
         }
 
         this.novelResult = undefined;
-        const result = await runCatching(repo.getNovel(providerId, novelId));
+        const result = await runCatching(
+          WebNovelApi.getNovel(providerId, novelId),
+        );
         this.novelResult = result;
 
         return this.novelResult;
       },
 
-      async updateNovel(json: Parameters<typeof repo.updateNovel>[2]) {
-        await repo.updateNovel(providerId, novelId, json);
+      async updateNovel(json: Parameters<typeof WebNovelApi.updateNovel>[2]) {
+        await WebNovelApi.updateNovel(providerId, novelId, json);
         this.loadNovel(true);
       },
     },

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Locator } from '@/data';
+import { WebNovelApi } from '@/data';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
 import { runCatching } from '@/util/result';
 
@@ -158,9 +158,7 @@ const loader = computed<Loader<WebNovelOutlineDto>>(() => {
     } else if (providerId == 'kakuyomu') {
       filters = { genre: optionNth(0), range: optionNth(1) };
     }
-    return runCatching(
-      Locator.webNovelRepository.listRank(providerId, filters),
-    );
+    return runCatching(WebNovelApi.listRank(providerId, filters));
   };
 });
 </script>

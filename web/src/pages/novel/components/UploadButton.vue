@@ -7,10 +7,9 @@ import {
 } from 'naive-ui';
 
 import { Locator, formatError } from '@/data';
-import { useWhoamiStore } from '@/stores';
+import { useWenkuNovelStore, useWhoamiStore } from '@/stores';
 import { RegexUtil } from '@/util';
 import { getFullContent } from '@/util/file';
-import { useWenkuNovelStore } from '../WenkuNovelStore';
 
 const props = defineProps<{
   novelId: string;

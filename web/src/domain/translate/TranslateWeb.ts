@@ -1,4 +1,4 @@
-import { Locator, formatError } from '@/data';
+import { WebNovelApi, formatError } from '@/data';
 import {
   TranslateTaskCallback,
   TranslateTaskParams,
@@ -21,7 +21,7 @@ export const translateWeb = async (
     getChapterTranslateTask,
     updateMetadataTranslation,
     updateChapterTranslation,
-  } = Locator.webNovelRepository.createTranslationApi(
+  } = WebNovelApi.createTranslationApi(
     providerId,
     novelId,
     translator.id,

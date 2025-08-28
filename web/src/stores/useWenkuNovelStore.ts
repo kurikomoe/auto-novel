@@ -1,15 +1,13 @@
-import { Locator } from '@/data';
+import { WenkuNovelApi } from '@/data';
 import { WenkuNovelDto } from '@/model/WenkuNovel';
 import { Result, runCatching } from '@/util/result';
-
-const repo = Locator.wenkuNovelRepository;
 
 type WenkuNovelStore = {
   novelResult: Result<WenkuNovelDto> | undefined;
 };
 
 export const useWenkuNovelStore = (novelId: string) => {
-  return defineStore(`WenkuNovel/${novelId}`, {
+  return defineStore(`wenku-novel/${novelId}`, {
     state: () =>
       <WenkuNovelStore>{
         novelResult: undefined,
@@ -21,7 +19,7 @@ export const useWenkuNovelStore = (novelId: string) => {
         }
 
         this.novelResult = undefined;
-        const result = await runCatching(repo.getNovel(novelId));
+        const result = await runCatching(WenkuNovelApi.getNovel(novelId));
         if (result.ok) {
           result.value.volumeZh = result.value.volumeZh.sort((a, b) =>
             a.localeCompare(b),
@@ -35,8 +33,8 @@ export const useWenkuNovelStore = (novelId: string) => {
         return this.novelResult;
       },
 
-      async updateNovel(json: Parameters<typeof repo.updateNovel>[1]) {
-        await Locator.wenkuNovelRepository.updateNovel(novelId, json);
+      async updateNovel(json: Parameters<typeof WenkuNovelApi.updateNovel>[1]) {
+        await WenkuNovelApi.updateNovel(novelId, json);
         this.loadNovel(true);
       },
 
@@ -46,7 +44,7 @@ export const useWenkuNovelStore = (novelId: string) => {
         file: File,
         onProgress: (p: number) => void,
       ) {
-        const total = await repo.createVolume(
+        const total = await WenkuNovelApi.createVolume(
           novelId,
           volumeId,
           type,
@@ -79,7 +77,7 @@ export const useWenkuNovelStore = (novelId: string) => {
       },
 
       async deleteVolume(volumeId: string) {
-        await repo.deleteVolume(novelId, volumeId);
+        await WenkuNovelApi.deleteVolume(novelId, volumeId);
         if (this.novelResult?.ok) {
           this.novelResult.value.volumeJp =
             this.novelResult.value.volumeJp.filter(

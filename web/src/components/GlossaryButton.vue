@@ -5,9 +5,9 @@ import { GenericNovelId } from '@/model/Common';
 import { Glossary } from '@/model/Glossary';
 import { useWhoamiStore } from '@/stores';
 
-import { doAction, copyToClipBoard } from '@/pages/util';
+import { Locator, WebNovelApi, WenkuNovelApi } from '@/data';
+import { copyToClipBoard, doAction } from '@/pages/util';
 import { downloadFile } from '@/util';
-import { Locator } from '@/data';
 
 const props = defineProps<{
   gnid?: GenericNovelId;
@@ -46,16 +46,13 @@ const updateGlossary = async () => {
   }
   const glossaryValue = toRaw(glossary.value);
   if (gnid.type === 'web') {
-    await Locator.webNovelRepository.updateGlossary(
+    await WebNovelApi.updateGlossary(
       gnid.providerId,
       gnid.novelId,
       glossaryValue,
     );
   } else if (gnid.type === 'wenku') {
-    await Locator.wenkuNovelRepository.updateGlossary(
-      gnid.novelId,
-      glossaryValue,
-    );
+    await WenkuNovelApi.updateGlossary(gnid.novelId, glossaryValue);
   } else {
     const repo = await Locator.localVolumeRepository();
     await repo.updateGlossary(gnid.volumeId, glossaryValue);

@@ -81,10 +81,11 @@ export const Locator = {
   commentRepository: CommentRepository,
   operationRepository: OperationRepository,
   userRepository: UserRepository,
-  webNovelRepository: WebNovelRepository,
-  wenkuNovelRepository: WenkuNovelRepository,
   //
   favoredRepository: lazy(createFavoredRepository),
   readHistoryRepository: lazy(createReadHistoryRepository),
   blockUserCommentRepository: lazy(createBlockUserCommentRepository),
 };
+
+export const WebNovelApi = WebNovelRepository;
+export const WenkuNovelApi = WenkuNovelRepository;
