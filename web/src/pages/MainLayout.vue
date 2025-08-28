@@ -19,8 +19,8 @@ import { MenuOption, NButton, NIcon, NText, NTime, useOsTheme } from 'naive-ui';
 import { RouterLink } from 'vue-router';
 
 import { Locator } from '@/data';
-import { UserRole } from '@/model/User';
 import { useBreakPoints } from '@/pages/util';
+import { useWhoamiStore } from '@/stores';
 
 const bp = useBreakPoints();
 const hasSider = bp.greater('tablet');
@@ -31,8 +31,8 @@ watch(hasSider, () => (showMenuModal.value = false));
 
 const route = useRoute();
 
-const authRepository = Locator.authRepository();
-const { whoami } = authRepository;
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
 
 const { setting } = Locator.settingRepository();
 const menuCollapsed = computed(() => {
@@ -197,7 +197,7 @@ const userDropdownOptions = computed<MenuOption[]>(() => {
       {
         onClick: () => {
           if (whoami.value.isAdmin) {
-            authRepository.toggleManageMode();
+            whoamiStore.toggleManageMode();
           }
         },
         style: {
@@ -249,7 +249,7 @@ const userDropdownOptions = computed<MenuOption[]>(() => {
 });
 const handleUserDropdownSelect = (key: string | number) => {
   if (key === 'logout') {
-    authRepository.logout();
+    whoamiStore.logout();
   }
 };
 

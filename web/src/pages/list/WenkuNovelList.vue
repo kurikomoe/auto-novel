@@ -4,6 +4,7 @@ import { PlusOutlined } from '@vicons/material';
 import { Locator } from '@/data';
 import { WenkuNovelRepository } from '@/data/api';
 import { WenkuNovelOutlineDto } from '@/model/WenkuNovel';
+import { useWhoamiStore } from '@/stores';
 import { runCatching } from '@/util/result';
 
 import { Loader } from './components/NovelPage.vue';
@@ -16,7 +17,8 @@ defineProps<{
 
 const route = useRoute();
 
-const { whoami } = Locator.authRepository();
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
 
 const options = [
   {

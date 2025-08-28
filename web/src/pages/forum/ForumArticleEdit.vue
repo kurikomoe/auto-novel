@@ -4,6 +4,7 @@ import { FormInst, FormItemRule, FormRules } from 'naive-ui';
 
 import { Locator } from '@/data';
 import { ArticleCategory } from '@/model/Article';
+import { useWhoamiStore } from '@/stores';
 
 import { doAction, useIsWideScreen } from '@/pages/util';
 import { useArticleStore } from './ForumArticleStore';
@@ -17,7 +18,9 @@ const router = useRouter();
 const isWideScreen = useIsWideScreen();
 const message = useMessage();
 
-const { whoami } = Locator.authRepository();
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
+
 const draftRepo = Locator.draftRepository();
 const draftId = `article-${articleId ?? 'new'}`;
 

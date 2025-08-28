@@ -3,15 +3,18 @@ import { useEventListener } from '@vueuse/core';
 
 import { Locator } from '@/data';
 import { AuthUrl } from '@/util';
+import { useWhoamiStore } from '@/stores';
 
 const props = defineProps<{ from?: string }>();
 const router = useRouter();
-const authRepo = Locator.authRepository();
+
+const whoamiStore = useWhoamiStore();
+
 const settingRepo = Locator.settingRepository();
 
 useEventListener('message', async (event: MessageEvent) => {
   if (event.origin === AuthUrl && event.data.type === 'login_success') {
-    await authRepo.refresh().then(() => {
+    await whoamiStore.refresh().then(() => {
       const from = props.from ?? '/';
       router.replace(from);
     });

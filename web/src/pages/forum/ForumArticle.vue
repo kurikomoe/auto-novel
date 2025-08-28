@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { Locator } from '@/data';
+import { useWhoamiStore } from '@/stores';
 
 import { useArticleStore } from './ForumArticleStore';
 
 const { articleId } = defineProps<{ articleId: string }>();
 
-const { whoami } = Locator.authRepository();
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
 
 const store = useArticleStore(articleId);
 const { articleResult } = storeToRefs(store);

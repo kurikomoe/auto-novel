@@ -17,6 +17,7 @@ import {
   presetKeywordsNonR18,
   presetKeywordsR18,
 } from '@/model/WenkuNovel';
+import { useWhoamiStore } from '@/stores';
 import { RegexUtil, delay } from '@/util';
 import { runCatching } from '@/util/result';
 
@@ -33,7 +34,8 @@ const router = useRouter();
 const isWideScreen = useIsWideScreen();
 const message = useMessage();
 
-const { whoami } = Locator.authRepository();
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
 
 const allowSubmit = ref(novelId === undefined);
 const formRef = ref<FormInst>();

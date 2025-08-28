@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import {
   CommentOutlined,
-  MoreVertOutlined,
   DeleteOutlined,
+  MoreVertOutlined,
 } from '@vicons/material';
 
 import { Locator } from '@/data';
 import { Comment1 } from '@/model/Comment';
+import { useWhoamiStore } from '@/stores';
 
 const { comment, topLevel } = defineProps<{
   comment: Comment1;
@@ -23,7 +24,9 @@ const emit = defineEmits<{
   reply: [Comment1];
 }>();
 
-const { whoami } = Locator.authRepository();
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
+
 const blockUserCommentRepository = Locator.blockUserCommentRepository();
 const options = computed(() => {
   const options = [

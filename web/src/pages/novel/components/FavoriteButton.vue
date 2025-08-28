@@ -2,6 +2,7 @@
 import { FavoriteBorderOutlined, FavoriteOutlined } from '@vicons/material';
 
 import { Locator } from '@/data';
+import { useWhoamiStore } from '@/stores';
 
 import { doAction } from '@/pages/util';
 
@@ -17,7 +18,9 @@ const emit = defineEmits<{
 
 const message = useMessage();
 
-const { whoami } = Locator.authRepository();
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
+
 const favoredRepository = Locator.favoredRepository();
 
 onMounted(async () => {

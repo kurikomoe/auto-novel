@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { DeleteOutlineOutlined } from '@vicons/material';
 
-import { Locator } from '@/data';
 import { GenericNovelId } from '@/model/Common';
 import { Glossary } from '@/model/Glossary';
+import { useWhoamiStore } from '@/stores';
 
 import { doAction, copyToClipBoard } from '@/pages/util';
 import { downloadFile } from '@/util';
+import { Locator } from '@/data';
 
 const props = defineProps<{
   gnid?: GenericNovelId;
@@ -15,7 +16,8 @@ const props = defineProps<{
 
 const message = useMessage();
 
-const { whoami } = Locator.authRepository();
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
 
 const glossary = ref<Glossary>({});
 

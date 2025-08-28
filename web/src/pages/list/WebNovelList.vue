@@ -2,6 +2,7 @@
 import { Locator } from '@/data';
 import { WebNovelRepository } from '@/data/api';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
+import { useWhoamiStore } from '@/stores';
 import { runCatching } from '@/util/result';
 
 import { Loader } from './components/NovelPage.vue';
@@ -14,7 +15,8 @@ defineProps<{
 
 const route = useRoute();
 
-const { whoami } = Locator.authRepository();
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
 
 const options = [
   {

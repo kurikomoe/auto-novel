@@ -8,7 +8,6 @@ import {
   WebNovelRepository,
   WenkuNovelRepository,
 } from './api';
-import { createAuthRepository } from './auth/AuthRepository';
 import { createFavoredRepository } from './favored/FavoredRepository';
 import { createLocalVolumeRepository } from './local';
 import { createReadHistoryRepository } from './read-history/ReadHistoryRepository';
@@ -87,7 +86,6 @@ export const Locator = {
   webNovelRepository: WebNovelRepository,
   wenkuNovelRepository: WenkuNovelRepository,
   //
-  authRepository: lazy(createAuthRepository),
   favoredRepository: lazy(createFavoredRepository),
   readHistoryRepository: lazy(createReadHistoryRepository),
   blockUserCommentRepository: lazy(createBlockUserCommentRepository),

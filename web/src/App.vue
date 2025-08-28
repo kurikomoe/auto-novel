@@ -3,9 +3,10 @@ import { darkTheme, dateZhCN, useOsTheme, zhCN } from 'naive-ui';
 
 import { Locator } from '@/data';
 import { RegexUtil, useOpenCC } from '@/util';
+import { useWhoamiStore } from './stores';
 
 // 激活权限
-Locator.authRepository();
+useWhoamiStore();
 
 const settingRepository = Locator.settingRepository();
 

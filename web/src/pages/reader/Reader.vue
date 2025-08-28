@@ -4,6 +4,7 @@ import { createReusableTemplate, onKeyDown } from '@vueuse/core';
 import { Locator } from '@/data';
 import { GenericNovelId } from '@/model/Common';
 import { TranslatorId } from '@/model/Translator';
+import { useWhoamiStore } from '@/stores';
 import { Result } from '@/util/result';
 import { WebUtil } from '@/util/web';
 
@@ -20,7 +21,9 @@ const router = useRouter();
 const isWideScreen = useIsWideScreen(600);
 const isMobile = checkIsMobile();
 
-const { whoami } = Locator.authRepository();
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
+
 const { setting } = Locator.readerSettingRepository();
 
 const gnid = ((): GenericNovelId => {

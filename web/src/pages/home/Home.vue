@@ -13,6 +13,7 @@ import bannerUrl from '@/image/banner.webp';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
 import { WenkuNovelOutlineDto } from '@/model/WenkuNovel';
 import { useBreakPoints } from '@/pages/util';
+import { useWhoamiStore } from '@/stores';
 import { Result, runCatching } from '@/util/result';
 import { WebUtil } from '@/util/web';
 
@@ -22,7 +23,8 @@ const showShortcut = bp.smaller('tablet');
 const router = useRouter();
 const vars = useThemeVars();
 
-const { whoami } = Locator.authRepository();
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
 
 const url = ref('');
 const query = (url: string) => {

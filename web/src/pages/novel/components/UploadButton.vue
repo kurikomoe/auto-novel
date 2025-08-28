@@ -7,9 +7,10 @@ import {
 } from 'naive-ui';
 
 import { Locator, formatError } from '@/data';
-import { useWenkuNovelStore } from '../WenkuNovelStore';
+import { useWhoamiStore } from '@/stores';
 import { RegexUtil } from '@/util';
 import { getFullContent } from '@/util/file';
+import { useWenkuNovelStore } from '../WenkuNovelStore';
 
 const props = defineProps<{
   novelId: string;
@@ -18,7 +19,8 @@ const props = defineProps<{
 
 const message = useMessage();
 
-const { whoami } = Locator.authRepository();
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
 
 const store = useWenkuNovelStore(props.novelId);
 

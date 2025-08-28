@@ -2,6 +2,7 @@
 import { FileDownloadOutlined } from '@vicons/material';
 import { useKeyModifier } from '@vueuse/core';
 
+import TranslateTask from '@/components/TranslateTask.vue';
 import { Locator } from '@/data';
 import { WenkuNovelRepository } from '@/data/api';
 import {
@@ -9,7 +10,7 @@ import {
   TranslateTaskParams,
 } from '@/model/Translator';
 import { VolumeJpDto } from '@/model/WenkuNovel';
-import TranslateTask from '@/components/TranslateTask.vue';
+import { useWhoamiStore } from '@/stores';
 
 const { novelId, volume, getParams } = defineProps<{
   novelId: string;
@@ -24,7 +25,9 @@ const emit = defineEmits<{
 const message = useMessage();
 
 const { setting } = Locator.settingRepository();
-const { whoami } = Locator.authRepository();
+
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
 
 const translateTask = ref<InstanceType<typeof TranslateTask>>();
 const startTranslateTask = (translatorId: 'baidu' | 'youdao') => {
