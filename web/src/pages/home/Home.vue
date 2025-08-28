@@ -13,6 +13,7 @@ import bannerUrl from '@/image/banner.webp';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
 import { WenkuNovelOutlineDto } from '@/model/WenkuNovel';
 import { useBreakPoints } from '@/pages/util';
+import { useWhoamiStore } from '@/stores';
 import { Result, runCatching } from '@/util/result';
 import { WebUtil } from '@/util/web';
 
@@ -22,7 +23,8 @@ const showShortcut = bp.smaller('tablet');
 const router = useRouter();
 const vars = useThemeVars();
 
-const { whoami } = Locator.authRepository();
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
 
 const url = ref('');
 const query = (url: string) => {
@@ -53,7 +55,15 @@ const loadFavorite = async () => {
       .then((it) => it.items),
   );
 };
-loadFavorite();
+watch(
+  () => whoami.value.isSignedIn,
+  (isSignedIn) => {
+    if (isSignedIn) {
+      loadFavorite();
+    }
+  },
+  { immediate: true },
+);
 
 const mostVisitedWeb = ref<Result<WebNovelOutlineDto[]>>();
 const loadWeb = async () => {
@@ -205,9 +215,8 @@ const githubLink = 'https://github.com/auto-novel/auto-novel';
         禁止使用脚本绕过翻译器提交翻译文本，哪怕你觉得自己提交的是正经翻译。
       </n-p>
       <n-p>
-        FishHawk长期996,网站开发速度大幅下降已成常态，论坛反馈目前没有精力维护，有问题加群@吧
+        FishHawk长期996，网站开发速度大幅下降已成常态，论坛反馈目前没有精力维护，有问题加群@吧
       </n-p>
-      <n-p>文件解析正在大改，如果出现小说文件相关问题，加群@FishHawk。</n-p>
     </bulletin>
 
     <template v-if="whoami.isSignedIn">

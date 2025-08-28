@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { DeleteOutlineOutlined } from '@vicons/material';
 
-import { Locator } from '@/data';
 import { GenericNovelId } from '@/model/Common';
 import { Glossary } from '@/model/Glossary';
+import { useWhoamiStore } from '@/stores';
 
-import { doAction, copyToClipBoard } from '@/pages/util';
+import { Locator, WebNovelApi, WenkuNovelApi } from '@/data';
+import { copyToClipBoard, doAction } from '@/pages/util';
 import { downloadFile } from '@/util';
 
 const props = defineProps<{
@@ -15,7 +16,8 @@ const props = defineProps<{
 
 const message = useMessage();
 
-const { whoami } = Locator.authRepository();
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
 
 const glossary = ref<Glossary>({});
 
@@ -44,16 +46,13 @@ const updateGlossary = async () => {
   }
   const glossaryValue = toRaw(glossary.value);
   if (gnid.type === 'web') {
-    await Locator.webNovelRepository.updateGlossary(
+    await WebNovelApi.updateGlossary(
       gnid.providerId,
       gnid.novelId,
       glossaryValue,
     );
   } else if (gnid.type === 'wenku') {
-    await Locator.wenkuNovelRepository.updateGlossary(
-      gnid.novelId,
-      glossaryValue,
-    );
+    await WenkuNovelApi.updateGlossary(gnid.novelId, glossaryValue);
   } else {
     const repo = await Locator.localVolumeRepository();
     await repo.updateGlossary(gnid.volumeId, glossaryValue);
@@ -220,7 +219,7 @@ const downloadGlossaryAsJsonFile = async (ev: MouseEvent) => {
             @action="downloadGlossaryAsJsonFile"
           />
           <c-button
-            v-if="whoami.isMaintainer"
+            v-if="whoami.isAdmin"
             secondary
             type="error"
             label="清空"

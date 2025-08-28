@@ -5,6 +5,7 @@ import { Locator } from '@/data';
 import { ArticleRepository } from '@/data/api';
 import { ArticleCategory, ArticleSimplified } from '@/model/Article';
 import { doAction } from '@/pages/util';
+import { useWhoamiStore } from '@/stores';
 import { runCatching } from '@/util/result';
 
 const props = defineProps<{
@@ -16,7 +17,9 @@ const route = useRoute();
 const router = useRouter();
 const message = useMessage();
 
-const { whoami } = Locator.authRepository();
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
+
 const blockUserCommentRepository = Locator.blockUserCommentRepository();
 const isBlocked = (userName: string) =>
   blockUserCommentRepository.ref.value.usernames.includes(userName);
@@ -161,7 +164,7 @@ const deleteArticle = (article: ArticleSimplified) =>
                 by {{ article.user.username }}
               </n-text>
 
-              <n-flex v-if="whoami.asMaintainer" style="margin-top: 4px">
+              <n-flex v-if="whoami.asAdmin" style="margin-top: 4px">
                 <c-button
                   v-if="article.locked"
                   size="tiny"

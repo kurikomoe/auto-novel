@@ -3,9 +3,9 @@ import { ChecklistOutlined } from '@vicons/material';
 
 import { Locator } from '@/data';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
-import { runCatching } from '@/util/result';
-
 import { useIsWideScreen } from '@/pages/util';
+import { useWebSearchHistoryStore } from '@/stores';
+import { runCatching } from '@/util/result';
 import NovelListWeb from '../list/components/NovelListWeb.vue';
 import { Loader } from '../list/components/NovelPage.vue';
 
@@ -104,13 +104,13 @@ const loader = computed<Loader<WebNovelOutlineDto>>(() => {
   };
 });
 
-const webSearchHistoryRepository = Locator.webSearchHistoryRepository();
+const searchHistoryStore = useWebSearchHistoryStore();
+const { searchHistory } = storeToRefs(searchHistoryStore);
 
 const search = computed(() => {
-  const searchHistory = webSearchHistoryRepository.ref.value;
   return {
-    suggestions: searchHistory.queries,
-    tags: searchHistory.tags
+    suggestions: searchHistory.value.queries,
+    tags: searchHistory.value.tags
       .sort((a, b) => Math.log2(b.used) - Math.log2(a.used))
       .map((it) => it.tag)
       .slice(0, 8),
@@ -124,7 +124,7 @@ watch(
     if (typeof route.query.query === 'string') {
       query = route.query.query;
     }
-    webSearchHistoryRepository.addHistory(query);
+    searchHistoryStore.addHistory(query);
   },
   { immediate: true },
 );

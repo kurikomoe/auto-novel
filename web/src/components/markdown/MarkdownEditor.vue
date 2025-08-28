@@ -2,6 +2,7 @@
 import { useEventListener } from '@vueuse/core';
 
 import { Locator } from '@/data';
+import { useDraftStore } from '@/stores';
 
 import { useIsWideScreen } from '@/pages/util';
 
@@ -37,15 +38,16 @@ const onTabUpdate = (value: number) => {
 // ==============================
 
 const createdAt = Date.now();
+const draftStore = useDraftStore();
 
 const getDrafts = () => {
   if (props.draftId === undefined) return [];
-  return Locator.draftRepository().getDraft(props.draftId);
+  return draftStore.getDraft(props.draftId);
 };
 
 const saveDraft = (text: string) => {
   if (props.draftId && text.trim() !== '') {
-    Locator.draftRepository().addDraft(props.draftId, createdAt, text);
+    draftStore.addDraft(props.draftId, createdAt, text);
   }
 };
 
@@ -53,7 +55,7 @@ const drafts = ref(getDrafts());
 
 const clearDraft = () => {
   if (!props.draftId) return;
-  Locator.draftRepository().removeDraft(props.draftId);
+  draftStore.removeDraft(props.draftId);
   drafts.value = getDrafts();
 };
 

@@ -1,4 +1,4 @@
-import { Locator, formatError } from '@/data';
+import { WenkuNovelApi, formatError } from '@/data';
 import {
   TranslateTaskCallback,
   TranslateTaskParams,
@@ -19,7 +19,7 @@ export const translateWenku = async (
     getTranslateTask,
     getChapterTranslateTask,
     updateChapterTranslation,
-  } = Locator.wenkuNovelRepository.createTranslationApi(
+  } = WenkuNovelApi.createTranslationApi(
     novelId,
     volumeId,
     translator.id,

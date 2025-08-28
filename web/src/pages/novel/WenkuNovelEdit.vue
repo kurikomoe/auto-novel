@@ -8,7 +8,7 @@ import {
 import { FormInst, FormItemRule, FormRules } from 'naive-ui';
 import { VueDraggable } from 'vue-draggable-plus';
 
-import { Locator } from '@/data';
+import { WenkuNovelApi } from '@/data';
 import { prettyCover, smartImport } from '@/domain/smart-import';
 import coverPlaceholder from '@/image/cover_placeholder.png';
 import {
@@ -17,11 +17,11 @@ import {
   presetKeywordsNonR18,
   presetKeywordsR18,
 } from '@/model/WenkuNovel';
+import { useWenkuNovelStore, useWhoamiStore } from '@/stores';
 import { RegexUtil, delay } from '@/util';
 import { runCatching } from '@/util/result';
 
 import { doAction, useIsWideScreen } from '@/pages/util';
-import { useWenkuNovelStore } from './WenkuNovelStore';
 
 const { novelId } = defineProps<{
   novelId: string | undefined;
@@ -33,7 +33,8 @@ const router = useRouter();
 const isWideScreen = useIsWideScreen();
 const message = useMessage();
 
-const { whoami } = Locator.authRepository();
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
 
 const allowSubmit = ref(novelId === undefined);
 const formRef = ref<FormInst>();
@@ -165,7 +166,7 @@ const submit = async () => {
 
   if (store === undefined) {
     await doAction(
-      Locator.wenkuNovelRepository.createNovel(body).then((id) => {
+      WenkuNovelApi.createNovel(body).then((id) => {
         router.push({ path: `/wenku/${id}` });
       }),
       '新建文库',
@@ -253,7 +254,7 @@ const findSimilarNovels = async () => {
     2,
   )[0];
   const result = await runCatching(
-    Locator.wenkuNovelRepository.listNovel({
+    WenkuNovelApi.listNovel({
       page: 0,
       pageSize: 6,
       query,
@@ -395,7 +396,7 @@ const levelOptions = [
             @action="populateNovelFromAmazon('', true)"
           />
           <c-button
-            v-if="whoami.isMaintainer"
+            v-if="whoami.isAdmin"
             type="error"
             secondary
             label="标记重复"

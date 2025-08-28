@@ -1,4 +1,4 @@
-import { Locator } from '@/data';
+import { Locator, WebNovelApi } from '@/data';
 import { GenericNovelId } from '@/model/Common';
 import { Ok, Result, runCatching } from '@/util/result';
 
@@ -73,11 +73,7 @@ const getChapter = async (
   chapterId: string,
 ): Promise<ReaderChapter> => {
   if (gnid.type === 'web') {
-    return Locator.webNovelRepository.getChapter(
-      gnid.providerId,
-      gnid.novelId,
-      chapterId,
-    );
+    return WebNovelApi.getChapter(gnid.providerId, gnid.novelId, chapterId);
   } else if (gnid.type === 'wenku') {
     throw '不支持文库';
   } else {

@@ -11,7 +11,7 @@ import {
 } from '@vicons/material';
 import { DropdownOption } from 'naive-ui';
 
-import { Draft } from '@/data/stores/DraftRepository';
+import { Draft } from '@/stores';
 
 const props = defineProps<{
   elTextarea?: HTMLTextAreaElement;

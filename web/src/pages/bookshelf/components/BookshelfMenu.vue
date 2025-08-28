@@ -2,12 +2,14 @@
 import { MenuOption } from 'naive-ui';
 
 import { Locator } from '@/data';
+import { useWhoamiStore } from '@/stores';
 
 import BookshelfMenuItem from './BookshelfMenuItem.vue';
 
 const message = useMessage();
 
-const { whoami } = Locator.authRepository();
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
 
 const favoredRepository = Locator.favoredRepository();
 const favoreds = favoredRepository.favoreds;

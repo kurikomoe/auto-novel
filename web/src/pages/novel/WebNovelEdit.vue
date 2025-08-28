@@ -2,7 +2,7 @@
 import { UploadOutlined } from '@vicons/material';
 
 import { doAction, useIsWideScreen } from '@/pages/util';
-import { useWebNovelStore } from './WebNovelStore';
+import { useWebNovelStore } from '@/stores';
 
 const { providerId, novelId } = defineProps<{
   providerId: string;

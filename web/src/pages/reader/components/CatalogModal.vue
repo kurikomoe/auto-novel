@@ -1,17 +1,18 @@
 <script lang="ts" setup>
 import {
-  SortOutlined,
-  KeyboardArrowUpRound,
   KeyboardArrowDownRound,
+  KeyboardArrowUpRound,
+  SortOutlined,
 } from '@vicons/material';
+
+import ChapterTocList from '@/components/ChapterTocList.vue';
 import { Locator } from '@/data';
 import { GenericNovelId } from '@/model/Common';
-import { useWebNovelStore } from '@/pages/novel/WebNovelStore';
-import { Ok, Result, runCatching } from '@/util/result';
 import { ReadableTocItem } from '@/pages/novel/components/common';
 import { useTocExpansion } from '@/pages/novel/components/UseTocExpansion';
-import ChapterTocList from '@/components/ChapterTocList.vue';
 import { useIsWideScreen } from '@/pages/util';
+import { useWebNovelStore } from '@/stores';
+import { Ok, Result, runCatching } from '@/util/result';
 
 const props = defineProps<{
   show: boolean;

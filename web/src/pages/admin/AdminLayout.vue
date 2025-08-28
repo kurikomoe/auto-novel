@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { useRoute, useRouter } from 'vue-router';
 
-import { Locator } from '@/data';
+import { useWhoamiStore } from '@/stores';
 
 const router = useRouter();
 const route = useRoute();
 
-const { whoami } = Locator.authRepository();
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
 
 const path = computed(() => route.path);
 const handleUpdateValue = (path: string) => router.push({ path });

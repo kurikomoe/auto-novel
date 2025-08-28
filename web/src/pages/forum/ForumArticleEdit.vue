@@ -4,6 +4,7 @@ import { FormInst, FormItemRule, FormRules } from 'naive-ui';
 
 import { Locator } from '@/data';
 import { ArticleCategory } from '@/model/Article';
+import { useDraftStore, useWhoamiStore } from '@/stores';
 
 import { doAction, useIsWideScreen } from '@/pages/util';
 import { useArticleStore } from './ForumArticleStore';
@@ -17,13 +18,15 @@ const router = useRouter();
 const isWideScreen = useIsWideScreen();
 const message = useMessage();
 
-const { whoami } = Locator.authRepository();
-const draftRepo = Locator.draftRepository();
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
+
+const draftStore = useDraftStore();
 const draftId = `article-${articleId ?? 'new'}`;
 
 const store = articleId !== undefined ? useArticleStore(articleId) : undefined;
 
-const articleCategoryOptions = whoami.value.asMaintainer
+const articleCategoryOptions = whoami.value.asAdmin
   ? [
       { value: 'General', label: '小说交流' },
       { value: 'Guide', label: '使用指南' },
@@ -107,7 +110,7 @@ const submit = async () => {
   if (store === undefined) {
     await doAction(
       Locator.articleRepository.createArticle(formValue.value).then((id) => {
-        draftRepo.removeDraft(draftId);
+        draftStore.removeDraft(draftId);
         router.push({ path: `/forum/${id}` });
       }),
       '发布',
@@ -116,7 +119,7 @@ const submit = async () => {
   } else {
     await doAction(
       store.updateArticle(formValue.value).then(() => {
-        draftRepo.removeDraft(draftId);
+        draftStore.removeDraft(draftId);
         router.push({ path: `/forum/${articleId}` });
       }),
       '更新',

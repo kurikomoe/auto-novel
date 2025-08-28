@@ -45,7 +45,7 @@ if (inOldDomain && window.opener) {
 <template>
   <n-p v-if="inOldDomain" style="margin: 0px 0px 4px">
     <b>
-      机翻站已切换到新的域名,七月底将会默认跳转
+      机翻站已切换到新的域名
       <n-a href="https://n.novelia.cc/">{{ newDomain }}</n-a>
     </b>
   </n-p>

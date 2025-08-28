@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { CommentOutlined } from '@vicons/material';
 
-import { Locator } from '@/data';
 import { CommentRepository } from '@/data/api';
-import { Ok, Result, runCatching } from '@/util/result';
 import { Comment1 } from '@/model/Comment';
 import { Page } from '@/model/Page';
+import { useDraftStore } from '@/stores';
+import { Ok, Result, runCatching } from '@/util/result';
+
 import SectionHeader from '@/components/SectionHeader.vue';
 
 const props = defineProps<{
@@ -18,7 +19,7 @@ const currentPage = ref(1);
 const loading = ref(false);
 const commentSectionRef = ref<InstanceType<typeof SectionHeader>>();
 
-const draftRepo = Locator.draftRepository();
+const draftStore = useDraftStore();
 const draftId = `comment-${props.site}`;
 
 async function loadComments(page: number) {
@@ -60,8 +61,8 @@ function onReplied() {
   if (commentPage.value?.ok && currentPage.value === 1) {
     loadComments(currentPage.value);
   }
-  draftRepo.addDraft.cancel();
-  draftRepo.removeDraft(draftId);
+  draftStore.addDraft.cancel();
+  draftStore.removeDraft(draftId);
 }
 
 const showInput = ref(false);

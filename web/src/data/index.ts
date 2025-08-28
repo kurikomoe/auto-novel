@@ -8,7 +8,6 @@ import {
   WebNovelRepository,
   WenkuNovelRepository,
 } from './api';
-import { createAuthRepository } from './auth/AuthRepository';
 import { createFavoredRepository } from './favored/FavoredRepository';
 import { createLocalVolumeRepository } from './local';
 import { createReadHistoryRepository } from './read-history/ReadHistoryRepository';
@@ -17,14 +16,11 @@ import {
   createSettingRepository,
 } from './setting/SettingRepository';
 import {
-  createDraftRepository,
+  createBlockUserCommentRepository,
   createGptWorkspaceRepository,
   createReadPositionRepository,
   createRuleViewedRepository,
   createSakuraWorkspaceRepository,
-  createWebSearchHistoryRepository,
-  createWenkuSearchHistoryRepository,
-  createBlockUserCommentRepository,
 } from './stores';
 import {
   createAmazonRepository,
@@ -64,13 +60,10 @@ export const Locator = {
   //
   cachedSegRepository: lazyAsync(createCachedSegRepository),
   //
-  draftRepository: lazy(createDraftRepository),
   ruleViewedRepository: lazy(createRuleViewedRepository),
   readPositionRepository: lazy(createReadPositionRepository),
   settingRepository: lazy(createSettingRepository),
   readerSettingRepository: lazy(createReaderSettingRepository),
-  webSearchHistoryRepository: lazy(createWebSearchHistoryRepository),
-  wenkuSearchHistoryRepository: lazy(createWenkuSearchHistoryRepository),
   gptWorkspaceRepository: lazy(createGptWorkspaceRepository),
   sakuraWorkspaceRepository: lazy(createSakuraWorkspaceRepository),
   //
@@ -84,11 +77,11 @@ export const Locator = {
   commentRepository: CommentRepository,
   operationRepository: OperationRepository,
   userRepository: UserRepository,
-  webNovelRepository: WebNovelRepository,
-  wenkuNovelRepository: WenkuNovelRepository,
   //
-  authRepository: lazy(createAuthRepository),
   favoredRepository: lazy(createFavoredRepository),
   readHistoryRepository: lazy(createReadHistoryRepository),
   blockUserCommentRepository: lazy(createBlockUserCommentRepository),
 };
+
+export const WebNovelApi = WebNovelRepository;
+export const WenkuNovelApi = WenkuNovelRepository;

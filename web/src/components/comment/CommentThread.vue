@@ -2,8 +2,9 @@
 import { Locator } from '@/data';
 import { CommentRepository } from '@/data/api';
 import { Comment1 } from '@/model/Comment';
+import { copyToClipBoard, doAction } from '@/pages//util';
+import { useDraftStore } from '@/stores';
 import { runCatching } from '@/util/result';
-import { doAction, copyToClipBoard } from '@/pages//util';
 
 const { site, comment } = defineProps<{
   site: string;
@@ -16,7 +17,7 @@ const message = useMessage();
 const currentPage = ref(1);
 const pageCount = ref(Math.floor((comment.numReplies + 9) / 10));
 
-const draftRepo = Locator.draftRepository();
+const draftStore = useDraftStore();
 const draftId = `comment-${site}`;
 
 const blockUserCommentRepository = Locator.blockUserCommentRepository();
@@ -49,8 +50,8 @@ function onReplied() {
   if (currentPage >= pageCount) {
     loadReplies(currentPage.value);
   }
-  draftRepo.addDraft.cancel();
-  draftRepo.removeDraft(draftId);
+  draftStore.addDraft.cancel();
+  draftStore.removeDraft(draftId);
 }
 
 const copyComment = (comment: Comment1) =>

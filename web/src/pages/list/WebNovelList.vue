@@ -2,8 +2,8 @@
 import { Locator } from '@/data';
 import { WebNovelRepository } from '@/data/api';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
+import { useWebSearchHistoryStore, useWhoamiStore } from '@/stores';
 import { runCatching } from '@/util/result';
-
 import { Loader } from './components/NovelPage.vue';
 
 defineProps<{
@@ -14,7 +14,8 @@ defineProps<{
 
 const route = useRoute();
 
-const { whoami } = Locator.authRepository();
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
 
 const options = [
   {
@@ -105,13 +106,13 @@ const loader: Loader<WebNovelOutlineDto> = (page, query, selected) => {
   );
 };
 
-const webSearchHistoryRepository = Locator.webSearchHistoryRepository();
+const searchHistoryStore = useWebSearchHistoryStore();
+const { searchHistory } = storeToRefs(searchHistoryStore);
 
 const search = computed(() => {
-  const searchHistory = webSearchHistoryRepository.ref.value;
   return {
-    suggestions: searchHistory.queries,
-    tags: searchHistory.tags
+    suggestions: searchHistory.value.queries,
+    tags: searchHistory.value.tags
       .sort((a, b) => Math.log2(b.used) - Math.log2(a.used))
       .map((it) => it.tag)
       .slice(0, 8),
@@ -125,7 +126,7 @@ watch(
     if (typeof route.query.query === 'string') {
       query = route.query.query;
     }
-    webSearchHistoryRepository.addHistory(query);
+    searchHistoryStore.addHistory(query);
   },
   { immediate: true },
 );

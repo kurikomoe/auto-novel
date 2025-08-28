@@ -6,6 +6,7 @@ import { Locator } from '@/data';
 import { WebNovelRepository } from '@/data/api';
 import { GenericNovelId } from '@/model/Common';
 import { TranslateTaskDescriptor } from '@/model/Translator';
+import { useWhoamiStore } from '@/stores';
 
 import TranslateTask from '@/components/TranslateTask.vue';
 import TranslateOptions from './TranslateOptions.vue';
@@ -35,7 +36,9 @@ const emit = defineEmits<{
 
 const message = useMessage();
 
-const { whoami } = Locator.authRepository();
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
+
 const { setting } = Locator.settingRepository();
 
 const translateOptions = ref<InstanceType<typeof TranslateOptions>>();

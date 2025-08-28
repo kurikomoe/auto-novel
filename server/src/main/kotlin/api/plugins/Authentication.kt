@@ -3,10 +3,8 @@ package api.plugins
 import api.throwUnauthorized
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import infra.user.User
 import infra.user.UserRepository
 import infra.user.UserRole
-import infra.user.UserRole.Companion.toUserRole
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -15,11 +13,16 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.*
 import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
-import kotlinx.datetime.toJavaInstant
 import org.koin.ktor.ext.get
-import util.serialName
 import kotlin.time.Duration.Companion.days
+import kotlinx.datetime.Instant
+
+data class User(
+    val id: String,
+    val username: String,
+    val role: UserRole,
+    val createdAt: Instant,
+)
 
 fun User.shouldBeAtLeast(role: UserRole) {
     if (!(this.role atLeast role)) {
@@ -37,28 +40,13 @@ fun User.shouldBeOldAss() {
     }
 }
 
-fun User.generateToken(
-    secret: String,
-): String = JWT
-    .create()
-    .apply {
-        withClaim("id", id)
-        withClaim("email", email)
-        withClaim("username", username)
-        withClaim("role", role.serialName())
-        withClaim("createAt", createdAt.epochSeconds)
-        withExpiresAt((Clock.System.now() + 30.days).toJavaInstant())
-    }
-    .sign(Algorithm.HMAC256(secret))
-
-
 fun Application.authentication(secret: String) = install(Authentication) {
     jwt {
         verifier(
             JWT.require(Algorithm.HMAC256(secret)).build()
         )
         validate { credential ->
-            if (credential["id"] != null) {
+            if (credential.subject != null) {
                 JWTPrincipal(credential.payload)
             } else {
                 null
@@ -95,20 +83,20 @@ private val PostAuthenticationInterceptors = createRouteScopedPlugin(name = "Use
 
     on(AuthenticationChecked) { call ->
         call.principal<JWTPrincipal>()?.let { principal ->
-            val id = principal["id"]!!
-            val user = try {
-                User(
-                    id = id,
-                    email = principal["email"]!!,
-                    username = principal["username"]!!,
-                    role = principal["role"]!!.toUserRole(),
-                    createdAt = Instant.fromEpochSeconds(
-                        principal.getClaim("createAt", Long::class)!!
-                    ),
-                )
-            } catch (e: Throwable) {
-                userRepo.getUser(id)!!
-            }
+            val user = User(
+                id = userRepo.getId(principal.subject!!),
+                username = principal.subject!!,
+                role = when (principal["role"]) {
+                    "admin" -> UserRole.Admin
+                    "trusted" -> UserRole.Trusted
+                    "member" -> UserRole.Member
+                    "restricted" -> UserRole.Restricted
+                    else -> UserRole.Banned
+                },
+                createdAt = Instant.fromEpochSeconds(
+                    principal.getClaim("crat", Long::class)!!
+                ),
+            )
             if (user.role === UserRole.Banned) {
                 call.respond(HttpStatusCode.Unauthorized, "用户已被封禁")
             } else {

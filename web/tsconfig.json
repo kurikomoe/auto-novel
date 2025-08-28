@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "ES2015",
     "useDefineForClassFields": true,
-    "module": "ESNext",
+    "module": "ES2020",
     "moduleResolution": "Node",
     "strict": true,
     "jsx": "preserve",
@@ -10,7 +10,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,
-    "lib": ["ES2021", "DOM"],
+    "lib": ["DOM", "ES2021"],
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {

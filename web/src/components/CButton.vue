@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Locator } from '@/data';
+import { useWhoamiStore } from '@/stores';
 
 const props = defineProps<{
   label?: string;
@@ -10,7 +10,8 @@ const props = defineProps<{
 
 const message = useMessage();
 
-const { whoami } = Locator.authRepository();
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
 
 const running = ref(false);
 

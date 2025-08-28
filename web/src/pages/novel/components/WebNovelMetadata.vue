@@ -2,8 +2,8 @@
 import { BookOutlined, EditNoteOutlined } from '@vicons/material';
 import { NA, NText } from 'naive-ui';
 
-import { Locator } from '@/data';
 import { WebNovelDto } from '@/model/WebNovel';
+import { useWhoamiStore } from '@/stores';
 import { WebUtil } from '@/util/web';
 
 import { useIsWideScreen } from '@/pages/util';
@@ -16,7 +16,8 @@ const props = defineProps<{
 
 const isWideScreen = useIsWideScreen();
 
-const { whoami } = Locator.authRepository();
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
 
 const labels = computed(() => {
   const readableNumber = (num: number | undefined) => {

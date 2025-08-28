@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { Locator } from '@/data';
+import { useWhoamiStore } from '@/stores';
 
 import { useArticleStore } from './ForumArticleStore';
 
 const { articleId } = defineProps<{ articleId: string }>();
 
-const { whoami } = Locator.authRepository();
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
 
 const store = useArticleStore(articleId);
 const { articleResult } = storeToRefs(store);
@@ -26,9 +27,7 @@ store.loadArticle().then((result) => {
         {{ article.updateAt === article.createAt ? '发布' : '更新' }}于
         <n-time :time="article.updateAt * 1000" type="relative" />
         by {{ article.user.username }}
-        <template
-          v-if="whoami.isMe(article.user.username) || whoami.asMaintainer"
-        >
+        <template v-if="whoami.isMe(article.user.username) || whoami.asAdmin">
           /
           <c-a :to="`/forum-edit/${article.id}?category=${article.category}`">
             编辑
