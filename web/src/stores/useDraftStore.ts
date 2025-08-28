@@ -1,7 +1,7 @@
 import { throttle } from 'lodash-es';
 
-import { LSKey } from '@/data/LocalStorage';
 import { useLocalStorage } from '@/util';
+import { LSKey } from './key';
 
 export interface Draft {
   text: string;

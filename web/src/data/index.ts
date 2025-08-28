@@ -16,13 +16,11 @@ import {
   createSettingRepository,
 } from './setting/SettingRepository';
 import {
+  createBlockUserCommentRepository,
   createGptWorkspaceRepository,
   createReadPositionRepository,
   createRuleViewedRepository,
   createSakuraWorkspaceRepository,
-  createWebSearchHistoryRepository,
-  createWenkuSearchHistoryRepository,
-  createBlockUserCommentRepository,
 } from './stores';
 import {
   createAmazonRepository,
@@ -66,8 +64,6 @@ export const Locator = {
   readPositionRepository: lazy(createReadPositionRepository),
   settingRepository: lazy(createSettingRepository),
   readerSettingRepository: lazy(createReaderSettingRepository),
-  webSearchHistoryRepository: lazy(createWebSearchHistoryRepository),
-  wenkuSearchHistoryRepository: lazy(createWenkuSearchHistoryRepository),
   gptWorkspaceRepository: lazy(createGptWorkspaceRepository),
   sakuraWorkspaceRepository: lazy(createSakuraWorkspaceRepository),
   //

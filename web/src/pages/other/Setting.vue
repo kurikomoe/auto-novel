@@ -2,6 +2,7 @@
 import { Locator } from '@/data';
 import { Setting } from '@/data/setting/Setting';
 import SoundAllTaskCompleted from '@/sound/all_task_completed.mp3';
+import { useWebSearchHistoryStore, useWenkuSearchHistoryStore } from '@/stores';
 import { InfoOutlined } from '@vicons/material';
 
 const message = useMessage();
@@ -9,12 +10,12 @@ const message = useMessage();
 const { setting } = Locator.settingRepository();
 
 const clearWebSearchHistory = () => {
-  Locator.webSearchHistoryRepository().clear();
+  useWebSearchHistoryStore().clear();
   message.success('清空成功');
 };
 
 const clearWenkuSearchHistory = () => {
-  Locator.wenkuSearchHistoryRepository().clear();
+  useWenkuSearchHistoryStore().clear();
   message.success('清空成功');
 };
 

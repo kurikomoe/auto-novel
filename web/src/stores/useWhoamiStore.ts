@@ -1,6 +1,6 @@
 import { setTokenGetter } from '@/data/api/client';
-import { LSKey } from '@/data/LocalStorage';
 import { useUserData } from '@/util';
+import { LSKey } from './key';
 
 export const useWhoamiStore = defineStore(LSKey.Auth, () => {
   const { userData, refresh, logout } = useUserData('n');
