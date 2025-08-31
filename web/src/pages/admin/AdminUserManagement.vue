@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { UserApi } from '@/data/apiAuth/UserApi';
+import { AuthAdminApi, UserInfo } from '@/data';
 import { Page } from '@/model/Page';
-import { UserOutline, UserRole } from '@/model/User';
+import { UserRole } from '@/model/User';
 import { Result, runCatching } from '@/util/result';
 
 const userRole = ref<UserRole>('member');
@@ -15,12 +15,12 @@ const userRoleOptions = [
 
 const currentPage = ref(1);
 const pageNumber = ref(1);
-const userResult = ref<Result<Page<UserOutline>>>();
+const userResult = ref<Result<Page<UserInfo>>>();
 
 async function loadPage(page: number) {
   userResult.value = undefined;
   const result = await runCatching(
-    UserApi.listUser({
+    AuthAdminApi.listUser({
       page: currentPage.value - 1,
       pageSize: 50,
       role: userRole.value,
@@ -76,23 +76,14 @@ const roleToReadableText = (role: UserRole) => {
           <th style="width: 80px"><b>角色</b></th>
           <th style="width: 150px"><b>邮箱</b></th>
           <th style="width: 150px"><b>创建时间</b></th>
-          <th><b>操作</b></th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="user in value.items" :key="user.id">
+        <tr v-for="user in value.items" :key="user.username">
           <td>{{ user.username }}</td>
           <td>{{ roleToReadableText(user.role) }}</td>
           <td>{{ user.email }}</td>
           <td><n-time :time="user.createdAt * 1000" /></td>
-          <td>
-            <user-management-update-role
-              :id="user.id"
-              :username="user.username"
-              :role="user.role"
-              @update="loadPage(currentPage)"
-            />
-          </td>
         </tr>
       </tbody>
     </n-table>

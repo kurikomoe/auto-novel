@@ -8,6 +8,8 @@ export * from './ReadHistoryApi';
 export * from './WebNovelApi';
 export * from './WenkuNovelApi';
 
+export * from './AuthAdminApi';
+
 export const formatError = (error: unknown) => {
   if (error instanceof HTTPError) {
     let messageOverride: string | null = null;
