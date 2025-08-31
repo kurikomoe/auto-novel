@@ -4,6 +4,7 @@ import { useKeyModifier } from '@vueuse/core';
 import { Locator } from '@/data';
 import { TranslateTaskDescriptor } from '@/model/Translator';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
+import { useFavoredStore } from '@/stores';
 
 const props = defineProps<{
   selectedNovels: WebNovelOutlineDto[];
@@ -17,8 +18,9 @@ defineEmits<{
 const message = useMessage();
 
 const { setting } = Locator.settingRepository();
-const favoredRepository = Locator.favoredRepository();
-const { favoreds } = favoredRepository;
+
+const favoredStore = useFavoredStore();
+const { favoreds } = storeToRefs(favoredStore);
 
 // 删除小说
 const showDeleteModal = ref(false);
@@ -37,7 +39,7 @@ const deleteSelected = async () => {
   let failed = 0;
   for (const { providerId, novelId } of novels) {
     try {
-      await favoredRepository.unfavoriteNovel(props.favoredId, {
+      await favoredStore.unfavoriteNovel(props.favoredId, {
         type: 'web',
         providerId,
         novelId,
@@ -69,7 +71,7 @@ const moveToFavored = async () => {
   let failed = 0;
   for (const { providerId, novelId } of novels) {
     try {
-      await favoredRepository.unfavoriteNovel(targetFavoredId.value, {
+      await favoredStore.unfavoriteNovel(targetFavoredId.value, {
         type: 'web',
 
         providerId,
@@ -174,7 +176,7 @@ const queueJobs = (type: 'gpt' | 'sakura') => {
           </c-modal>
         </n-flex>
 
-        <n-text depth="3"> 已选择{{ selectedNovels.length }}本小说 </n-text>
+        <n-text depth="3">已选择{{ selectedNovels.length }}本小说</n-text>
       </n-flex>
     </n-list-item>
 
@@ -235,9 +237,12 @@ const queueJobs = (type: 'gpt' | 'sakura') => {
                 />
               </n-flex>
             </template>
-            常规：只翻译未翻译的章节<br />
-            过期：翻译术语表过期的章节<br />
-            重翻：重翻全部章节<br />
+            常规：只翻译未翻译的章节
+            <br />
+            过期：翻译术语表过期的章节
+            <br />
+            重翻：重翻全部章节
+            <br />
           </n-tooltip>
 
           <tag-button label="重翻目录" v-model:checked="forceMetadata" />
@@ -249,7 +254,7 @@ const queueJobs = (type: 'gpt' | 'sakura') => {
             type="warning"
             style="font-size: 12px; flex-basis: 100%"
           >
-            <b> * 请确保你知道自己在干啥，不要随便使用危险功能 </b>
+            <b>* 请确保你知道自己在干啥，不要随便使用危险功能</b>
           </n-text>
         </n-flex>
 

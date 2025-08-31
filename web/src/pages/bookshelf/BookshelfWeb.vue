@@ -4,7 +4,7 @@ import { ChecklistOutlined } from '@vicons/material';
 import { Locator } from '@/data';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
 import { useIsWideScreen } from '@/pages/util';
-import { useWebSearchHistoryStore } from '@/stores';
+import { useFavoredStore, useWebSearchHistoryStore } from '@/stores';
 import { runCatching } from '@/util/result';
 import NovelListWeb from '../list/components/NovelListWeb.vue';
 import { Loader } from '../list/components/NovelPage.vue';
@@ -88,7 +88,7 @@ const loader = computed<Loader<WebNovelOutlineDto>>(() => {
       }
     };
     return runCatching(
-      Locator.favoredRepository()
+      useFavoredStore()
         .listFavoredWebNovel(favoredId, {
           page,
           pageSize: 30,

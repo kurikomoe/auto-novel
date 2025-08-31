@@ -1,9 +1,13 @@
 <script lang="ts" setup>
 import { PlusOutlined } from '@vicons/material';
 
-import { Locator, WenkuNovelApi } from '@/data';
+import { WenkuNovelApi } from '@/data';
 import { WenkuNovelOutlineDto } from '@/model/WenkuNovel';
-import { useWenkuSearchHistoryStore, useWhoamiStore } from '@/stores';
+import {
+  useFavoredStore,
+  useWenkuSearchHistoryStore,
+  useWhoamiStore,
+} from '@/stores';
 import { runCatching } from '@/util/result';
 
 import { Loader } from './components/NovelPage.vue';
@@ -28,8 +32,9 @@ const options = [
   },
 ];
 
-const favoredRepository = Locator.favoredRepository();
-onMounted(() => favoredRepository.loadRemoteFavoreds());
+const favoredStore = useFavoredStore();
+const { favoreds } = storeToRefs(favoredStore);
+onMounted(() => favoredStore.loadRemoteFavoreds());
 
 const loader: Loader<WenkuNovelOutlineDto> = (page, query, selected) => {
   if (query !== '') {
@@ -46,9 +51,7 @@ const loader: Loader<WenkuNovelOutlineDto> = (page, query, selected) => {
       query,
       level,
     }).then((page) => {
-      const favoredIds = favoredRepository.favoreds.value.wenku.map(
-        (it) => it.id,
-      );
+      const favoredIds = favoreds.value.wenku.map((it) => it.id);
       for (const item of page.items) {
         if (item.favored && !favoredIds.includes(item.favored)) {
           item.favored = undefined;

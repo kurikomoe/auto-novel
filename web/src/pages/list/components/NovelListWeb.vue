@@ -3,11 +3,12 @@ import { StarFilled } from '@vicons/material';
 import { createReusableTemplate } from '@vueuse/core';
 
 import { WebNovelOutlineDto } from '@/model/WebNovel';
+import { useFavoredStore } from '@/stores';
 import { WebUtil } from '@/util/web';
 
-import { Locator } from '@/data';
-const favoredRepository = Locator.favoredRepository();
-const { favoreds } = favoredRepository;
+const favoredStore = useFavoredStore();
+const { favoreds } = storeToRefs(favoredStore);
+
 const favoredTitleMap = computed(() => {
   if (!favoreds.value?.web) {
     return new Map<string, string>();

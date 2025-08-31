@@ -2,9 +2,8 @@
 import { MoreVertOutlined } from '@vicons/material';
 import { FormInst, FormItemRule, FormRules } from 'naive-ui';
 
-import { Locator } from '@/data';
-
 import { doAction } from '@/pages/util';
+import { useFavoredStore } from '@/stores';
 import { useBookshelfLocalStore } from '../BookshelfLocalStore';
 
 const { id, type, title } = defineProps<{
@@ -13,7 +12,6 @@ const { id, type, title } = defineProps<{
   type: 'web' | 'wenku' | 'local';
 }>();
 
-const favoredRepository = Locator.favoredRepository();
 const store = useBookshelfLocalStore();
 
 const message = useMessage();
@@ -67,9 +65,11 @@ const updateFavored = async () => {
   const title = formValue.value.title;
 
   await doAction(
-    favoredRepository.updateFavored(type, id, title).then(() => {
-      showEditModal.value = false;
-    }),
+    useFavoredStore()
+      .updateFavored(type, id, title)
+      .then(() => {
+        showEditModal.value = false;
+      }),
     '收藏夹更新',
     message,
   );
@@ -90,7 +90,7 @@ const showDeleteModal = ref(false);
 const deleteFavored = () =>
   doAction(
     deleteFavoredNovels()
-      .then(() => favoredRepository.deleteFavored(type, id))
+      .then(() => useFavoredStore().deleteFavored(type, id))
       .then(() => (showDeleteModal.value = false)),
     '收藏夹删除',
     message,

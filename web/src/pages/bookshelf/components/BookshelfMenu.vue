@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import { MenuOption } from 'naive-ui';
 
-import { Locator } from '@/data';
-import { useWhoamiStore } from '@/stores';
-
+import { useFavoredStore, useWhoamiStore } from '@/stores';
 import BookshelfMenuItem from './BookshelfMenuItem.vue';
 
 const message = useMessage();
@@ -11,13 +9,13 @@ const message = useMessage();
 const whoamiStore = useWhoamiStore();
 const { whoami } = storeToRefs(whoamiStore);
 
-const favoredRepository = Locator.favoredRepository();
-const favoreds = favoredRepository.favoreds;
+const favoredStore = useFavoredStore();
+const { favoreds } = storeToRefs(favoredStore);
 
 onMounted(async () => {
   if (whoami.value.isSignedIn) {
     try {
-      await favoredRepository.loadRemoteFavoreds();
+      await favoredStore.loadRemoteFavoreds();
     } catch (e) {
       message.error(`获取收藏列表失败：${e}`);
     }

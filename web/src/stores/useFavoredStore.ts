@@ -1,12 +1,16 @@
 import { v4 as uuidv4 } from 'uuid';
 
+import { Favored, FavoredApi } from '@/data/api/FavoredApi';
 import { useLocalStorage } from '@/util';
+import { LSKey } from './key';
 
-import { FavoredList } from './Favored';
-import { FavoredApi } from './FavoredApi';
-import { LSKey } from '../LocalStorage';
+interface FavoredList {
+  web: Favored[];
+  wenku: Favored[];
+  local: Favored[];
+}
 
-export const createFavoredRepository = () => {
+export const useFavoredStore = defineStore(LSKey.Favored, () => {
   const favoreds = useLocalStorage<FavoredList>(LSKey.Favored, {
     web: [{ id: 'default', title: '默认收藏夹' }],
     wenku: [{ id: 'default', title: '默认收藏夹' }],
@@ -116,4 +120,4 @@ export const createFavoredRepository = () => {
     favoriteNovel,
     unfavoriteNovel,
   };
-};
+});

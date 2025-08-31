@@ -1,9 +1,12 @@
+import { client } from '@/data/api/client';
 import { Page } from '@/model/Page';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
 import { WenkuNovelOutlineDto } from '@/model/WenkuNovel';
 
-import { client } from '@/data/api/client';
-import { Favored } from './Favored';
+export interface Favored {
+  id: string;
+  title: string;
+}
 
 interface FavoredList {
   favoredWeb: Favored[];

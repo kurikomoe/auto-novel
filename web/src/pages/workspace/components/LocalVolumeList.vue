@@ -4,11 +4,11 @@ import { FileDownloadOutlined, MoreVertOutlined } from '@vicons/material';
 import { Locator } from '@/data';
 import { Setting } from '@/data/setting/Setting';
 import { LocalVolumeMetadata } from '@/model/LocalVolume';
-
 import {
   BookshelfLocalUtil,
   useBookshelfLocalStore,
 } from '@/pages/bookshelf/BookshelfLocalStore';
+import { useFavoredStore } from '@/stores';
 
 const props = defineProps<{
   options?: { [key: string]: (volumes: LocalVolumeMetadata[]) => void };
@@ -76,8 +76,9 @@ const search = reactive({
   enableRegexMode: false,
 });
 
-const favoredRepository = Locator.favoredRepository();
-const favoreds = favoredRepository.favoreds;
+const favoredStore = useFavoredStore();
+const { favoreds } = storeToRefs(favoredStore);
+
 const selectedFavored = ref<string | undefined>(favoreds.value.local[0]?.id);
 const favoredsOptions = computed(() => {
   return favoreds.value.local.map(({ id, title }) => ({

@@ -7,13 +7,12 @@ import {
   StarBorderOutlined,
 } from '@vicons/material';
 
-import { Locator } from '@/data';
 import { WebNovelApi, WenkuNovelApi } from '@/data/api';
 import bannerUrl from '@/image/banner.webp';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
 import { WenkuNovelOutlineDto } from '@/model/WenkuNovel';
 import { useBreakPoints } from '@/pages/util';
-import { useWhoamiStore } from '@/stores';
+import { useFavoredStore, useWhoamiStore } from '@/stores';
 import { Result, runCatching } from '@/util/result';
 import { WebUtil } from '@/util/web';
 
@@ -41,7 +40,7 @@ const query = (url: string) => {
 const favoriteList = ref<Result<WebNovelOutlineDto[]>>();
 const loadFavorite = async () => {
   favoriteList.value = await runCatching(
-    Locator.favoredRepository()
+    useFavoredStore()
       .listFavoredWebNovel('default', {
         page: 0,
         pageSize: 8,

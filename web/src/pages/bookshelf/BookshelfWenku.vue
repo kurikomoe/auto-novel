@@ -3,9 +3,9 @@ import { ChecklistOutlined } from '@vicons/material';
 
 import { Locator } from '@/data';
 import { WenkuNovelOutlineDto } from '@/model/WenkuNovel';
-import { runCatching } from '@/util/result';
-
 import { useIsWideScreen } from '@/pages/util';
+import { useFavoredStore } from '@/stores';
+import { runCatching } from '@/util/result';
 import NovelListWenku from '../list/components/NovelListWenku.vue';
 import { Loader } from '../list/components/NovelPage.vue';
 
@@ -43,7 +43,7 @@ const loader = computed<Loader<WenkuNovelOutlineDto>>(() => {
       }
     };
     return runCatching(
-      Locator.favoredRepository()
+      useFavoredStore()
         .listFavoredWenkuNovel(favoredId, {
           page,
           pageSize: 24,

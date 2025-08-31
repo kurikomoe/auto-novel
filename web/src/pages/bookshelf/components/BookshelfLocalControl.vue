@@ -3,8 +3,8 @@ import { useKeyModifier } from '@vueuse/core';
 
 import { Locator } from '@/data';
 import { Setting } from '@/data/setting/Setting';
-
 import { useIsWideScreen } from '@/pages/util';
+import { useFavoredStore } from '@/stores';
 import { useBookshelfLocalStore } from '../BookshelfLocalStore';
 
 const props = defineProps<{
@@ -65,7 +65,8 @@ const downloadRawSelected = async () => {
 };
 
 // 移动小说
-const { favoreds } = Locator.favoredRepository();
+const favoredStore = useFavoredStore();
+const { favoreds } = storeToRefs(favoredStore);
 
 const targetFavoredId = ref(props.favoredId);
 
@@ -183,7 +184,7 @@ const queueJobs = (type: 'gpt' | 'sakura') => {
           </c-modal>
         </n-flex>
 
-        <n-text depth="3"> 已选择{{ selectedIds.length }}本小说 </n-text>
+        <n-text depth="3">已选择{{ selectedIds.length }}本小说</n-text>
       </n-flex>
     </n-list-item>
 
@@ -240,8 +241,10 @@ const queueJobs = (type: 'gpt' | 'sakura') => {
                   />
                 </n-flex>
               </template>
-              过期：翻译术语表过期的章节<br />
-              重翻：重翻全部章节<br />
+              过期：翻译术语表过期的章节
+              <br />
+              重翻：重翻全部章节
+              <br />
             </n-tooltip>
 
             <tag-button label="倒序添加" v-model:checked="reverseOrder" />

@@ -1,8 +1,11 @@
 <script lang="ts" setup>
-import { Locator } from '@/data';
 import { WebNovelApi } from '@/data/api';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
-import { useWebSearchHistoryStore, useWhoamiStore } from '@/stores';
+import {
+  useFavoredStore,
+  useWebSearchHistoryStore,
+  useWhoamiStore,
+} from '@/stores';
 import { runCatching } from '@/util/result';
 import { Loader } from './components/NovelPage.vue';
 
@@ -52,8 +55,9 @@ const options = [
   },
 ];
 
-const favoredRepository = Locator.favoredRepository();
-onMounted(() => favoredRepository.loadRemoteFavoreds());
+const favoredStore = useFavoredStore();
+const { favoreds } = storeToRefs(favoredStore);
+onMounted(() => favoredStore.loadRemoteFavoreds());
 
 const loader: Loader<WebNovelOutlineDto> = (page, query, selected) => {
   if (query !== '') {
@@ -93,9 +97,7 @@ const loader: Loader<WebNovelOutlineDto> = (page, query, selected) => {
             sort: selected[3],
           }),
     }).then((page) => {
-      const favoredIds = favoredRepository.favoreds.value.web.map(
-        (it) => it.id,
-      );
+      const favoredIds = favoreds.value.web.map((it) => it.id);
       for (const item of page.items) {
         if (item.favored && !favoredIds.includes(item.favored)) {
           item.favored = undefined;
