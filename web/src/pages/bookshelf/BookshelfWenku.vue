@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import { ChecklistOutlined } from '@vicons/material';
 
-import { Locator } from '@/data';
 import { WenkuNovelOutlineDto } from '@/model/WenkuNovel';
 import { useIsWideScreen } from '@/pages/util';
-import { useFavoredStore } from '@/stores';
+import { useFavoredStore, useSettingStore } from '@/stores';
 import { runCatching } from '@/util/result';
 import NovelListWenku from '../list/components/NovelListWenku.vue';
 import { Loader } from '../list/components/NovelPage.vue';
@@ -17,7 +16,8 @@ const props = defineProps<{
 
 const isWideScreen = useIsWideScreen();
 
-const { setting } = Locator.settingRepository();
+const settingStore = useSettingStore();
+const { setting } = storeToRefs(settingStore);
 
 const options = computed(() => {
   return [

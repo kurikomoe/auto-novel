@@ -3,14 +3,13 @@ import { DeleteOutlineOutlined } from '@vicons/material';
 import { useKeyModifier } from '@vueuse/core';
 
 import { Locator } from '@/data';
-import { Setting } from '@/data/setting/Setting';
 import { GenericNovelId } from '@/model/Common';
 import { LocalVolumeMetadata } from '@/model/LocalVolume';
-import { downloadFile } from '@/util';
-
 import { useBookshelfLocalStore } from '@/pages/bookshelf/BookshelfLocalStore';
-import { doAction } from '@/pages/util';
 import TranslateOptions from '@/pages/novel/components/TranslateOptions.vue';
+import { doAction } from '@/pages/util';
+import { Setting, useSettingStore } from '@/stores';
+import { downloadFile } from '@/util';
 
 const translateOptions = ref<InstanceType<typeof TranslateOptions>>();
 
@@ -20,7 +19,8 @@ const props = defineProps<{
 
 const message = useMessage();
 
-const { setting } = Locator.settingRepository();
+const settingStore = useSettingStore();
+const { setting } = storeToRefs(settingStore);
 
 const store = useBookshelfLocalStore();
 

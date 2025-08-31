@@ -1,7 +1,6 @@
-import { Locator } from '@/data';
 import { GenericNovelId } from '@/model/Common';
 import { TranslatorId } from '@/model/Translator';
-
+import { useReaderSettingStore, useSettingStore } from '@/stores';
 import { ReaderChapter } from '../ReaderStore';
 
 export type ReaderParagraph =
@@ -19,8 +18,8 @@ export const buildParagraphs = (
   gnid: GenericNovelId,
   chapter: ReaderChapter,
 ): ReaderParagraph[] => {
-  const cc = Locator.settingRepository().cc.value;
-  const setting = Locator.readerSettingRepository().setting.value;
+  const cc = useSettingStore().cc;
+  const setting = useReaderSettingStore().readerSetting;
 
   const merged: ReaderParagraph[] = [];
   const styles: {

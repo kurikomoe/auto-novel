@@ -2,10 +2,6 @@ import { createGlobalState } from '@vueuse/core';
 import { createCachedSegRepository } from './CachedSegRepository';
 import { createLocalVolumeRepository } from './local';
 import {
-  createReaderSettingRepository,
-  createSettingRepository,
-} from './setting/SettingRepository';
-import {
   createGptWorkspaceRepository,
   createReadPositionRepository,
   createRuleViewedRepository,
@@ -50,8 +46,6 @@ export const Locator = {
   //
   ruleViewedRepository: lazy(createRuleViewedRepository),
   readPositionRepository: lazy(createReadPositionRepository),
-  settingRepository: lazy(createSettingRepository),
-  readerSettingRepository: lazy(createReaderSettingRepository),
   gptWorkspaceRepository: lazy(createGptWorkspaceRepository),
   sakuraWorkspaceRepository: lazy(createSakuraWorkspaceRepository),
   //

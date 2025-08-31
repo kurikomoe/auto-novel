@@ -18,9 +18,8 @@ import {
 import { MenuOption, NButton, NIcon, NText, NTime, useOsTheme } from 'naive-ui';
 import { RouterLink } from 'vue-router';
 
-import { Locator } from '@/data';
 import { useBreakPoints } from '@/pages/util';
-import { useWhoamiStore } from '@/stores';
+import { useSettingStore, useWhoamiStore } from '@/stores';
 
 const bp = useBreakPoints();
 const hasSider = bp.greater('tablet');
@@ -34,7 +33,9 @@ const route = useRoute();
 const whoamiStore = useWhoamiStore();
 const { whoami } = storeToRefs(whoamiStore);
 
-const { setting } = Locator.settingRepository();
+const settingStore = useSettingStore();
+const { setting } = storeToRefs(settingStore);
+
 const menuCollapsed = computed(() => {
   if (menuShowTrigger.value) {
     return setting.value.menuCollapsed;

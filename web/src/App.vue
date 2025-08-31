@@ -1,29 +1,25 @@
 <script lang="ts" setup>
 import { darkTheme, dateZhCN, useOsTheme, zhCN } from 'naive-ui';
 
-import { Locator } from '@/data';
-import { RegexUtil, useOpenCC } from '@/util';
-import { useWhoamiStore } from './stores';
+import {
+  useReaderSettingStore,
+  useSettingStore,
+  useWhoamiStore,
+} from '@/stores';
+import { RegexUtil } from '@/util';
 
 // 激活权限
 useWhoamiStore();
 
-const settingRepository = Locator.settingRepository();
+const settingStore = useSettingStore();
+const { setting } = storeToRefs(settingStore);
 
-watch(
-  () => settingRepository.setting.value.locale,
-  async (locale) => {
-    settingRepository.cc.value = await useOpenCC(locale);
-  },
-  { immediate: true },
-);
+const readerSettingStore = useReaderSettingStore();
+const { readerSetting } = storeToRefs(readerSettingStore);
 
 // 主题
 const route = useRoute();
 const osThemeRef = useOsTheme();
-
-const setting = settingRepository.setting;
-const { setting: readerSetting } = Locator.readerSettingRepository();
 
 const isDarkColor = (color: string) => {
   const r = parseInt(color.substring(1, 3), 16);

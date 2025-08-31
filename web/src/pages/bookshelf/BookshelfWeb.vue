@@ -1,10 +1,13 @@
 <script lang="ts" setup>
 import { ChecklistOutlined } from '@vicons/material';
 
-import { Locator } from '@/data';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
 import { useIsWideScreen } from '@/pages/util';
-import { useFavoredStore, useWebSearchHistoryStore } from '@/stores';
+import {
+  useFavoredStore,
+  useSettingStore,
+  useWebSearchHistoryStore,
+} from '@/stores';
 import { runCatching } from '@/util/result';
 import NovelListWeb from '../list/components/NovelListWeb.vue';
 import { Loader } from '../list/components/NovelPage.vue';
@@ -20,7 +23,8 @@ const route = useRoute();
 
 const isWideScreen = useIsWideScreen();
 
-const { setting } = Locator.settingRepository();
+const settingStore = useSettingStore();
+const { setting } = storeToRefs(settingStore);
 
 const options = computed(() => [
   {

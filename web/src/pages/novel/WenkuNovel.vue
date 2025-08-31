@@ -2,12 +2,10 @@
 import { EditNoteOutlined, LanguageOutlined } from '@vicons/material';
 import { createReusableTemplate } from '@vueuse/core';
 
-import { Locator } from '@/data';
 import coverPlaceholder from '@/image/cover_placeholder.png';
 import { GenericNovelId } from '@/model/Common';
 import { doAction, useIsWideScreen } from '@/pages/util';
-import { useWenkuNovelStore, useWhoamiStore } from '@/stores';
-
+import { useSettingStore, useWenkuNovelStore, useWhoamiStore } from '@/stores';
 import TranslateOptions from './components/TranslateOptions.vue';
 
 const { novelId } = defineProps<{ novelId: string }>();
@@ -21,7 +19,8 @@ const isWideScreen = useIsWideScreen(600);
 const message = useMessage();
 const vars = useThemeVars();
 
-const { setting } = Locator.settingRepository();
+const settingStore = useSettingStore();
+const { setting } = storeToRefs(settingStore);
 
 const whoamiStore = useWhoamiStore();
 const { whoami } = storeToRefs(whoamiStore);

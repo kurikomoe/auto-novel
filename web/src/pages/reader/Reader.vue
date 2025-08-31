@@ -4,11 +4,14 @@ import { createReusableTemplate, onKeyDown } from '@vueuse/core';
 import { Locator } from '@/data';
 import { GenericNovelId } from '@/model/Common';
 import { TranslatorId } from '@/model/Translator';
-import { useReadHistoryStore, useWhoamiStore } from '@/stores';
+import { checkIsMobile, useIsWideScreen } from '@/pages/util';
+import {
+  useReaderSettingStore,
+  useReadHistoryStore,
+  useWhoamiStore,
+} from '@/stores';
 import { Result } from '@/util/result';
 import { WebUtil } from '@/util/web';
-
-import { checkIsMobile, useIsWideScreen } from '@/pages/util';
 import { ReaderChapter, useReaderStore } from './ReaderStore';
 
 const [DefineChapterLink, ReuseChapterLink] = createReusableTemplate<{
@@ -24,7 +27,8 @@ const isMobile = checkIsMobile();
 const whoamiStore = useWhoamiStore();
 const { whoami } = storeToRefs(whoamiStore);
 
-const { setting } = Locator.readerSettingRepository();
+const readerSettingStore = useReaderSettingStore();
+const { readerSetting } = storeToRefs(readerSettingStore);
 
 const gnid = ((): GenericNovelId => {
   const path = route.path;
@@ -154,8 +158,7 @@ onKeyDown(['1', '2', '3', '4'], (e) => {
   if (e.altKey || e.ctrlKey || e.shiftKey || e.metaKey) {
     return;
   }
-  const setting = Locator.readerSettingRepository().setting.value;
-
+  const setting = readerSetting.value;
   const translatorIds = <TranslatorId[]>['baidu', 'youdao', 'gpt', 'sakura'];
   const translatorId = translatorIds[parseInt(e.key, 10) - 1];
   if (setting.translationsMode === 'parallel') {
@@ -284,7 +287,7 @@ onKeyDown(['Enter'], (e) => {
 
 <style scoped>
 .content {
-  max-width: v-bind('`${setting.pageWidth}px`');
+  max-width: v-bind('`${readerSetting.pageWidth}px`');
   margin: 0 auto;
   padding-left: v-bind("isMobile? '12px' : '24px'");
   padding-right: v-bind("isMobile? '12px' : '84px'");

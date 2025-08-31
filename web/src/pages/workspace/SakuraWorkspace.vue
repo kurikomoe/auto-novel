@@ -12,10 +12,12 @@ import { TranslateJob } from '@/model/Translator';
 import SoundAllTaskCompleted from '@/sound/all_task_completed.mp3';
 
 import { doAction } from '@/pages/util';
+import { useSettingStore } from '@/stores';
 
 const message = useMessage();
 
-const { setting } = Locator.settingRepository();
+const settingStore = useSettingStore();
+const { setting } = storeToRefs(settingStore);
 
 const workspace = Locator.sakuraWorkspaceRepository();
 const workspaceRef = workspace.ref;

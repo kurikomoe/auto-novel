@@ -1,4 +1,6 @@
-import { TranslatorId } from '../../model/Translator';
+import { TranslatorId } from '@/model/Translator';
+import { defaultConverter, useLocalStorage, useOpenCC } from '@/util';
+import { LSKey } from './key';
 
 export interface Setting {
   theme: 'light' | 'dark' | 'system';
@@ -261,3 +263,29 @@ export namespace ReaderSetting {
     { bodyColor: '#272727', fontColor: '#FFFFFF' },
   ];
 }
+
+export const useSettingStore = defineStore(LSKey.Setting, () => {
+  const setting = useLocalStorage<Setting>(LSKey.Setting, Setting.defaultValue);
+  Setting.migrate(setting.value);
+
+  const cc = ref(defaultConverter);
+
+  watch(
+    () => setting.value.locale,
+    async (locale) => {
+      cc.value = await useOpenCC(locale);
+    },
+    { immediate: true },
+  );
+
+  return { setting, cc };
+});
+
+export const useReaderSettingStore = defineStore(LSKey.SettingReader, () => {
+  const readerSetting = useLocalStorage<ReaderSetting>(
+    LSKey.SettingReader,
+    ReaderSetting.defaultValue,
+  );
+  ReaderSetting.migrate(readerSetting.value);
+  return { readerSetting };
+});

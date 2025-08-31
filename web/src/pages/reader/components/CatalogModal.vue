@@ -11,7 +11,7 @@ import { GenericNovelId } from '@/model/Common';
 import { ReadableTocItem } from '@/pages/novel/components/common';
 import { useTocExpansion } from '@/pages/novel/components/UseTocExpansion';
 import { useIsWideScreen } from '@/pages/util';
-import { useWebNovelStore } from '@/stores';
+import { useSettingStore, useWebNovelStore } from '@/stores';
 import { Ok, Result, runCatching } from '@/util/result';
 
 const props = defineProps<{
@@ -38,7 +38,9 @@ const tocNumber = computed(() => {
   return tocData.value?.filter((it) => it.chapterId !== undefined).length;
 });
 
-const { setting } = Locator.settingRepository();
+const settingStore = useSettingStore();
+const { setting } = storeToRefs(settingStore);
+
 const sortReverse = computed(() => setting.value.tocSortReverse);
 
 const isWideScreen = useIsWideScreen();

@@ -9,7 +9,8 @@ import {
   TranslateTaskParams,
 } from '@/model/Translator';
 import { VolumeJpDto } from '@/model/WenkuNovel';
-import { useWhoamiStore } from '@/stores';
+import { useSettingStore, useWhoamiStore } from '@/stores';
+
 const { novelId, volume, getParams } = defineProps<{
   novelId: string;
   volume: VolumeJpDto;
@@ -22,7 +23,8 @@ const emit = defineEmits<{
 
 const message = useMessage();
 
-const { setting } = Locator.settingRepository();
+const settingStore = useSettingStore();
+const { setting } = storeToRefs(settingStore);
 
 const whoamiStore = useWhoamiStore();
 const { whoami } = storeToRefs(whoamiStore);

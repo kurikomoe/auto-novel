@@ -1,16 +1,17 @@
 <script lang="ts" setup>
-import { Locator } from '@/data';
-import { ReaderSetting } from '@/data/setting/Setting';
 import { checkIsMobile, useIsWideScreen } from '@/pages/util';
+import { ReaderSetting, useReaderSettingStore } from '@/stores';
 
 const isMobile = checkIsMobile();
 const isWideScreen = useIsWideScreen(600);
-const { setting } = Locator.readerSettingRepository();
+
+const readerSettingStore = useReaderSettingStore();
+const { readerSetting } = storeToRefs(readerSettingStore);
 
 const setCustomBodyColor = (color: string) =>
-  (setting.value.theme.bodyColor = color);
+  (readerSetting.value.theme.bodyColor = color);
 const setCustomFontColor = (color: string) =>
-  (setting.value.theme.fontColor = color);
+  (readerSetting.value.theme.fontColor = color);
 </script>
 
 <template>
@@ -27,7 +28,7 @@ const setCustomFontColor = (color: string) =>
         <n-flex vertical size="large" style="width: 100%; padding: 20px">
           <c-action-wrapper title="语言">
             <c-radio-group
-              v-model:value="setting.mode"
+              v-model:value="readerSetting.mode"
               :options="ReaderSetting.modeOptions"
             />
           </c-action-wrapper>
@@ -35,11 +36,11 @@ const setCustomFontColor = (color: string) =>
           <c-action-wrapper title="翻译">
             <n-flex size="large">
               <c-radio-group
-                v-model:value="setting.translationsMode"
+                v-model:value="readerSetting.translationsMode"
                 :options="ReaderSetting.translationModeOptions"
               />
               <translator-check
-                v-model:value="setting.translations"
+                v-model:value="readerSetting.translations"
                 show-order
                 :two-line="!isWideScreen"
               />
@@ -48,29 +49,35 @@ const setCustomFontColor = (color: string) =>
 
           <c-action-wrapper v-if="isMobile" title="点按区域">
             <c-radio-group
-              v-model:value="setting.clickArea"
+              v-model:value="readerSetting.clickArea"
               :options="ReaderSetting.clickAreaOptions"
             />
           </c-action-wrapper>
 
           <c-action-wrapper title="朗读语言">
             <c-radio-group
-              :value="setting.speakLanguages[0]"
-              @update-value="(it: any) => (setting.speakLanguages = [it])"
+              :value="readerSetting.speakLanguages[0]"
+              @update-value="(it: any) => (readerSetting.speakLanguages = [it])"
               :options="ReaderSetting.speakLanguagesOptions"
             />
           </c-action-wrapper>
           <c-action-wrapper v-if="isMobile" title="点按动画" align="center">
             <n-switch
-              v-model:value="setting.enableClickAnimition"
+              v-model:value="readerSetting.enableClickAnimition"
               size="small"
             />
           </c-action-wrapper>
           <c-action-wrapper title="显示翻译来源" align="center">
-            <n-switch v-model:value="setting.enableSourceLabel" size="small" />
+            <n-switch
+              v-model:value="readerSetting.enableSourceLabel"
+              size="small"
+            />
           </c-action-wrapper>
           <c-action-wrapper title="去除缩进" align="center">
-            <n-switch v-model:value="setting.trimLeadingSpaces" size="small" />
+            <n-switch
+              v-model:value="readerSetting.trimLeadingSpaces"
+              size="small"
+            />
           </c-action-wrapper>
 
           <n-text depth="3" style="font-size: 12px">
@@ -83,25 +90,25 @@ const setCustomFontColor = (color: string) =>
         <n-flex vertical size="large" style="width: 100%; padding: 20px">
           <c-action-wrapper title="字重">
             <c-radio-group
-              v-model:value="setting.fontWeight"
+              v-model:value="readerSetting.fontWeight"
               :options="ReaderSetting.fontWeightOptions"
             />
           </c-action-wrapper>
 
           <c-action-wrapper title="字号" align="center">
             <n-slider
-              v-model:value="setting.fontSize"
+              v-model:value="readerSetting.fontSize"
               :min="14"
               :max="40"
               style="flex: auto"
               :format-tooltip="(value: number) => `${value}px`"
             />
-            <n-text style="width: 6em">{{ setting.fontSize }}px</n-text>
+            <n-text style="width: 6em">{{ readerSetting.fontSize }}px</n-text>
           </c-action-wrapper>
 
           <c-action-wrapper title="行距" align="center">
             <n-slider
-              v-model:value="setting.lineSpace"
+              v-model:value="readerSetting.lineSpace"
               :step="0.1"
               :min="0"
               :max="2"
@@ -109,25 +116,25 @@ const setCustomFontColor = (color: string) =>
               :format-tooltip="(value: number) => value.toFixed(1)"
             />
             <n-text style="width: 6em">
-              {{ setting.lineSpace.toFixed(1) }}
+              {{ readerSetting.lineSpace.toFixed(1) }}
             </n-text>
           </c-action-wrapper>
 
           <c-action-wrapper title="页宽" align="center">
             <n-slider
-              v-model:value="setting.pageWidth"
+              v-model:value="readerSetting.pageWidth"
               :step="50"
               :min="600"
               :max="1200"
               style="flex: auto"
               :format-tooltip="(value: number) => `${value}px`"
             />
-            <n-text style="width: 6em">{{ setting.pageWidth }}px</n-text>
+            <n-text style="width: 6em">{{ readerSetting.pageWidth }}px</n-text>
           </c-action-wrapper>
 
           <c-action-wrapper title="下划线">
             <c-radio-group
-              v-model:value="setting.textUnderline"
+              v-model:value="readerSetting.textUnderline"
               :options="ReaderSetting.textUnderlineOptions"
             />
           </c-action-wrapper>
@@ -135,17 +142,17 @@ const setCustomFontColor = (color: string) =>
           <c-action-wrapper title="主题">
             <n-flex size="large" vertical>
               <c-radio-group
-                v-model:value="setting.theme.mode"
+                v-model:value="readerSetting.theme.mode"
                 :options="ReaderSetting.themeModeOptions"
               />
-              <template v-if="setting.theme.mode === 'custom'">
+              <template v-if="readerSetting.theme.mode === 'custom'">
                 <n-flex>
                   <n-radio
                     v-for="theme of ReaderSetting.themeOptions"
                     :key="theme.bodyColor"
-                    :checked="theme.bodyColor == setting.theme.bodyColor"
+                    :checked="theme.bodyColor == readerSetting.theme.bodyColor"
                     @update:checked="
-                      setting.theme = { mode: 'custom', ...theme }
+                      readerSetting.theme = { mode: 'custom', ...theme }
                     "
                   >
                     <n-tag
@@ -166,7 +173,7 @@ const setCustomFontColor = (color: string) =>
                   <n-color-picker
                     :modes="['hex']"
                     :show-alpha="false"
-                    :default-value="setting.theme.bodyColor"
+                    :default-value="readerSetting.theme.bodyColor"
                     :on-complete="setCustomBodyColor"
                     style="width: 8.2em"
                   >
@@ -175,7 +182,7 @@ const setCustomFontColor = (color: string) =>
                   <n-color-picker
                     :modes="['hex']"
                     :show-alpha="false"
-                    :default-value="setting.theme.fontColor"
+                    :default-value="readerSetting.theme.fontColor"
                     :on-complete="setCustomFontColor"
                     style="width: 8.2em"
                   >
@@ -188,7 +195,7 @@ const setCustomFontColor = (color: string) =>
 
           <c-action-wrapper title="主透明度" align="center">
             <n-slider
-              v-model:value="setting.mixZhOpacity"
+              v-model:value="readerSetting.mixZhOpacity"
               :max="1"
               :min="0"
               :step="0.05"
@@ -198,13 +205,13 @@ const setCustomFontColor = (color: string) =>
               style="flex: auto"
             />
             <n-text style="width: 6em">
-              {{ (setting.mixZhOpacity * 100).toFixed(0) }}%
+              {{ (readerSetting.mixZhOpacity * 100).toFixed(0) }}%
             </n-text>
           </c-action-wrapper>
 
           <c-action-wrapper title="辅透明度" align="center">
             <n-slider
-              v-model:value="setting.mixJpOpacity"
+              v-model:value="readerSetting.mixJpOpacity"
               :max="1"
               :min="0"
               :step="0.05"
@@ -213,7 +220,7 @@ const setCustomFontColor = (color: string) =>
               "
             />
             <n-text style="width: 6em">
-              {{ (setting.mixJpOpacity * 100).toFixed(0) }}%
+              {{ (readerSetting.mixJpOpacity * 100).toFixed(0) }}%
             </n-text>
           </c-action-wrapper>
         </n-flex>

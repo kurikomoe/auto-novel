@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { Locator } from '@/data';
-import { Setting } from '@/data/setting/Setting';
-
+import { Setting, useSettingStore } from '@/stores';
 import {
   BookshelfLocalUtil,
   useBookshelfLocalStore,
@@ -12,7 +10,8 @@ const props = defineProps<{
   favoredId: string;
 }>();
 
-const { setting } = Locator.settingRepository();
+const settingStore = useSettingStore();
+const { setting } = storeToRefs(settingStore);
 
 const store = useBookshelfLocalStore();
 const { volumes } = storeToRefs(store);

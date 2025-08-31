@@ -1,6 +1,7 @@
 import { Locator } from '@/data';
 import { LocalVolumeMetadata } from '@/model/LocalVolume';
 import { TranslateTaskDescriptor } from '@/model/Translator';
+import { useSettingStore } from '@/stores';
 import { downloadFile, querySearch } from '@/util';
 
 type BookshelfLocalStore = {
@@ -46,7 +47,9 @@ export const useBookshelfLocalStore = defineStore('BookshelfLocal', {
       return { success: ids.length - failed, failed };
     },
     async downloadVolumes(ids: string[]) {
-      const { setting } = Locator.settingRepository();
+      const settingStore = useSettingStore();
+      const { setting } = storeToRefs(settingStore);
+
       const { mode, translationsMode, translations } =
         setting.value.downloadFormat;
 

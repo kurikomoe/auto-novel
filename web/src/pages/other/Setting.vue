@@ -1,13 +1,17 @@
 <script lang="ts" setup>
-import { Locator } from '@/data';
-import { Setting } from '@/data/setting/Setting';
 import SoundAllTaskCompleted from '@/sound/all_task_completed.mp3';
-import { useWebSearchHistoryStore, useWenkuSearchHistoryStore } from '@/stores';
+import {
+  Setting,
+  useSettingStore,
+  useWebSearchHistoryStore,
+  useWenkuSearchHistoryStore,
+} from '@/stores';
 import { InfoOutlined } from '@vicons/material';
 
 const message = useMessage();
 
-const { setting } = Locator.settingRepository();
+const settingStore = useSettingStore();
+const { setting } = storeToRefs(settingStore);
 
 const clearWebSearchHistory = () => {
   useWebSearchHistoryStore().clear();

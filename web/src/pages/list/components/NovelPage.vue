@@ -1,10 +1,10 @@
 <script lang="ts" setup generic="T extends any">
 import { SyncAltOutlined } from '@vicons/material';
 
-import { Locator } from '@/data';
 import { Page } from '@/model/Page';
-import { Result } from '@/util/result';
+import { useSettingStore } from '@/stores';
 import { RegexUtil } from '@/util';
+import { Result } from '@/util/result';
 
 export type Loader<T> = (
   page: number,
@@ -25,7 +25,7 @@ const route = useRoute();
 const router = useRouter();
 
 const processQueryWithLocaleAware = (input: string): string => {
-  const cc = Locator.settingRepository().cc;
+  const cc = useSettingStore().cc;
   const queries = input.split(/( |\||\+|\-|\")/);
   const result: string[] = [];
   for (const query of queries) {
@@ -35,7 +35,7 @@ const processQueryWithLocaleAware = (input: string): string => {
       !RegexUtil.hasHangulChars(query) &&
       RegexUtil.hasHanzi(query)
     ) {
-      const queryData = cc.value.toData(query);
+      const queryData = cc.toData(query);
       if (queryData === query) {
         result.push(query);
       } else {
@@ -52,8 +52,8 @@ const loader = computed(() => {
   const loaderOut = props.loader;
 
   let query = (props.query ?? '').trim();
-  const setting = Locator.settingRepository().setting;
-  if (setting.value.searchLocaleAware) {
+  const setting = useSettingStore().setting;
+  if (setting.searchLocaleAware) {
     query = processQueryWithLocaleAware(query);
   }
   const selected = selectedWithDefault.value;

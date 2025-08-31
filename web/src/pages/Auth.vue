@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { useEventListener } from '@vueuse/core';
 
-import { Locator } from '@/data';
+import { useSettingStore, useWhoamiStore } from '@/stores';
 import { AuthUrl } from '@/util';
-import { useWhoamiStore } from '@/stores';
 
 const props = defineProps<{ from?: string }>();
 const router = useRouter();
 
 const whoamiStore = useWhoamiStore();
 
-const settingRepo = Locator.settingRepository();
+const settingStore = useSettingStore();
+const { setting } = storeToRefs(settingStore);
 
 useEventListener('message', async (event: MessageEvent) => {
   if (event.origin === AuthUrl && event.data.type === 'login_success') {
@@ -24,7 +24,7 @@ useEventListener('message', async (event: MessageEvent) => {
 
 <template>
   <iframe
-    :src="AuthUrl + '?app=n&theme=' + settingRepo.setting.value.theme"
+    :src="AuthUrl + '?app=n&theme=' + setting.theme"
     frameborder="0"
     allowfullscreen
     style="

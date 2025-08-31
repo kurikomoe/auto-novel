@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import { InfoOutlined } from '@vicons/material';
 
-import { Locator } from '@/data';
-import { Setting } from '@/data/setting/Setting';
 import { GenericNovelId } from '@/model/Common';
 import { Glossary } from '@/model/Glossary';
 import { TranslateTaskParams } from '@/model/Translator';
 import { useIsWideScreen } from '@/pages/util';
+import { Setting, useSettingStore } from '@/stores';
 
 const probs = defineProps<{
   gnid: GenericNovelId;
@@ -14,7 +13,8 @@ const probs = defineProps<{
 }>();
 const isWideScreen = useIsWideScreen(600);
 
-const { setting } = Locator.settingRepository();
+const settingStore = useSettingStore();
+const { setting } = storeToRefs(settingStore);
 
 // 翻译设置
 const translateLevel = ref<'normal' | 'expire' | 'all' | 'sync'>(
@@ -70,9 +70,12 @@ const showDownloadModal = ref(false);
               />
             </n-flex>
           </template>
-          常规：只翻译未翻译的章节<br />
-          过期：翻译术语表过期的章节<br />
-          重翻：重翻全部章节<br />
+          常规：只翻译未翻译的章节
+          <br />
+          过期：翻译术语表过期的章节
+          <br />
+          重翻：重翻全部章节
+          <br />
           <template v-if="gnid.type === 'web'">
             源站同步：用于原作者修改了原文的情况导致不一致的情况，可能清空现有翻译，慎用！!
           </template>
@@ -89,7 +92,7 @@ const showDownloadModal = ref(false);
           type="warning"
           style="font-size: 12px; flex-basis: 100%"
         >
-          <b> * 请确保你知道自己在干啥，不要随便使用危险功能 </b>
+          <b>* 请确保你知道自己在干啥，不要随便使用危险功能</b>
         </n-text>
       </n-flex>
     </c-action-wrapper>

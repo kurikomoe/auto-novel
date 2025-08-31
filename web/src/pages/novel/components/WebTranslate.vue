@@ -2,13 +2,11 @@
 import { useKeyModifier } from '@vueuse/core';
 import ky from 'ky';
 
-import { Locator } from '@/data';
-import { WebNovelApi } from '@/data';
+import TranslateTask from '@/components/TranslateTask.vue';
+import { Locator, WebNovelApi } from '@/data';
 import { GenericNovelId } from '@/model/Common';
 import { TranslateTaskDescriptor } from '@/model/Translator';
-import { useWhoamiStore } from '@/stores';
-
-import TranslateTask from '@/components/TranslateTask.vue';
+import { useSettingStore, useWhoamiStore } from '@/stores';
 import TranslateOptions from './TranslateOptions.vue';
 
 const props = defineProps<{
@@ -39,7 +37,8 @@ const message = useMessage();
 const whoamiStore = useWhoamiStore();
 const { whoami } = storeToRefs(whoamiStore);
 
-const { setting } = Locator.settingRepository();
+const settingStore = useSettingStore();
+const { setting } = storeToRefs(settingStore);
 
 const translateOptions = ref<InstanceType<typeof TranslateOptions>>();
 const translateTask = ref<InstanceType<typeof TranslateTask>>();

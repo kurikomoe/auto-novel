@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import { Locator } from '@/data';
+import TranslateTask from '@/components/TranslateTask.vue';
 import { GenericNovelId } from '@/model/Common';
 import { LocalVolumeMetadata } from '@/model/LocalVolume';
 import { TranslatorId } from '@/model/Translator';
-
-import TranslateTask from '@/components/TranslateTask.vue';
+import { useSettingStore } from '@/stores';
 
 const props = defineProps<{
   volume: LocalVolumeMetadata;
 }>();
 
-const { setting } = Locator.settingRepository();
+const settingStore = useSettingStore();
+const { setting } = storeToRefs(settingStore);
 
 const calculateFinished = (translatorId: TranslatorId) =>
   props.volume.toc.filter((it) => it[translatorId]).length;

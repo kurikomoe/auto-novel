@@ -4,7 +4,7 @@ import { useKeyModifier } from '@vueuse/core';
 import { Locator } from '@/data';
 import { TranslateTaskDescriptor } from '@/model/Translator';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
-import { useFavoredStore } from '@/stores';
+import { useFavoredStore, useSettingStore } from '@/stores';
 
 const props = defineProps<{
   selectedNovels: WebNovelOutlineDto[];
@@ -17,7 +17,8 @@ defineEmits<{
 
 const message = useMessage();
 
-const { setting } = Locator.settingRepository();
+const settingStore = useSettingStore();
+const { setting } = storeToRefs(settingStore);
 
 const favoredStore = useFavoredStore();
 const { favoreds } = storeToRefs(favoredStore);

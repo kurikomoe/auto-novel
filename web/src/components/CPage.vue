@@ -1,12 +1,11 @@
 <script lang="ts" setup generic="T extends any">
-import { v4 as uuidv4 } from 'uuid';
 import { useThrottleFn } from '@vueuse/core';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Page } from '@/model/Page';
-import { Result } from '@/util/result';
-
 import { onKeyDown } from '@/pages/util';
-import { Locator } from '@/data';
+import { useSettingStore } from '@/stores';
+import { Result } from '@/util/result';
 
 export type Loader<T> = (page: number) => Promise<Result<Page<T>>>;
 
@@ -18,7 +17,8 @@ const props = defineProps<{
   loader: Loader<T>;
 }>();
 
-const { setting } = Locator.settingRepository();
+const settingStore = useSettingStore();
+const { setting } = storeToRefs(settingStore);
 
 const pageNumber = ref(1);
 const pageContent = ref<Result<Page<T>>>();

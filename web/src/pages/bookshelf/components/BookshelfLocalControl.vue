@@ -2,9 +2,8 @@
 import { useKeyModifier } from '@vueuse/core';
 
 import { Locator } from '@/data';
-import { Setting } from '@/data/setting/Setting';
 import { useIsWideScreen } from '@/pages/util';
-import { useFavoredStore } from '@/stores';
+import { Setting, useFavoredStore, useSettingStore } from '@/stores';
 import { useBookshelfLocalStore } from '../BookshelfLocalStore';
 
 const props = defineProps<{
@@ -19,7 +18,8 @@ defineEmits<{
 const message = useMessage();
 const isWideScreen = useIsWideScreen(600);
 
-const { setting } = Locator.settingRepository();
+const settingStore = useSettingStore();
+const { setting } = storeToRefs(settingStore);
 
 const store = useBookshelfLocalStore();
 

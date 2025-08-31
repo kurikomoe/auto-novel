@@ -1,19 +1,17 @@
 <script lang="ts" setup>
 import {
-  SortOutlined,
-  KeyboardArrowUpRound,
   KeyboardArrowDownRound,
+  KeyboardArrowUpRound,
+  SortOutlined,
 } from '@vicons/material';
-import { computed, ref } from 'vue';
-
-import { Locator } from '@/data';
-import { WebNovelTocItemDto, WebNovelDto } from '@/model/WebNovel';
-import ChapterTocList from '@/components/ChapterTocList.vue';
-
-import { useToc, useLastReadChapter } from './UseWebNovel';
-import { useTocExpansion } from './UseTocExpansion';
-
 import { NScrollbar } from 'naive-ui';
+import { computed } from 'vue';
+
+import ChapterTocList from '@/components/ChapterTocList.vue';
+import { WebNovelDto, WebNovelTocItemDto } from '@/model/WebNovel';
+import { useSettingStore } from '@/stores';
+import { useTocExpansion } from './UseTocExpansion';
+import { useLastReadChapter, useToc } from './UseWebNovel';
 
 const props = defineProps<{
   providerId: string;
@@ -21,7 +19,9 @@ const props = defineProps<{
   novel: WebNovelDto;
 }>();
 
-const { setting } = Locator.settingRepository();
+const settingStore = useSettingStore();
+const { setting } = storeToRefs(settingStore);
+
 const sortReverse = computed(() => setting.value.tocSortReverse);
 
 const { toc } = useToc(props.novel);
