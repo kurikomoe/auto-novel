@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { LockOutlined, PlusOutlined, PushPinOutlined } from '@vicons/material';
 
-import { Locator } from '@/data';
-import { ArticleRepository } from '@/data/api';
+import { ArticleApi } from '@/data';
 import { ArticleCategory, ArticleSimplified } from '@/model/Article';
 import { doAction } from '@/pages/util';
 import { useBlacklistStore, useWhoamiStore } from '@/stores';
@@ -37,7 +36,7 @@ const loader = computed(() => {
   const category = props.category;
   return (page: number) =>
     runCatching(
-      ArticleRepository.listArticle({
+      ArticleApi.listArticle({
         page,
         pageSize: 20,
         category,
@@ -47,60 +46,48 @@ const loader = computed(() => {
 
 const lockArticle = (article: ArticleSimplified) =>
   doAction(
-    ArticleRepository.lockArticle(article.id).then(
-      () => (article.locked = true),
-    ),
+    ArticleApi.lockArticle(article.id).then(() => (article.locked = true)),
     '锁定',
     message,
   );
 
 const unlockArticle = (article: ArticleSimplified) =>
   doAction(
-    ArticleRepository.unlockArticle(article.id).then(
-      () => (article.locked = false),
-    ),
+    ArticleApi.unlockArticle(article.id).then(() => (article.locked = false)),
     '解除锁定',
     message,
   );
 
 const pinArticle = (article: ArticleSimplified) =>
   doAction(
-    ArticleRepository.pinArticle(article.id).then(
-      () => (article.pinned = true),
-    ),
+    ArticleApi.pinArticle(article.id).then(() => (article.pinned = true)),
     '置顶',
     message,
   );
 
 const unpinArticle = (article: ArticleSimplified) =>
   doAction(
-    ArticleRepository.unpinArticle(article.id).then(
-      () => (article.pinned = false),
-    ),
+    ArticleApi.unpinArticle(article.id).then(() => (article.pinned = false)),
     '解除置顶',
     message,
   );
 
 const hideArticle = (article: ArticleSimplified) =>
   doAction(
-    ArticleRepository.hideArticle(article.id).then(
-      () => (article.hidden = true),
-    ),
+    ArticleApi.hideArticle(article.id).then(() => (article.hidden = true)),
     '隐藏',
     message,
   );
 
 const unhideArticle = (article: ArticleSimplified) =>
   doAction(
-    ArticleRepository.unhideArticle(article.id).then(
-      () => (article.hidden = false),
-    ),
+    ArticleApi.unhideArticle(article.id).then(() => (article.hidden = false)),
     '解除隐藏',
     message,
   );
 
 const deleteArticle = (article: ArticleSimplified) =>
-  doAction(ArticleRepository.deleteArticle(article.id), '删除', message);
+  doAction(ArticleApi.deleteArticle(article.id), '删除', message);
 </script>
 
 <template>

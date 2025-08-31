@@ -1,4 +1,4 @@
-import { ReadHistoryApi } from '@/data/api';
+import { ReadHistoryApi } from '@/data';
 
 export const useReadHistoryStore = defineStore('read-history', () => {
   const readHistoryPaused = ref<boolean>(false);

@@ -1,11 +1,5 @@
 import { createGlobalState } from '@vueuse/core';
 import { createCachedSegRepository } from './CachedSegRepository';
-import {
-  ArticleRepository,
-  CommentRepository,
-  OperationRepository,
-  UserRepository,
-} from './api';
 import { createLocalVolumeRepository } from './local';
 import {
   createReaderSettingRepository,
@@ -24,9 +18,8 @@ import {
   createOpenAiWebRepository,
   createYoudaoRepository,
 } from './third-party';
+export * from './api';
 export { OpenAiError } from './third-party/OpenAiRepository';
-
-export { formatError } from './api';
 
 const lazy = <T>(factory: () => T) => {
   let value: T;
@@ -67,11 +60,4 @@ export const Locator = {
   youdaoRepository: lazy(createYoudaoRepository),
   openAiRepositoryFactory: createOpenAiRepository,
   openAiWebRepositoryFactory: createOpenAiWebRepository,
-  //
-  articleRepository: ArticleRepository,
-  commentRepository: CommentRepository,
-  operationRepository: OperationRepository,
-  userRepository: UserRepository,
 };
-
-export { WebNovelApi, WenkuNovelApi } from './api';

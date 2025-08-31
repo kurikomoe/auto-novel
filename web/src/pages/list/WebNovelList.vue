@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { WebNovelApi } from '@/data/api';
+import { WebNovelApi } from '@/data';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
 import {
   useFavoredStore,

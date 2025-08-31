@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { Favored, FavoredApi } from '@/data/api/FavoredApi';
+import { Favored, FavoredApi } from '@/data';
 import { useLocalStorage } from '@/util';
 import { LSKey } from './key';
 

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { CommentOutlined } from '@vicons/material';
 
-import { CommentRepository } from '@/data/api';
+import { CommentApi } from '@/data';
 import { Comment1 } from '@/model/Comment';
 import { Page } from '@/model/Page';
 import { useDraftStore } from '@/stores';
@@ -25,7 +25,7 @@ const draftId = `comment-${props.site}`;
 async function loadComments(page: number) {
   loading.value = true;
   const result = await runCatching(
-    CommentRepository.listComment({
+    CommentApi.listComment({
       site: props.site,
       page: page - 1,
       pageSize: 10,

@@ -36,7 +36,7 @@ const unlockArticle = (id: string) => client.delete(`article/${id}/locked`);
 const hideArticle = (id: string) => client.put(`article/${id}/hidden`);
 const unhideArticle = (id: string) => client.delete(`article/${id}/hidden`);
 
-export const ArticleRepository = {
+export const ArticleApi = {
   listArticle,
 
   getArticle,

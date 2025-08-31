@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { UserRepository } from '@/data/api';
+import { UserApi } from '@/data/apiAuth/UserApi';
 import { UserRole } from '@/model/User';
 import { doAction } from '@/pages/util';
 
@@ -29,7 +29,7 @@ const userRoleOptions = [
 
 const submitRole = () => {
   doAction(
-    UserRepository.updateRole(props.id, { role: userRole.value }),
+    UserApi.updateRole(props.id, { role: userRole.value }),
     `更新 ${props.username} 权限`,
     message,
   );

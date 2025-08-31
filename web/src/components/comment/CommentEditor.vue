@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Locator } from '@/data';
+import { CommentApi } from '@/data';
 import { doAction } from '@/pages/util';
 
 const props = defineProps<{
@@ -14,8 +14,6 @@ const emit = defineEmits<{
   replied: [];
 }>();
 
-const repo = Locator.commentRepository;
-
 const message = useMessage();
 
 const content = ref('');
@@ -27,16 +25,14 @@ const reply = async () => {
   }
 
   await doAction(
-    repo
-      .createComment({
-        site: props.site,
-        parent: props.parent,
-        content: content.value,
-      })
-      .then(() => {
-        content.value = '';
-        emit('replied');
-      }),
+    CommentApi.createComment({
+      site: props.site,
+      parent: props.parent,
+      content: content.value,
+    }).then(() => {
+      content.value = '';
+      emit('replied');
+    }),
     '回复发布',
     message,
   );

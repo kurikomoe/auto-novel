@@ -1,7 +1,7 @@
 import { Page } from '@/model/Page';
 import { UserOutline, UserRole } from '@/model/User';
 
-import { client } from './client';
+import { client } from '../api/client';
 
 const listUser = (params: { page: number; pageSize: number; role: UserRole }) =>
   client.get('user', { searchParams: params }).json<Page<UserOutline>>();
@@ -9,7 +9,7 @@ const listUser = (params: { page: number; pageSize: number; role: UserRole }) =>
 const updateRole = (userId: string, json: { role: UserRole }) =>
   client.put(`user/${userId}/role`, { json });
 
-export const UserRepository = {
+export const UserApi = {
   listUser,
   updateRole,
 };

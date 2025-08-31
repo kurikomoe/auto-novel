@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { OperationRepository } from '@/data/api';
+import { OperationApi } from '@/data';
 import { Result, runCatching } from '@/util/result';
 import { OperationHistory, OperationType } from '@/model/Operation';
 import { Page } from '@/model/Page';
@@ -26,7 +26,7 @@ const historiesResult = ref<Result<Page<OperationHistory>>>();
 async function loadPage(page: number) {
   historiesResult.value = undefined;
   const result = await runCatching(
-    OperationRepository.listOperationHistory({
+    OperationApi.listOperationHistory({
       page: currentPage.value - 1,
       pageSize: 30,
       type: type.value,
@@ -42,7 +42,7 @@ async function loadPage(page: number) {
 
 const deleteHistory = (id: string) =>
   doAction(
-    OperationRepository.deleteOperationHistory(id).then(() => {
+    OperationApi.deleteOperationHistory(id).then(() => {
       if (historiesResult.value?.ok) {
         historiesResult.value.value.items =
           historiesResult.value.value.items.filter((it) => it.id !== id);

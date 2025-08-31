@@ -1,12 +1,12 @@
 import { HTTPError, TimeoutError } from 'ky';
 
-export { ArticleRepository } from './ArticleRepository';
-export { CommentRepository } from './CommentRepository';
-export { OperationRepository } from './OperationRepository';
-export { ReadHistoryApi } from './ReadHistoryApi';
-export { UserRepository } from './UserRepository';
-export { WebNovelApi } from './WebNovelApi';
-export { WenkuNovelApi } from './WenkuNovelApi';
+export * from './ArticleApi';
+export * from './CommentApi';
+export * from './OperationApi';
+export * from './FavoredApi';
+export * from './ReadHistoryApi';
+export * from './WebNovelApi';
+export * from './WenkuNovelApi';
 
 export const formatError = (error: unknown) => {
   if (error instanceof HTTPError) {

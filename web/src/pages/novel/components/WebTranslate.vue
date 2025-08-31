@@ -3,7 +3,7 @@ import { useKeyModifier } from '@vueuse/core';
 import ky from 'ky';
 
 import { Locator } from '@/data';
-import { WebNovelApi } from '@/data/api';
+import { WebNovelApi } from '@/data';
 import { GenericNovelId } from '@/model/Common';
 import { TranslateTaskDescriptor } from '@/model/Translator';
 import { useWhoamiStore } from '@/stores';

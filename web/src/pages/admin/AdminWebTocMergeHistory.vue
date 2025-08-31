@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { OperationRepository } from '@/data/api';
+import { OperationApi } from '@/data';
 import { Result, runCatching } from '@/util/result';
 import { MergeHistoryDto } from '@/model/Operation';
 import { Page } from '@/model/Page';
@@ -14,7 +14,7 @@ const novelPage = ref<Result<Page<MergeHistoryDto>>>();
 const loadPage = async (page: number) => {
   novelPage.value = undefined;
   const result = await runCatching(
-    OperationRepository.listMergeHistory(currentPage.value - 1),
+    OperationApi.listMergeHistory(currentPage.value - 1),
   );
   if (currentPage.value == page) {
     novelPage.value = result;
@@ -26,7 +26,7 @@ const loadPage = async (page: number) => {
 
 const deleteDetail = (id: string) =>
   doAction(
-    OperationRepository.deleteMergeHistory(id).then(() => {
+    OperationApi.deleteMergeHistory(id).then(() => {
       if (novelPage.value?.ok) {
         novelPage.value.value.items = novelPage.value.value.items.filter(
           (it) => it.id !== id,

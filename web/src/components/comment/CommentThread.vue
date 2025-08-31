@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { CommentRepository } from '@/data/api';
+import { CommentApi } from '@/data';
 import { Comment1 } from '@/model/Comment';
-import { copyToClipBoard, doAction } from '@/pages//util';
+import { copyToClipBoard, doAction } from '@/pages/util';
 import { useBlacklistStore, useDraftStore } from '@/stores';
 import { runCatching } from '@/util/result';
 
@@ -27,7 +27,7 @@ const emit = defineEmits<{
 
 const loadReplies = async (page: number) => {
   const result = await runCatching(
-    CommentRepository.listComment({
+    CommentApi.listComment({
       site,
       parentId: comment.id,
       page: page - 1,
@@ -61,7 +61,7 @@ const copyComment = (comment: Comment1) =>
 
 const deleteComment = (commentToDelete: Comment1) =>
   doAction(
-    CommentRepository.deleteComment(commentToDelete.id).then(() => {
+    CommentApi.deleteComment(commentToDelete.id).then(() => {
       if (commentToDelete.id === comment.id) {
         emit('deleted');
       } else {
@@ -74,18 +74,14 @@ const deleteComment = (commentToDelete: Comment1) =>
 
 const hideComment = (comment: Comment1) =>
   doAction(
-    CommentRepository.hideComment(comment.id).then(
-      () => (comment.hidden = true),
-    ),
+    CommentApi.hideComment(comment.id).then(() => (comment.hidden = true)),
     '隐藏',
     message,
   );
 
 const unhideComment = (comment: Comment1) =>
   doAction(
-    CommentRepository.unhideComment(comment.id).then(
-      () => (comment.hidden = false),
-    ),
+    CommentApi.unhideComment(comment.id).then(() => (comment.hidden = false)),
     '解除隐藏',
     message,
   );

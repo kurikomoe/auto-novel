@@ -1,8 +1,6 @@
-import { Locator } from '@/data';
+import { ArticleApi } from '@/data';
 import { Article } from '@/model/Article';
 import { Result, runCatching } from '@/util/result';
-
-const repo = Locator.articleRepository;
 
 type ArticleStore = {
   articleResult: Result<Article> | undefined;
@@ -21,14 +19,16 @@ export const useArticleStore = (articleId: string) => {
         }
 
         this.articleResult = undefined;
-        const result = await runCatching(repo.getArticle(articleId));
+        const result = await runCatching(ArticleApi.getArticle(articleId));
         this.articleResult = result;
 
         return this.articleResult;
       },
 
-      async updateArticle(json: Parameters<typeof repo.updateArticle>[1]) {
-        await repo.updateArticle(articleId, json);
+      async updateArticle(
+        json: Parameters<typeof ArticleApi.updateArticle>[1],
+      ) {
+        await ArticleApi.updateArticle(articleId, json);
         this.loadArticle(true);
       },
     },

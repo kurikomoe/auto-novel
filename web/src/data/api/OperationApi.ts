@@ -27,7 +27,7 @@ const listMergeHistory = (page: number) =>
 const deleteMergeHistory = (id: string) =>
   client.delete(`operation-history/toc-merge/${id}`);
 
-export const OperationRepository = {
+export const OperationApi = {
   listOperationHistory,
   deleteOperationHistory,
 

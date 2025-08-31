@@ -2,10 +2,9 @@
 import { UploadOutlined } from '@vicons/material';
 import { FormInst, FormItemRule, FormRules } from 'naive-ui';
 
-import { Locator } from '@/data';
+import { ArticleApi } from '@/data';
 import { ArticleCategory } from '@/model/Article';
 import { useDraftStore, useWhoamiStore } from '@/stores';
-
 import { doAction, useIsWideScreen } from '@/pages/util';
 import { useArticleStore } from './ForumArticleStore';
 
@@ -109,7 +108,7 @@ const submit = async () => {
 
   if (store === undefined) {
     await doAction(
-      Locator.articleRepository.createArticle(formValue.value).then((id) => {
+      ArticleApi.createArticle(formValue.value).then((id) => {
         draftStore.removeDraft(draftId);
         router.push({ path: `/forum/${id}` });
       }),

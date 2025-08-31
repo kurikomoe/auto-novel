@@ -20,7 +20,7 @@ const deleteComment = (id: string) => client.delete(`comment/${id}`);
 const hideComment = (id: string) => client.put(`comment/${id}/hidden`);
 const unhideComment = (id: string) => client.delete(`comment/${id}/hidden`);
 
-export const CommentRepository = {
+export const CommentApi = {
   listComment,
   createComment,
   deleteComment,

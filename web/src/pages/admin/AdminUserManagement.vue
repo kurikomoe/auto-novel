@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { UserRepository } from '@/data/api';
-import { Result, runCatching } from '@/util/result';
+import { UserApi } from '@/data/apiAuth/UserApi';
 import { Page } from '@/model/Page';
 import { UserOutline, UserRole } from '@/model/User';
+import { Result, runCatching } from '@/util/result';
 
 const userRole = ref<UserRole>('member');
 const userRoleOptions = [
@@ -20,7 +20,7 @@ const userResult = ref<Result<Page<UserOutline>>>();
 async function loadPage(page: number) {
   userResult.value = undefined;
   const result = await runCatching(
-    UserRepository.listUser({
+    UserApi.listUser({
       page: currentPage.value - 1,
       pageSize: 50,
       role: userRole.value,
