@@ -6,7 +6,7 @@ import { ArticleApi } from '@/data';
 import { ArticleCategory } from '@/model/Article';
 import { useDraftStore, useWhoamiStore } from '@/stores';
 import { doAction, useIsWideScreen } from '@/pages/util';
-import { useArticleStore } from './ForumArticleStore';
+import { useArticleStore } from '../../stores/forum/useArticleStore';
 
 const { articleId, category } = defineProps<{
   articleId: string | undefined;

@@ -1,8 +1,6 @@
 <script lang="ts" setup>
-import { useBlacklistStore, useWhoamiStore } from '@/stores';
-
-import { useArticleStore } from './ForumArticleStore';
 import { doAction } from '@/pages//util';
+import { useArticleStore, useBlacklistStore, useWhoamiStore } from '@/stores';
 
 const { articleId } = defineProps<{ articleId: string }>();
 
@@ -10,7 +8,6 @@ const whoamiStore = useWhoamiStore();
 const { whoami } = storeToRefs(whoamiStore);
 
 const blacklistStore = useBlacklistStore();
-const { blacklist } = storeToRefs(blacklistStore);
 
 const message = useMessage();
 
