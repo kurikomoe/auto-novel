@@ -7,7 +7,7 @@ import {
 } from 'naive-ui';
 
 import { Locator, formatError } from '@/data';
-import { useWenkuNovelStore, useWhoamiStore } from '@/stores';
+import { useNoticeStore, useWenkuNovelStore, useWhoamiStore } from '@/stores';
 import { RegexUtil } from '@/util';
 import { getFullContent } from '@/util/file';
 
@@ -94,16 +94,18 @@ const customRequest = async ({
   }
 };
 
-const ruleViewed = Locator.ruleViewedRepository().ref;
+const noticeStore = useNoticeStore();
+const { noticed } = storeToRefs(noticeStore);
+
 const showRuleModal = ref(false);
 const haveReadRule = computed(() => {
-  const durationSinceLastRead = Date.now() - ruleViewed.value.wenkuUploadRule;
+  const durationSinceLastRead = Date.now() - noticed.value.wenkuUploadRule;
   return durationSinceLastRead < 24 * 3600 * 1000;
 });
 const uploadRef = ref<UploadInst>();
 const uploadVolumes = () => {
   showRuleModal.value = true;
-  ruleViewed.value.wenkuUploadRule = Date.now();
+  noticed.value.wenkuUploadRule = Date.now();
 };
 </script>
 

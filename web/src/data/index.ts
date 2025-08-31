@@ -4,7 +4,6 @@ import { createLocalVolumeRepository } from './local';
 import {
   createGptWorkspaceRepository,
   createReadPositionRepository,
-  createRuleViewedRepository,
   createSakuraWorkspaceRepository,
 } from './stores';
 import {
@@ -44,7 +43,6 @@ export const Locator = {
   //
   cachedSegRepository: lazyAsync(createCachedSegRepository),
   //
-  ruleViewedRepository: lazy(createRuleViewedRepository),
   readPositionRepository: lazy(createReadPositionRepository),
   gptWorkspaceRepository: lazy(createGptWorkspaceRepository),
   sakuraWorkspaceRepository: lazy(createSakuraWorkspaceRepository),
