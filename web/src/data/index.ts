@@ -10,7 +10,6 @@ import {
 } from './api';
 import { createFavoredRepository } from './favored/FavoredRepository';
 import { createLocalVolumeRepository } from './local';
-import { createReadHistoryRepository } from './read-history/ReadHistoryRepository';
 import {
   createReaderSettingRepository,
   createSettingRepository,
@@ -78,7 +77,6 @@ export const Locator = {
   userRepository: UserRepository,
   //
   favoredRepository: lazy(createFavoredRepository),
-  readHistoryRepository: lazy(createReadHistoryRepository),
 };
 
 export const WebNovelApi = WebNovelRepository;

@@ -4,7 +4,7 @@ import { createReusableTemplate, onKeyDown } from '@vueuse/core';
 import { Locator } from '@/data';
 import { GenericNovelId } from '@/model/Common';
 import { TranslatorId } from '@/model/Translator';
-import { useWhoamiStore } from '@/stores';
+import { useReadHistoryStore, useWhoamiStore } from '@/stores';
 import { Result } from '@/util/result';
 import { WebUtil } from '@/util/web';
 
@@ -78,7 +78,7 @@ const navToChapter = async (chapterId: string) => {
     if (result.ok) {
       document.title = result.value.titleJp;
       if (gnid.type === 'web' && whoami.value.isSignedIn) {
-        Locator.readHistoryRepository().updateReadHistoryWeb(
+        useReadHistoryStore().updateReadHistoryWeb(
           gnid.providerId,
           gnid.novelId,
           chapterId,

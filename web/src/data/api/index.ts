@@ -3,6 +3,7 @@ import { HTTPError, TimeoutError } from 'ky';
 export { ArticleRepository } from './ArticleRepository';
 export { CommentRepository } from './CommentRepository';
 export { OperationRepository } from './OperationRepository';
+export { ReadHistoryApi } from './ReadHistoryApi';
 export { UserRepository } from './UserRepository';
 export { WebNovelRepository } from './WebNovelRepository';
 export { WenkuNovelRepository } from './WenkuNovelRepository';

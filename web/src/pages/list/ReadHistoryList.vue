@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { DeleteOutlineOutlined } from '@vicons/material';
 
-import { Locator } from '@/data';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
+import { useReadHistoryStore } from '@/stores';
 import { runCatching } from '@/util/result';
 
 import { Loader } from '../list/components/NovelPage.vue';
@@ -14,19 +14,19 @@ defineProps<{
 
 const message = useMessage();
 
-const readHistoryRepository = Locator.readHistoryRepository();
-const { readHistoryPaused } = readHistoryRepository;
+const readHistoryStore = useReadHistoryStore();
+const { readHistoryPaused } = readHistoryStore;
 
 onMounted(() => {
-  readHistoryRepository.loadReadHistoryPausedState();
+  readHistoryStore.loadReadHistoryPausedState();
 });
 
 const loader: Loader<WebNovelOutlineDto> = (page, _query, _selected) =>
-  runCatching(readHistoryRepository.listReadHistoryWeb({ page, pageSize: 30 }));
+  runCatching(readHistoryStore.listReadHistoryWeb({ page, pageSize: 30 }));
 
 const clearHistory = () =>
   doAction(
-    readHistoryRepository.clearReadHistoryWeb().then(() => {
+    readHistoryStore.clearReadHistoryWeb().then(() => {
       window.location.reload();
     }),
     '清空',
@@ -35,7 +35,7 @@ const clearHistory = () =>
 
 const deleteHistory = (providerId: string, novelId: string) =>
   doAction(
-    readHistoryRepository.deleteReadHistoryWeb(providerId, novelId).then(() => {
+    readHistoryStore.deleteReadHistoryWeb(providerId, novelId).then(() => {
       window.location.reload();
     }),
     '删除',
@@ -57,12 +57,12 @@ const deleteHistory = (providerId: string, novelId: string) =>
       <c-button
         v-if="readHistoryPaused"
         label="继续记录历史"
-        @action="readHistoryRepository.resumeReadHistory()"
+        @action="readHistoryStore.resumeReadHistory()"
       />
       <c-button
         v-else
         label="暂停记录历史"
-        @action="readHistoryRepository.pauseReadHistory()"
+        @action="readHistoryStore.pauseReadHistory()"
       />
     </n-flex>
 

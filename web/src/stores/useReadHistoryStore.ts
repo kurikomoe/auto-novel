@@ -1,6 +1,6 @@
-import { ReadHistoryApi } from './ReadHistoryApi';
+import { ReadHistoryApi } from '@/data/api';
 
-export const createReadHistoryRepository = () => {
+export const useReadHistoryStore = defineStore('read-history', () => {
   const readHistoryPaused = ref<boolean>(false);
 
   let remoteFetched = false;
@@ -31,4 +31,4 @@ export const createReadHistoryRepository = () => {
     pauseReadHistory,
     resumeReadHistory,
   };
-};
+});
