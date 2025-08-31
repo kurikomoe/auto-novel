@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { PlusOutlined } from '@vicons/material';
 
-import { Locator } from '@/data';
-import { WenkuNovelRepository } from '@/data/api';
+import { Locator, WenkuNovelApi } from '@/data';
 import { WenkuNovelOutlineDto } from '@/model/WenkuNovel';
 import { useWenkuSearchHistoryStore, useWhoamiStore } from '@/stores';
 import { runCatching } from '@/util/result';
@@ -41,7 +40,7 @@ const loader: Loader<WenkuNovelOutlineDto> = (page, query, selected) => {
     level = 3;
   }
   return runCatching(
-    WenkuNovelRepository.listNovel({
+    WenkuNovelApi.listNovel({
       page,
       pageSize: 24,
       query,

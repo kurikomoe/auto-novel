@@ -3,7 +3,7 @@ import { useKeyModifier } from '@vueuse/core';
 import ky from 'ky';
 
 import { Locator } from '@/data';
-import { WebNovelRepository } from '@/data/api';
+import { WebNovelApi } from '@/data/api';
 import { GenericNovelId } from '@/model/Common';
 import { TranslateTaskDescriptor } from '@/model/Translator';
 import { useWhoamiStore } from '@/stores';
@@ -58,7 +58,7 @@ const files = computed(() => {
     setting.value.downloadFormat;
 
   return {
-    jp: WebNovelRepository.createFileUrl({
+    jp: WebNovelApi.createFileUrl({
       providerId,
       novelId,
       mode: 'jp',
@@ -67,7 +67,7 @@ const files = computed(() => {
       type,
       title,
     }),
-    zh: WebNovelRepository.createFileUrl({
+    zh: WebNovelApi.createFileUrl({
       providerId,
       novelId,
       mode: mode,

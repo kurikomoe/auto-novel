@@ -170,7 +170,7 @@ const createFileUrl = ({
   return { url, filename };
 };
 
-export const WebNovelRepository = {
+export const WebNovelApi = {
   listNovel,
   listRank,
 

@@ -8,7 +8,7 @@ import {
 } from '@vicons/material';
 
 import { Locator } from '@/data';
-import { WebNovelRepository, WenkuNovelRepository } from '@/data/api';
+import { WebNovelApi, WenkuNovelApi } from '@/data/api';
 import bannerUrl from '@/image/banner.webp';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
 import { WenkuNovelOutlineDto } from '@/model/WenkuNovel';
@@ -68,7 +68,7 @@ watch(
 const mostVisitedWeb = ref<Result<WebNovelOutlineDto[]>>();
 const loadWeb = async () => {
   mostVisitedWeb.value = await runCatching(
-    WebNovelRepository.listNovel({
+    WebNovelApi.listNovel({
       page: 0,
       pageSize: 8,
       provider: 'kakuyomu,syosetu,novelup,hameln,pixiv,alphapolis',
@@ -82,7 +82,7 @@ loadWeb();
 const latestUpdateWenku = ref<Result<WenkuNovelOutlineDto[]>>();
 const loadWenku = async () => {
   latestUpdateWenku.value = await runCatching(
-    WenkuNovelRepository.listNovel({
+    WenkuNovelApi.listNovel({
       page: 0,
       pageSize: 12,
       level: 1,

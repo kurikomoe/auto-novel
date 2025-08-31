@@ -5,8 +5,8 @@ export { CommentRepository } from './CommentRepository';
 export { OperationRepository } from './OperationRepository';
 export { ReadHistoryApi } from './ReadHistoryApi';
 export { UserRepository } from './UserRepository';
-export { WebNovelRepository } from './WebNovelRepository';
-export { WenkuNovelRepository } from './WenkuNovelRepository';
+export { WebNovelApi } from './WebNovelApi';
+export { WenkuNovelApi } from './WenkuNovelApi';
 
 export const formatError = (error: unknown) => {
   if (error instanceof HTTPError) {

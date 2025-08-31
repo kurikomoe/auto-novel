@@ -138,7 +138,7 @@ const createFileUrl = ({
   return { url, filename };
 };
 
-export const WenkuNovelRepository = {
+export const WenkuNovelApi = {
   listNovel,
   //
   getNovel,

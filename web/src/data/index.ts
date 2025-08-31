@@ -5,8 +5,6 @@ import {
   CommentRepository,
   OperationRepository,
   UserRepository,
-  WebNovelRepository,
-  WenkuNovelRepository,
 } from './api';
 import { createFavoredRepository } from './favored/FavoredRepository';
 import { createLocalVolumeRepository } from './local';
@@ -79,5 +77,4 @@ export const Locator = {
   favoredRepository: lazy(createFavoredRepository),
 };
 
-export const WebNovelApi = WebNovelRepository;
-export const WenkuNovelApi = WenkuNovelRepository;
+export { WebNovelApi, WenkuNovelApi } from './api';

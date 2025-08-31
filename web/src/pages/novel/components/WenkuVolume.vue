@@ -3,15 +3,13 @@ import { FileDownloadOutlined } from '@vicons/material';
 import { useKeyModifier } from '@vueuse/core';
 
 import TranslateTask from '@/components/TranslateTask.vue';
-import { Locator } from '@/data';
-import { WenkuNovelRepository } from '@/data/api';
+import { Locator, WenkuNovelApi } from '@/data';
 import {
   TranslateTaskDescriptor,
   TranslateTaskParams,
 } from '@/model/Translator';
 import { VolumeJpDto } from '@/model/WenkuNovel';
 import { useWhoamiStore } from '@/stores';
-
 const { novelId, volume, getParams } = defineProps<{
   novelId: string;
   volume: VolumeJpDto;
@@ -41,7 +39,7 @@ const startTranslateTask = (translatorId: 'baidu' | 'youdao') => {
 const file = computed(() => {
   const { mode, translationsMode, translations } = setting.value.downloadFormat;
 
-  const { url, filename } = WenkuNovelRepository.createFileUrl({
+  const { url, filename } = WenkuNovelApi.createFileUrl({
     novelId,
     volumeId: volume.volumeId,
     mode,

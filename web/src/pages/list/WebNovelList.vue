@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Locator } from '@/data';
-import { WebNovelRepository } from '@/data/api';
+import { WebNovelApi } from '@/data/api';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
 import { useWebSearchHistoryStore, useWhoamiStore } from '@/stores';
 import { runCatching } from '@/util/result';
@@ -75,7 +75,7 @@ const loader: Loader<WebNovelOutlineDto> = (page, query, selected) => {
   };
 
   return runCatching(
-    WebNovelRepository.listNovel({
+    WebNovelApi.listNovel({
       page,
       pageSize: 20,
       query,
