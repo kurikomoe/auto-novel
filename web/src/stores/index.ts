@@ -6,5 +6,4 @@ export * from './useNoticeStore';
 export * from './useReadHistoryStore';
 export * from './useSearchHistoryStore';
 export * from './useSettingStore';
-export * from './useWenkuNovelStore';
 export * from './useWhoamiStore';

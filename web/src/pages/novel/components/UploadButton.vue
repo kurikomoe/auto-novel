@@ -6,8 +6,9 @@ import {
   UploadInst,
 } from 'naive-ui';
 
-import { formatError } from '@/data';
-import { useNoticeStore, useWenkuNovelStore, useWhoamiStore } from '@/stores';
+import { formatError, WenkuNovelApi } from '@/data';
+import { invalidateWenkuNovel } from '@/hooks';
+import { useNoticeStore, useWhoamiStore } from '@/stores';
 import { RegexUtil } from '@/util';
 import { getFullContent } from '@/util/file';
 
@@ -20,8 +21,6 @@ const message = useMessage();
 
 const whoamiStore = useWhoamiStore();
 const { whoami } = storeToRefs(whoamiStore);
-
-const store = useWenkuNovelStore(props.novelId);
 
 async function beforeUpload({ file }: { file: UploadFileInfo }) {
   if (!whoami.value.isSignedIn) {
@@ -84,9 +83,15 @@ const customRequest = async ({
 
   try {
     const type = file.url === 'jp' ? 'jp' : 'zh';
-    await store.createVolume(file.name, type, file.file as File, (percent) =>
-      onProgress({ percent }),
-    );
+    await WenkuNovelApi.createVolume(
+      props.novelId,
+      file.name,
+      type,
+      file.file as File,
+      (percent) => onProgress({ percent }),
+    ).then(() => {
+      invalidateWenkuNovel(props.novelId);
+    });
     onFinish();
   } catch (e) {
     onError();

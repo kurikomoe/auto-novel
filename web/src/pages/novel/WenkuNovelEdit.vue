@@ -10,6 +10,7 @@ import { VueDraggable } from 'vue-draggable-plus';
 
 import { WenkuNovelApi } from '@/data';
 import { prettyCover, smartImport } from '@/domain/smart-import';
+import { invalidateWenkuNovel, useWenkuNovel } from '@/hooks';
 import coverPlaceholder from '@/image/cover_placeholder.png';
 import {
   WenkuNovelOutlineDto,
@@ -17,17 +18,14 @@ import {
   presetKeywordsNonR18,
   presetKeywordsR18,
 } from '@/model/WenkuNovel';
-import { useWenkuNovelStore, useWhoamiStore } from '@/stores';
+import { doAction, useIsWideScreen } from '@/pages/util';
+import { useWhoamiStore } from '@/stores';
 import { RegexUtil, delay } from '@/util';
 import { runCatching } from '@/util/result';
-
-import { doAction, useIsWideScreen } from '@/pages/util';
 
 const { novelId } = defineProps<{
   novelId: string | undefined;
 }>();
-
-const store = novelId !== undefined ? useWenkuNovelStore(novelId) : undefined;
 
 const router = useRouter();
 const isWideScreen = useIsWideScreen();
@@ -101,38 +99,42 @@ const formRules: FormRules = {
 
 const amazonUrl = ref('');
 
-store?.loadNovel()?.then((result) => {
-  if (result.ok) {
-    const {
-      title,
-      titleZh,
-      cover,
-      authors,
-      artists,
-      level,
-      keywords,
-      introduction,
-    } = result.value;
-    formValue.value = {
-      title,
-      titleZh,
-      cover: prettyCover(cover ?? ''),
-      authors,
-      artists,
-      level,
-      keywords,
-      introduction,
-      volumes: result.value.volumes.map((it) => {
-        it.cover = prettyCover(it.cover);
-        return it;
-      }),
-    };
-    amazonUrl.value = result.value.title.replace(/[?？。!！]$/, '');
-    allowSubmit.value = true;
-  } else {
-    message.error('载入失败');
-  }
-});
+if (novelId !== undefined) {
+  useWenkuNovel(novelId, false)
+    .refresh()
+    .then(({ data, error }) => {
+      if (data) {
+        const {
+          title,
+          titleZh,
+          cover,
+          authors,
+          artists,
+          level,
+          keywords,
+          introduction,
+        } = data;
+        formValue.value = {
+          title,
+          titleZh,
+          cover: prettyCover(cover ?? ''),
+          authors,
+          artists,
+          level,
+          keywords,
+          introduction,
+          volumes: data.volumes.map((it) => {
+            it.cover = prettyCover(it.cover);
+            return it;
+          }),
+        };
+        amazonUrl.value = data.title.replace(/[?？。!！]$/, '');
+        allowSubmit.value = true;
+      } else {
+        message.error(`载入失败: ${error?.message}`);
+      }
+    });
+}
 
 const submit = async () => {
   if (!allowSubmit.value) {
@@ -164,7 +166,7 @@ const submit = async () => {
     volumes: formValue.value.volumes,
   };
 
-  if (store === undefined) {
+  if (novelId === undefined) {
     await doAction(
       WenkuNovelApi.createNovel(body).then((id) => {
         router.push({ path: `/wenku/${id}` });
@@ -174,7 +176,8 @@ const submit = async () => {
     );
   } else {
     await doAction(
-      store.updateNovel(body).then(() => {
+      WenkuNovelApi.updateNovel(novelId, body).then(() => {
+        invalidateWenkuNovel(novelId);
         router.push({ path: `/wenku/${novelId}` });
       }),
       '编辑文库',
