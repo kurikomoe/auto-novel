@@ -6,7 +6,7 @@ import {
   UploadInst,
 } from 'naive-ui';
 
-import { Locator, formatError } from '@/data';
+import { formatError } from '@/data';
 import { useNoticeStore, useWenkuNovelStore, useWhoamiStore } from '@/stores';
 import { RegexUtil } from '@/util';
 import { getFullContent } from '@/util/file';

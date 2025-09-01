@@ -1,6 +1,7 @@
 <script lang="ts" setup>
+import { useArticle } from '@/hooks';
 import { doAction } from '@/pages//util';
-import { useArticleStore, useBlacklistStore, useWhoamiStore } from '@/stores';
+import { useBlacklistStore, useWhoamiStore } from '@/stores';
 
 const { articleId } = defineProps<{ articleId: string }>();
 
@@ -11,14 +12,17 @@ const blacklistStore = useBlacklistStore();
 
 const message = useMessage();
 
-const store = useArticleStore(articleId);
-const { articleResult } = storeToRefs(store);
+const { data: article, error } = useArticle(articleId);
 
-store.loadArticle().then((result) => {
-  if (result?.ok) {
-    document.title = result.value.title;
-  }
-});
+watch(
+  () => article.value,
+  (newArticle) => {
+    if (newArticle) {
+      document.title = newArticle.title;
+    }
+  },
+  { immediate: true },
+);
 
 const blockUserComment = async (username: string) =>
   doAction(
@@ -41,7 +45,7 @@ const unblockUserComment = async (username: string) =>
 
 <template>
   <div class="layout-content">
-    <c-result :result="articleResult" v-slot="{ value: article }">
+    <template v-if="article">
       <n-h1 prefix="bar">{{ article.title }}</n-h1>
       <n-text v-if="article.hidden" depth="3">[隐藏]</n-text>
       <n-p>
@@ -76,6 +80,13 @@ const unblockUserComment = async (username: string) =>
       <MarkdownView mode="article" :source="article.content" />
 
       <comment-list :site="`article-${articleId}`" :locked="article.locked" />
-    </c-result>
+    </template>
+
+    <n-result
+      v-else-if="error"
+      status="error"
+      title="加载错误"
+      :description="error.message"
+    />
   </div>
 </template>

@@ -3,10 +3,10 @@ import { UploadOutlined } from '@vicons/material';
 import { FormInst, FormItemRule, FormRules } from 'naive-ui';
 
 import { ArticleApi } from '@/data';
+import { invalidateArticle, useArticle } from '@/hooks';
 import { ArticleCategory } from '@/model/Article';
-import { useDraftStore, useWhoamiStore } from '@/stores';
 import { doAction, useIsWideScreen } from '@/pages/util';
-import { useArticleStore } from '../../stores/forum/useArticleStore';
+import { useDraftStore, useWhoamiStore } from '@/stores';
 
 const { articleId, category } = defineProps<{
   articleId: string | undefined;
@@ -22,8 +22,6 @@ const { whoami } = storeToRefs(whoamiStore);
 
 const draftStore = useDraftStore();
 const draftId = `article-${articleId ?? 'new'}`;
-
-const store = articleId !== undefined ? useArticleStore(articleId) : undefined;
 
 const articleCategoryOptions = whoami.value.asAdmin
   ? [
@@ -80,19 +78,23 @@ const formRules: FormRules = {
   ],
 };
 
-store?.loadArticle()?.then((result) => {
-  if (result.ok) {
-    const { title, content, category } = result.value;
-    formValue.value = {
-      title,
-      content,
-      category,
-    };
-    allowSubmit.value = true;
-  } else {
-    message.error('载入失败');
-  }
-});
+if (articleId !== undefined) {
+  useArticle(articleId, true)
+    .refresh()
+    .then((state) => {
+      if (state.data) {
+        const { title, content, category } = state.data;
+        formValue.value = {
+          title,
+          content,
+          category,
+        };
+        allowSubmit.value = true;
+      } else {
+        message.error('载入失败');
+      }
+    });
+}
 
 const submit = async () => {
   if (!allowSubmit.value) {
@@ -106,7 +108,7 @@ const submit = async () => {
     return;
   }
 
-  if (store === undefined) {
+  if (articleId === undefined) {
     await doAction(
       ArticleApi.createArticle(formValue.value).then((id) => {
         draftStore.removeDraft(draftId);
@@ -117,7 +119,8 @@ const submit = async () => {
     );
   } else {
     await doAction(
-      store.updateArticle(formValue.value).then(() => {
+      ArticleApi.updateArticle(articleId, formValue.value).then(() => {
+        invalidateArticle(articleId);
         draftStore.removeDraft(draftId);
         router.push({ path: `/forum/${articleId}` });
       }),
