@@ -5,7 +5,7 @@ interface Noticed {
   wenkuUploadRule: number;
 }
 
-export const useNoticeStore = defineStore(LSKey.SettingReader, () => {
+export const useNoticeStore = defineStore(LSKey.Notified, () => {
   const noticed = useLocalStorage<Noticed>(LSKey.Notified, {
     wenkuUploadRule: 0,
   });
