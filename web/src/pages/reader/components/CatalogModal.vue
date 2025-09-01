@@ -7,12 +7,13 @@ import {
 
 import ChapterTocList from '@/components/ChapterTocList.vue';
 import { Locator } from '@/data';
+import { useWebNovel } from '@/hooks';
 import { GenericNovelId } from '@/model/Common';
 import { ReadableTocItem } from '@/pages/novel/components/common';
 import { useTocExpansion } from '@/pages/novel/components/UseTocExpansion';
 import { useIsWideScreen } from '@/pages/util';
-import { useSettingStore, useWebNovelStore } from '@/stores';
-import { Ok, Result, runCatching } from '@/util/result';
+import { useSettingStore } from '@/stores';
+import { Err, Ok, Result, runCatching } from '@/util/result';
 
 const props = defineProps<{
   show: boolean;
@@ -60,11 +61,13 @@ watch(
     if (show) {
       if (tocResult.value?.ok !== true) {
         const getWebToc = async (providerId: string, novelId: string) => {
-          const store = useWebNovelStore(providerId, novelId);
-          const result = await store.loadNovel();
-          if (result.ok) {
+          const { data: novel } = await useWebNovel(
+            providerId,
+            novelId,
+          ).refresh();
+          if (novel) {
             let order = 0;
-            const tocItems = result.value.toc.map((it, index) => {
+            const tocItems = novel.toc.map((it, index) => {
               const tocItem = <TocItem>{
                 ...it,
                 key: index,
@@ -75,7 +78,7 @@ watch(
             });
             return Ok(tocItems);
           } else {
-            return result;
+            return Err('载入失败');
           }
         };
 

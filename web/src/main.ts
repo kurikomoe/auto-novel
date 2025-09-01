@@ -9,10 +9,9 @@ const pinia = createPinia();
 app.use(pinia);
 app.use(PiniaColada, {
   queryOptions: {
-    staleTime: 3600_000,
     gcTime: 3600_000,
     refetchOnMount: true,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     refetchOnReconnect: true,
   },
 });

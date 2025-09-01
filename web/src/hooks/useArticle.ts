@@ -2,14 +2,14 @@ import { useQuery, useQueryCache } from '@pinia/colada';
 
 import { ArticleApi } from '@/data';
 
-const ArticleKey = 'article';
+const ItemKey = 'article';
 
-export const useArticle = (id: string, enabled: boolean = false) =>
+export const useArticle = (id: string, enabled: boolean = true) =>
   useQuery({
     enabled,
-    key: [ArticleKey, id],
+    key: [ItemKey, id],
     query: () => ArticleApi.getArticle(id),
   });
 
 export const invalidateArticle = (id: string) =>
-  useQueryCache().invalidateQueries({ key: [ArticleKey, id], exact: true });
+  useQueryCache().invalidateQueries({ key: [ItemKey, id], exact: true });

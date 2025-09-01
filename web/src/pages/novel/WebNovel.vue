@@ -1,6 +1,6 @@
 <script lang="ts" setup>
+import { useWebNovel } from '@/hooks';
 import { useIsWideScreen } from '@/pages/util';
-import { useWebNovelStore } from '@/stores';
 
 const { providerId, novelId } = defineProps<{
   providerId: string;
@@ -10,28 +10,27 @@ const { providerId, novelId } = defineProps<{
 const isWideScreen = useIsWideScreen();
 const router = useRouter();
 
-const store = useWebNovelStore(providerId, novelId);
-const { novelResult } = storeToRefs(store);
+const { data: novel, error } = useWebNovel(providerId, novelId);
 
-store.loadNovel().then((result) => {
-  if (result && !result.ok) {
-    const message = result.error.message;
-    if (message.includes('小说ID不合适，应当使用：')) {
-      const targetNovelPath = message.split('小说ID不合适，应当使用：')[1];
-      router.push({ path: `/novel${targetNovelPath}` });
-      return;
-    }
+watch(novel, (novel) => {
+  if (novel) {
+    document.title = novel.titleJp;
   }
+});
 
-  if (result?.ok) {
-    document.title = result.value.titleJp;
+watch(error, (error) => {
+  if (!error) return;
+  const message = error.message;
+  if (message.includes('小说ID不合适，应当使用：')) {
+    const targetNovelPath = message.split('小说ID不合适，应当使用：')[1];
+    router.push({ path: `/novel${targetNovelPath}` });
   }
 });
 </script>
 
 <template>
   <div class="layout-content">
-    <c-result :result="novelResult" v-slot="{ value: novel }">
+    <template v-if="novel">
       <web-novel-wide
         v-if="isWideScreen"
         :provider-id="providerId"
@@ -44,6 +43,13 @@ store.loadNovel().then((result) => {
         :novel-id="novelId"
         :novel="novel"
       />
-    </c-result>
+    </template>
+
+    <n-result
+      v-else-if="error"
+      status="error"
+      title="加载错误"
+      :description="error.message"
+    />
   </div>
 </template>

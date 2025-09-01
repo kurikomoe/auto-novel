@@ -15,10 +15,10 @@ const message = useMessage();
 const { data: article, error } = useArticle(articleId);
 
 watch(
-  () => article.value,
-  (newArticle) => {
-    if (newArticle) {
-      document.title = newArticle.title;
+  article,
+  (article) => {
+    if (article) {
+      document.title = article.title;
     }
   },
   { immediate: true },

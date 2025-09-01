@@ -81,17 +81,16 @@ const formRules: FormRules = {
 if (articleId !== undefined) {
   useArticle(articleId, true)
     .refresh()
-    .then((state) => {
-      if (state.data) {
-        const { title, content, category } = state.data;
+    .then(({ data, error }) => {
+      if (data) {
         formValue.value = {
-          title,
-          content,
-          category,
+          title: data.title,
+          content: data.content,
+          category: data.category,
         };
         allowSubmit.value = true;
       } else {
-        message.error('载入失败');
+        message.error(`载入失败: ${error?.message}`);
       }
     });
 }
