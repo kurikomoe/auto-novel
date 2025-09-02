@@ -2,10 +2,10 @@
 import { LockOutlined, PlusOutlined, PushPinOutlined } from '@vicons/material';
 
 import { ArticleApi } from '@/data';
+import { useArticleList } from '@/hooks';
 import { ArticleCategory, ArticleSimplified } from '@/model/Article';
 import { doAction } from '@/pages/util';
 import { useBlacklistStore, useWhoamiStore } from '@/stores';
-import { runCatching } from '@/util/result';
 
 const props = defineProps<{
   page: number;
@@ -27,22 +27,20 @@ const articleCategoryOptions = [
   { value: 'Support', label: '反馈与建议' },
 ];
 
+const onUpdatePage = (page: number) => {
+  const query = { ...route.query, page };
+  router.push({ path: route.path, query });
+};
+
 const onUpdateCategory = (category: ArticleCategory) => {
   const query = { ...route.query, category, page: 1 };
   router.push({ path: route.path, query });
 };
 
-const loader = computed(() => {
-  const category = props.category;
-  return (page: number) =>
-    runCatching(
-      ArticleApi.listArticle({
-        page,
-        pageSize: 20,
-        category,
-      }),
-    );
-});
+const { data: articlePage, error } = useArticleList(
+  () => props.page,
+  () => props.category,
+);
 
 const lockArticle = (article: ArticleSimplified) =>
   doAction(
@@ -110,8 +108,12 @@ const deleteArticle = (article: ArticleSimplified) =>
       />
     </c-action-wrapper>
 
-    <c-page :page="page" :loader="loader" v-slot="{ items }">
-      <n-table :bordered="false" style="margin-top: 24px">
+    <CPageX
+      :page="page"
+      :page-number="articlePage?.pageNumber"
+      @update:page="onUpdatePage"
+    >
+      <n-table v-if="articlePage" :bordered="false" style="margin-top: 24px">
         <thead>
           <tr>
             <th><b>标题</b></th>
@@ -119,7 +121,7 @@ const deleteArticle = (article: ArticleSimplified) =>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="article of items" :key="article.id">
+          <tr v-for="article of articlePage.items" :key="article.id">
             <td>
               <n-flex :size="2" align="center" :wrap="false">
                 <n-icon
@@ -210,7 +212,16 @@ const deleteArticle = (article: ArticleSimplified) =>
           </tr>
         </tbody>
       </n-table>
-    </c-page>
+
+      <n-result
+        v-else-if="error"
+        status="error"
+        title="加载错误"
+        :description="error.message"
+      />
+
+      <CLoading v-else />
+    </CPageX>
   </div>
 </template>
 
