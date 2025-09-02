@@ -1,6 +1,5 @@
 <script lang="ts" setup generic="T extends any">
 import { onKeyDown } from '@/pages/util';
-import { emit } from 'process';
 
 const props = defineProps<{
   page: number;
