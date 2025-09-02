@@ -60,9 +60,15 @@ export const useDraftStore = defineStore(LSKey.Draft, () => {
 
   cleanupExpiredDrafts();
 
+  const addDraftLimited = throttle(addDraft, 5000);
+  function cancelAddDraft() {
+    addDraftLimited.cancel();
+  }
+
   return {
     getDraft,
-    addDraft: throttle(addDraft, 5000),
+    addDraft: addDraftLimited,
+    cancelAddDraft,
     removeDraft,
   };
 });

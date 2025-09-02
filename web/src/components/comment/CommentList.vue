@@ -33,7 +33,7 @@ watch(commentPage, (value, oldValue) => {
 function onReplied() {
   showInput.value = false;
   invalidateCommentList(props.site);
-  draftStore.addDraft.cancel();
+  draftStore.cancelAddDraft();
   draftStore.removeDraft(draftId);
 }
 

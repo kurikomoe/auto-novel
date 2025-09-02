@@ -36,7 +36,7 @@ const { data: commentPage, error } = useCommentList(
 function onReplied() {
   showInput.value = false;
   invalidateCommentList(props.site, props.comment.id);
-  draftStore.addDraft.cancel();
+  draftStore.cancelAddDraft();
   draftStore.removeDraft(draftId);
 }
 
