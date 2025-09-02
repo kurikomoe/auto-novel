@@ -5,6 +5,7 @@ import { emit } from 'process';
 const props = defineProps<{
   page: number;
   pageNumber?: number;
+  disableTop?: boolean;
 }>();
 
 const emits = defineEmits<{
@@ -49,14 +50,14 @@ onKeyDown('ArrowRight', (e) => {
 
 <template>
   <n-pagination
-    v-if="realPageNumber > 1"
+    v-if="!disableTop && realPageNumber > 1"
     :page="page"
     @update-page="(page) => emits('update:page', page)"
     :page-count="realPageNumber"
     :page-slot="7"
     style="margin-top: 20px"
   />
-  <n-divider />
+  <n-divider v-if="!disableTop" />
   <slot />
   <n-divider />
   <n-pagination

@@ -213,14 +213,7 @@ const deleteArticle = (article: ArticleSimplified) =>
         </tbody>
       </n-table>
 
-      <n-result
-        v-else-if="error"
-        status="error"
-        title="加载错误"
-        :description="error.message"
-      />
-
-      <CLoading v-else />
+      <CResultX v-else :error="error" title="加载错误" />
     </CPageX>
   </div>
 </template>

@@ -1,0 +1,28 @@
+import { useQuery, useQueryCache } from '@pinia/colada';
+
+import { CommentApi } from '@/data';
+import { Comment1 } from '@/model/Comment';
+import { Page } from '@/model/Page';
+
+const ListKey = 'comment-list';
+
+export const useCommentList = (
+  page: MaybeRefOrGetter<number>,
+  site: MaybeRefOrGetter<string>,
+  parentId: MaybeRefOrGetter<string | undefined> = undefined,
+  initialData: Page<Comment1> | undefined = undefined,
+) =>
+  useQuery({
+    key: () => [ListKey, toValue(site), toValue(parentId) ?? '', toValue(page)],
+    query: () =>
+      CommentApi.listComment({
+        page: toValue(page) - 1,
+        pageSize: 10,
+        site: toValue(site),
+        ...(toValue(parentId) ? { parentId: toValue(parentId) } : {}),
+      }),
+    initialData: () => initialData,
+  });
+
+export const invalidateCommentList = (site: string, parentId?: string) =>
+  useQueryCache().invalidateQueries({ key: [ListKey, site, parentId ?? ''] });

@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { CommentApi } from '@/data';
+import { invalidateCommentList, useCommentList } from '@/hooks';
 import { Comment1 } from '@/model/Comment';
 import { copyToClipBoard, doAction } from '@/pages/util';
 import { useBlacklistStore, useDraftStore } from '@/stores';
-import { runCatching } from '@/util/result';
 
-const { site, comment } = defineProps<{
+const props = defineProps<{
   site: string;
   comment: Comment1;
   locked: boolean;
@@ -13,11 +13,8 @@ const { site, comment } = defineProps<{
 
 const message = useMessage();
 
-const currentPage = ref(1);
-const pageCount = ref(Math.floor((comment.numReplies + 9) / 10));
-
 const draftStore = useDraftStore();
-const draftId = `comment-${site}`;
+const draftId = `comment-${props.site}`;
 
 const blacklistStore = useBlacklistStore();
 
@@ -25,30 +22,20 @@ const emit = defineEmits<{
   deleted: [];
 }>();
 
-const loadReplies = async (page: number) => {
-  const result = await runCatching(
-    CommentApi.listComment({
-      site,
-      parentId: comment.id,
-      page: page - 1,
-      pageSize: 10,
-    }),
-  );
-  if (result.ok) {
-    pageCount.value = result.value.pageNumber;
-    comment.replies = result.value.items;
-  } else {
-    message.error('回复加载错误：' + result.error.message);
-  }
-};
-
-watch(currentPage, async (page) => loadReplies(page));
+const page = ref(1);
+const { data: commentPage, error } = useCommentList(
+  page,
+  () => props.site,
+  () => props.comment.id,
+  {
+    items: props.comment.replies,
+    pageNumber: Math.floor((props.comment.numReplies + 9) / 10),
+  },
+);
 
 function onReplied() {
   showInput.value = false;
-  if (currentPage >= pageCount) {
-    loadReplies(currentPage.value);
-  }
+  invalidateCommentList(props.site, props.comment.id);
   draftStore.addDraft.cancel();
   draftStore.removeDraft(draftId);
 }
@@ -62,10 +49,8 @@ const copyComment = (comment: Comment1) =>
 const deleteComment = (commentToDelete: Comment1) =>
   doAction(
     CommentApi.deleteComment(commentToDelete.id).then(() => {
-      if (commentToDelete.id === comment.id) {
+      if (commentToDelete.id === props.comment.id) {
         emit('deleted');
-      } else {
-        loadReplies(currentPage.value);
       }
     }),
     '删除',
@@ -132,27 +117,30 @@ const showInput = ref(false);
     @cancel="showInput = false"
   />
 
-  <div
-    v-for="replyComment in comment.replies"
-    :key="replyComment.id"
-    style="margin-left: 30px; margin-top: 20px"
-  >
-    <CommentItem
-      :comment="replyComment"
-      @copy="copyComment"
-      @delete="deleteComment"
-      @hide="hideComment"
-      @unhide="unhideComment"
-      @block="blockUserComment"
-      @unblock="unblockUserComment"
-    />
+  <div style="margin-left: 30px; margin-top: 20px">
+    <CPageX
+      v-model:page="page"
+      :page-number="commentPage?.pageNumber"
+      disable-top
+    >
+      <template v-if="commentPage">
+        <div
+          v-for="replyComment in commentPage?.items"
+          :key="replyComment.id"
+          style="margin-top: 20px"
+        >
+          <CommentItem
+            :comment="replyComment"
+            @copy="copyComment"
+            @delete="deleteComment"
+            @hide="hideComment"
+            @unhide="unhideComment"
+            @block="blockUserComment"
+            @unblock="unblockUserComment"
+          />
+        </div>
+      </template>
+      <CResultX v-else :error="error" title="加载错误" />
+    </CPageX>
   </div>
-
-  <n-pagination
-    v-if="comment.numReplies > 10"
-    v-model:page="currentPage"
-    :page-count="pageCount"
-    :page-slot="7"
-    style="margin-left: 30px; margin-top: 20px"
-  />
 </template>
