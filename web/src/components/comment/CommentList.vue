@@ -11,23 +11,15 @@ const props = defineProps<{
 }>();
 
 const page = ref(1);
-const commentSectionRef = ref<InstanceType<typeof SectionHeader>>();
-
 const { data: commentPage, error } = useCommentList(page, () => props.site);
 
 const draftStore = useDraftStore();
 const draftId = `comment-${props.site}`;
 
-watch(commentPage, (value, oldValue) => {
-  if (oldValue && value) {
-    const node = commentSectionRef.value?.$el as HTMLDivElement | null;
-    if (!node) return;
-    const prevTop = node.getBoundingClientRect().top;
-    nextTick(() => {
-      const currentTop = node.getBoundingClientRect().top;
-      window.scrollBy(0, currentTop - prevTop);
-    });
-  }
+const anchorEl = useTemplateRef('anchor');
+watch(page, () => {
+  anchorEl.value?.scrollIntoView();
+  window.scrollBy({ top: -50, behavior: 'auto' });
 });
 
 function onReplied() {
@@ -41,6 +33,7 @@ const showInput = ref(false);
 </script>
 
 <template>
+  <div ref="anchor" />
   <section-header
     title="评论"
     ref="commentSectionRef"

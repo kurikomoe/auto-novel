@@ -36,7 +36,6 @@ export namespace Glossary {
       if (line === '') continue;
 
       const parts = line.split(delimiter);
-      console.log(parts);
       if (parts.length !== 2) return;
 
       const [jp, zh] = parts;

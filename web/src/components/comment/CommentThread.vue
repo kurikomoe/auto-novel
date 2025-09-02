@@ -33,6 +33,12 @@ const { data: commentPage, error } = useCommentList(
   },
 );
 
+const anchorEl = useTemplateRef('anchor');
+watch(page, () => {
+  anchorEl.value?.scrollIntoView();
+  window.scrollBy({ top: -50, behavior: 'auto' });
+});
+
 function onReplied() {
   showInput.value = false;
   invalidateCommentList(props.site, props.comment.id);
@@ -93,7 +99,7 @@ const showInput = ref(false);
 </script>
 
 <template>
-  <div ref="topElement" />
+  <div ref="anchor" />
   <CommentItem
     :comment="comment"
     top-level
@@ -117,7 +123,7 @@ const showInput = ref(false);
     @cancel="showInput = false"
   />
 
-  <div style="margin-left: 30px; margin-top: 20px">
+  <div style="margin-left: 32px; margin-top: 20px">
     <CPageX
       v-model:page="page"
       :page-number="commentPage?.pageNumber"
@@ -127,7 +133,7 @@ const showInput = ref(false);
         <div
           v-for="replyComment in commentPage?.items"
           :key="replyComment.id"
-          style="margin-top: 20px"
+          style="margin-top: 20px; margin-bottom: 20px"
         >
           <CommentItem
             :comment="replyComment"

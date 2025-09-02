@@ -56,9 +56,7 @@ onKeyDown('ArrowRight', (e) => {
     :page-slot="7"
     style="margin-top: 20px"
   />
-  <n-divider v-if="!disableTop" />
   <slot />
-  <n-divider />
   <n-pagination
     v-if="realPageNumber > 1"
     :page="page"

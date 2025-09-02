@@ -113,7 +113,11 @@ const deleteArticle = (article: ArticleSimplified) =>
       :page-number="articlePage?.pageNumber"
       @update:page="onUpdatePage"
     >
-      <n-table v-if="articlePage" :bordered="false" style="margin-top: 24px">
+      <n-table
+        v-if="articlePage"
+        :bordered="false"
+        style="margin-top: 24px; margin-bottom: 24px"
+      >
         <thead>
           <tr>
             <th><b>标题</b></th>
