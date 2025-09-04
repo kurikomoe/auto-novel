@@ -1,15 +1,11 @@
 <script lang="ts" setup>
 import { createReusableTemplate, onKeyDown } from '@vueuse/core';
 
-import { Locator } from '@/data';
+import { Locator, ReadHistoryApi } from '@/data';
 import { GenericNovelId } from '@/model/Common';
 import { TranslatorId } from '@/model/Translator';
 import { checkIsMobile, useIsWideScreen } from '@/pages/util';
-import {
-  useReaderSettingStore,
-  useReadHistoryStore,
-  useWhoamiStore,
-} from '@/stores';
+import { useReaderSettingStore, useWhoamiStore } from '@/stores';
 import { Result } from '@/util/result';
 import { WebUtil } from '@/util/web';
 import { ReaderChapter, useReaderStore } from './ReaderStore';
@@ -82,7 +78,7 @@ const navToChapter = async (chapterId: string) => {
     if (result.ok) {
       document.title = result.value.titleJp;
       if (gnid.type === 'web' && whoami.value.isSignedIn) {
-        useReadHistoryStore().updateReadHistoryWeb(
+        ReadHistoryApi.updateReadHistoryWeb(
           gnid.providerId,
           gnid.novelId,
           chapterId,

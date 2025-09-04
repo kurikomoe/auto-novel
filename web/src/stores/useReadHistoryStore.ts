@@ -21,12 +21,6 @@ export const useReadHistoryStore = defineStore('read-history', () => {
 
   return {
     readHistoryPaused,
-    //
-    listReadHistoryWeb: ReadHistoryApi.listReadHistoryWeb,
-    clearReadHistoryWeb: ReadHistoryApi.clearReadHistoryWeb,
-    updateReadHistoryWeb: ReadHistoryApi.updateReadHistoryWeb,
-    deleteReadHistoryWeb: ReadHistoryApi.deleteReadHistoryWeb,
-    //
     loadReadHistoryPausedState,
     pauseReadHistory,
     resumeReadHistory,

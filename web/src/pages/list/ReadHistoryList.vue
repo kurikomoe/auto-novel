@@ -5,6 +5,7 @@ import { useWebNovelHistoryList } from '@/hooks';
 import router from '@/router';
 import { useReadHistoryStore } from '@/stores';
 import { doAction } from '../util';
+import { ReadHistoryApi } from '@/data';
 
 const route = useRoute();
 
@@ -30,7 +31,7 @@ const { data: novelPage, error } = useWebNovelHistoryList(() => props.page);
 
 const clearHistory = () =>
   doAction(
-    readHistoryStore.clearReadHistoryWeb().then(() => {
+    ReadHistoryApi.clearReadHistoryWeb().then(() => {
       window.location.reload();
     }),
     '清空',
@@ -39,7 +40,7 @@ const clearHistory = () =>
 
 const deleteHistory = (providerId: string, novelId: string) =>
   doAction(
-    readHistoryStore.deleteReadHistoryWeb(providerId, novelId).then(() => {
+    ReadHistoryApi.deleteReadHistoryWeb(providerId, novelId).then(() => {
       window.location.reload();
     }),
     '删除',
