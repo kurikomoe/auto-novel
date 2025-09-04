@@ -78,7 +78,7 @@ watch(novelPage, (novelPage) => {
       @update:selected="onUpdatedSelected"
     />
 
-    <CPageX
+    <CPage
       :page="page"
       :page-number="novelPage?.pageNumber"
       @update:page="onUpdatePage"
@@ -91,7 +91,7 @@ watch(novelPage, (novelPage) => {
       </template>
 
       <CResultX v-else :error="error" title="加载错误" />
-    </CPageX>
+    </CPage>
   </div>
 </template>
 

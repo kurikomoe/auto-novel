@@ -75,7 +75,7 @@ const deleteHistory = (providerId: string, novelId: string) =>
       注意：历史功能已暂停
     </n-text>
 
-    <CPageX
+    <CPage
       :page="page"
       :page-number="novelPage?.pageNumber"
       @update:page="onUpdatePage"
@@ -97,6 +97,6 @@ const deleteHistory = (providerId: string, novelId: string) =>
       </template>
 
       <CResultX v-else :error="error" title="加载错误" />
-    </CPageX>
+    </CPage>
   </div>
 </template>

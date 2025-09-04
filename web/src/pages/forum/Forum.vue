@@ -108,7 +108,7 @@ const deleteArticle = (article: ArticleSimplified) =>
       />
     </c-action-wrapper>
 
-    <CPageX
+    <CPage
       :page="page"
       :page-number="articlePage?.pageNumber"
       @update:page="onUpdatePage"
@@ -218,7 +218,7 @@ const deleteArticle = (article: ArticleSimplified) =>
       </n-table>
 
       <CResultX v-else :error="error" title="加载错误" />
-    </CPageX>
+    </CPage>
   </div>
 </template>
 

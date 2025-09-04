@@ -155,7 +155,7 @@ const novelListRef = ref<InstanceType<typeof NovelListWeb>>();
       @update:selected="onUpdatedSelected"
     />
 
-    <CPageX
+    <CPage
       :page="page"
       :page-number="novelPage?.pageNumber"
       @update:page="onUpdatePage"
@@ -173,6 +173,6 @@ const novelListRef = ref<InstanceType<typeof NovelListWeb>>();
       </template>
 
       <CResultX v-else :error="error" title="加载错误" />
-    </CPageX>
+    </CPage>
   </bookshelf-layout>
 </template>

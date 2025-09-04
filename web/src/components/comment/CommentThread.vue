@@ -124,7 +124,7 @@ const showInput = ref(false);
   />
 
   <div style="margin-left: 32px; margin-top: 20px">
-    <CPageX
+    <CPage
       v-model:page="page"
       :page-number="commentPage?.pageNumber"
       disable-top
@@ -147,6 +147,6 @@ const showInput = ref(false);
         </div>
       </template>
       <CResultX v-else :error="error" title="加载错误" />
-    </CPageX>
+    </CPage>
   </div>
 </template>

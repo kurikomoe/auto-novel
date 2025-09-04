@@ -61,11 +61,7 @@ const showInput = ref(false);
     <n-divider />
   </template>
 
-  <CPageX
-    v-model:page="page"
-    :page-number="commentPage?.pageNumber"
-    disable-top
-  >
+  <CPage v-model:page="page" :page-number="commentPage?.pageNumber" disable-top>
     <template v-if="commentPage">
       <template v-for="comment in commentPage.items" :key="comment.id">
         <CommentThread
@@ -83,5 +79,5 @@ const showInput = ref(false);
     </template>
 
     <CResultX v-else :error="error" title="加载错误" />
-  </CPageX>
+  </CPage>
 </template>
