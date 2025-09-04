@@ -116,7 +116,6 @@ export const useFavoredStore = defineStore(LSKey.Favored, () => {
     deleteFavored,
     //
     listFavoredWebNovel: FavoredApi.listFavoredWebNovel,
-    listFavoredWenkuNovel: FavoredApi.listFavoredWenkuNovel,
     favoriteNovel,
     unfavoriteNovel,
   };

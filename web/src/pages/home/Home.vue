@@ -7,13 +7,11 @@ import {
   StarBorderOutlined,
 } from '@vicons/material';
 
-import { WebNovelApi, WenkuNovelApi } from '@/data';
+import { useWebNovelList, useWenkuNovelList } from '@/hooks';
 import bannerUrl from '@/image/banner.webp';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
-import { WenkuNovelOutlineDto } from '@/model/WenkuNovel';
 import { useBreakPoints } from '@/pages/util';
 import { useFavoredStore, useWhoamiStore } from '@/stores';
-import { Result, runCatching } from '@/util/result';
 import { WebUtil } from '@/util/web';
 
 const bp = useBreakPoints();
@@ -37,10 +35,13 @@ const query = (url: string) => {
   }
 };
 
-const favoriteList = ref<Result<WebNovelOutlineDto[]>>();
+const favoriteList = ref<{
+  data?: WebNovelOutlineDto[];
+  error: Error | null;
+}>({ error: null });
 const loadFavorite = async () => {
-  favoriteList.value = await runCatching(
-    useFavoredStore()
+  try {
+    const data = await useFavoredStore()
       .listFavoredWebNovel('default', {
         page: 0,
         pageSize: 8,
@@ -51,8 +52,11 @@ const loadFavorite = async () => {
         translate: 0,
         sort: 'update',
       })
-      .then((it) => it.items),
-  );
+      .then((it) => it.items);
+    favoriteList.value = { data, error: null };
+  } catch (e) {
+    favoriteList.value = { error: e as Error };
+  }
 };
 watch(
   () => whoami.value.isSignedIn,
@@ -64,31 +68,17 @@ watch(
   { immediate: true },
 );
 
-const mostVisitedWeb = ref<Result<WebNovelOutlineDto[]>>();
-const loadWeb = async () => {
-  mostVisitedWeb.value = await runCatching(
-    WebNovelApi.listNovel({
-      page: 0,
-      pageSize: 8,
-      provider: 'kakuyomu,syosetu,novelup,hameln,pixiv,alphapolis',
-      sort: 1,
-      level: 1,
-    }).then((it) => it.items),
-  );
-};
-loadWeb();
+const { data: mostVisitedWeb, error: mostVisitedWebError } = useWebNovelList(
+  1,
+  {
+    provider: 'kakuyomu,syosetu,novelup,hameln,pixiv,alphapolis',
+    sort: 1,
+    level: 1,
+  },
+);
 
-const latestUpdateWenku = ref<Result<WenkuNovelOutlineDto[]>>();
-const loadWenku = async () => {
-  latestUpdateWenku.value = await runCatching(
-    WenkuNovelApi.listNovel({
-      page: 0,
-      pageSize: 12,
-      level: 1,
-    }).then((it) => it.items),
-  );
-};
-loadWenku();
+const { data: latestUpdateWenku, error: latestUpdateWenkuError } =
+  useWenkuNovelList(1, { level: 1 });
 
 const showHowToUseModal = ref(false);
 const linkExample = [
@@ -224,7 +214,10 @@ const githubLink = 'https://github.com/auto-novel/auto-novel';
           <c-button label="更多" :icon="ReadMoreOutlined" />
         </router-link>
       </section-header>
-      <PanelWebNovel :list-result="favoriteList" />
+      <PanelWebNovel
+        :novels="favoriteList?.data?.slice(0, 8)"
+        :error="favoriteList?.error"
+      />
       <n-divider />
     </template>
 
@@ -233,7 +226,10 @@ const githubLink = 'https://github.com/auto-novel/auto-novel';
         <c-button label="更多" :icon="ReadMoreOutlined" />
       </router-link>
     </section-header>
-    <PanelWebNovel :list-result="mostVisitedWeb" />
+    <PanelWebNovel
+      :novels="mostVisitedWeb?.items?.slice(0, 8)"
+      :error="mostVisitedWebError"
+    />
     <n-divider />
 
     <section-header title="文库小说-最新更新">
@@ -241,7 +237,10 @@ const githubLink = 'https://github.com/auto-novel/auto-novel';
         <c-button label="更多" :icon="ReadMoreOutlined" />
       </router-link>
     </section-header>
-    <PanelWenkuNovel :list-result="latestUpdateWenku" />
+    <PanelWenkuNovel
+      :novels="latestUpdateWenku?.items?.slice(0, 12)"
+      :error="latestUpdateWenkuError"
+    />
     <n-divider />
   </div>
 

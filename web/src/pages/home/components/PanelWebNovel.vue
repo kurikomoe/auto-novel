@@ -1,19 +1,17 @@
 <script lang="ts" setup>
-import { Result } from '@/util/result';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
 
-defineProps<{ listResult?: Result<WebNovelOutlineDto[]> }>();
+defineProps<{
+  novels: WebNovelOutlineDto[] | undefined;
+  error: Error | null;
+}>();
 </script>
 
 <template>
-  <c-result
-    :result="listResult"
-    :show-empty="(it: WebNovelOutlineDto[]) => it.length === 0"
-    v-slot="{ value: list }"
-  >
+  <template v-if="novels !== undefined">
     <n-grid :x-gap="12" :y-gap="12" cols="1 850:4">
       <n-grid-item
-        v-for="item in list"
+        v-for="item in novels"
         :key="`${item.providerId}/${item.novelId}`"
         style="padding: 8px"
       >
@@ -30,5 +28,8 @@ defineProps<{ listResult?: Result<WebNovelOutlineDto[]> }>();
         </n-text>
       </n-grid-item>
     </n-grid>
-  </c-result>
+    <n-empty v-if="novels.length === 0" description="空列表" />
+  </template>
+
+  <CResultX v-else :error="error" title="加载错误" />
 </template>
