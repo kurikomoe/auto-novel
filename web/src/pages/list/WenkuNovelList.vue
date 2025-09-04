@@ -3,11 +3,7 @@ import { PlusOutlined } from '@vicons/material';
 
 import { useWenkuNovelList } from '@/hooks';
 import router from '@/router';
-import {
-  useFavoredStore,
-  useWenkuSearchHistoryStore,
-  useWhoamiStore,
-} from '@/stores';
+import { useFavoredStore, useWhoamiStore } from '@/stores';
 import { getWenkuNovelOptions } from './components/option';
 
 const route = useRoute();
@@ -61,41 +57,6 @@ watch(novelPage, (novelPage) => {
     }
   }
 });
-
-watch(
-  () => props.query,
-  (query) => {
-    if (query) {
-      document.title = '文库小说 搜索：' + query;
-      searchHistoryStore.addHistory(query);
-    }
-  },
-);
-
-const searchHistoryStore = useWenkuSearchHistoryStore();
-const { searchHistory } = storeToRefs(searchHistoryStore);
-
-const search = computed(() => {
-  return {
-    suggestions: searchHistory.value.queries,
-    tags: searchHistory.value.tags
-      .sort((a, b) => Math.log2(b.used) - Math.log2(a.used))
-      .map((it) => it.tag)
-      .slice(0, 8),
-  };
-});
-
-watch(
-  route,
-  async (route) => {
-    let query = '';
-    if (typeof route.query.query === 'string') {
-      query = route.query.query;
-    }
-    searchHistoryStore.addHistory(query);
-  },
-  { immediate: true },
-);
 </script>
 
 <template>
@@ -111,10 +72,7 @@ watch(
     </router-link>
 
     <NovelListControls
-      :page="page"
-      :query="query"
       :selected="selected"
-      :search="search"
       :options="options"
       @update:query="onUpdatedQuery"
       @update:selected="onUpdatedSelected"

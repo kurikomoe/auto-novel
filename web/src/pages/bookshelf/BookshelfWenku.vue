@@ -90,7 +90,6 @@ const novelListRef = ref<InstanceType<typeof NovelListWenku>>();
     </n-collapse-transition>
 
     <NovelListControls
-      :page="page"
       :selected="selected"
       :options="options"
       @update:selected="onUpdatedSelected"

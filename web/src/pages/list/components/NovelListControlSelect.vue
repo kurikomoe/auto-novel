@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { SyncAltOutlined } from '@vicons/material';
 
-import { NovelListOption } from './option';
+import { NovelListSelectOption } from './option';
 
 const props = defineProps<{
-  option: NovelListOption;
+  option: NovelListSelectOption;
   selected: number;
 }>();
 

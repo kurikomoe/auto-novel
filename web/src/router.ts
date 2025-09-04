@@ -1,3 +1,4 @@
+import { title } from 'process';
 import { LocationQuery, createRouter, createWebHistory } from 'vue-router';
 
 const parseSelected = (q: LocationQuery) => {
@@ -302,13 +303,21 @@ const router = createRouter({
 router.afterEach((to, from) => {
   // 章节之间标题依靠手动切换，这里跳过
   if (!(to.meta.isReader && from.meta.isReader)) {
-    const defaultTitle = '轻小说机翻机器人';
-    const title = to.meta.title;
-    if (title !== undefined) {
-      document.title = title + ' | ' + defaultTitle;
-    } else {
-      document.title = defaultTitle;
+    const titleParts = [];
+
+    if (to.meta.title) {
+      titleParts.push(to.meta.title);
     }
+    if (to.query.query) {
+      titleParts.push(`搜索:${to.query.query}`);
+    }
+    if (titleParts.length > 0) {
+      titleParts.push('|');
+    }
+
+    titleParts.push('轻小说机翻机器人');
+
+    document.title = titleParts.join(' ');
   }
 });
 

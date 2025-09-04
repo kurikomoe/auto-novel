@@ -1,12 +1,23 @@
-export interface NovelListOption {
+export interface NovelListSelectOption {
   label: string;
   tags: string[];
   multiple?: boolean;
   show?: boolean;
 }
 
+export interface NovelListSearchOption {
+  label: string;
+  history: 'web' | 'wenku';
+}
+
+export type NovelListOption = NovelListSelectOption | NovelListSearchOption;
+
 export function getWebNovelOptions(allowNsfw: boolean): NovelListOption[] {
   return [
+    {
+      label: '搜索',
+      history: 'web',
+    },
     {
       label: '来源',
       tags: [
@@ -41,6 +52,10 @@ export function getWebNovelOptions(allowNsfw: boolean): NovelListOption[] {
 
 export function getWenkuNovelOptions(allowNsfw: boolean): NovelListOption[] {
   return [
+    {
+      label: '搜索',
+      history: 'wenku',
+    },
     {
       label: '分级',
       tags: allowNsfw ? ['一般向', '成人向', '严肃向'] : ['一般向', '严肃向'],

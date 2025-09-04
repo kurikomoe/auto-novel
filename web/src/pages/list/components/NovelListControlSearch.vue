@@ -2,10 +2,12 @@
 import { SearchOutlined } from '@vicons/material';
 import { DropdownOption, InputInst, NFlex, NTag } from 'naive-ui';
 
+import { useWebSearchHistoryStore, useWenkuSearchHistoryStore } from '@/stores';
+import { NovelListSearchOption } from './option';
+
 const props = defineProps<{
+  option: NovelListSearchOption;
   value: string;
-  suggestions: string[];
-  tags: string[];
 }>();
 
 const emit = defineEmits<{
@@ -13,19 +15,28 @@ const emit = defineEmits<{
   select: [string];
 }>();
 
+const searchHistoryStore =
+  props.option.history === 'web'
+    ? useWebSearchHistoryStore()
+    : useWenkuSearchHistoryStore();
+const { searchHistory } = storeToRefs(searchHistoryStore);
+
 const options = computed(() => {
   const optionsBuffer: DropdownOption[] = [];
 
-  if (props.suggestions !== undefined) {
-    props.suggestions.forEach((it) =>
-      optionsBuffer.push({
-        key: it,
-        label: it,
-      }),
-    );
-  }
+  searchHistory.value.queries?.forEach((it) =>
+    optionsBuffer.push({
+      key: it,
+      label: it,
+    }),
+  );
 
-  if (props.tags.length > 0) {
+  const tags = searchHistory.value.tags
+    .sort((a, b) => Math.log2(b.used) - Math.log2(a.used))
+    .map((it) => it.tag)
+    .slice(0, 8);
+
+  if (tags.length > 0) {
     if (optionsBuffer.length > 0) {
       optionsBuffer.push({
         key: 'footer-divider',
@@ -41,7 +52,7 @@ const options = computed(() => {
           align: 'center',
           style: ' width:100%; padding: 8px 12px;',
         },
-        props.tags.map((tag) =>
+        tags.map((tag) =>
           h(
             NTag,
             {
@@ -74,8 +85,10 @@ const toggleSuggestions = () => {
   // Hacky
   showSuggestions.value = !showSuggestions.value;
 };
+
 const handleSelect = (key: string) => {
   emit('select', key);
+  searchHistoryStore.addHistory(key);
   inputRef.value?.blur();
   showSuggestions.value = false;
 };
@@ -97,6 +110,7 @@ const handleSelect = (key: string) => {
       v-bind="$attrs"
       clearable
       :value="value"
+      :input-props="{ spellcheck: false }"
       @click="toggleSuggestions"
       @keyup.enter="handleSelect(value)"
       @update:value="(it: string) => emit('update:value', it)"

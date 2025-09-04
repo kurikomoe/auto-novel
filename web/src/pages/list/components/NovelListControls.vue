@@ -1,12 +1,11 @@
 <script lang="ts" setup generic="T extends any">
 import { useSettingStore } from '@/stores';
 import { RegexUtil } from '@/util';
-import { NovelListOption } from './option';
+import { NovelListOption, NovelListSelectOption } from './option';
 
 const props = defineProps<{
   query?: string;
   selected?: number[];
-  search?: { suggestions: string[]; tags: string[] };
   options: NovelListOption[];
 }>();
 
@@ -58,10 +57,13 @@ const selectedWithDefault = ref<number[]>([]);
 watch(
   props,
   ({ options, selected }) => {
-    const newSelected = options.map(({ tags, multiple }, index) => {
-      const defaultSelected = multiple ? 2 ** tags.length - 1 : 0;
-      return selected?.[index] ?? defaultSelected;
-    });
+    const newSelected = options
+      .filter((option) => 'history' in option)
+      .map((option, index) => {
+        const { tags, multiple } = option as any as NovelListSelectOption;
+        const defaultSelected = multiple ? 2 ** tags.length - 1 : 0;
+        return selected?.[index] ?? defaultSelected;
+      });
     const isEqual = (a: number[], b: number[]) => {
       if (a.length !== b.length) return false;
       for (const [i, av] of a.entries()) {
@@ -80,34 +82,37 @@ watch(
 
 <template>
   <n-flex
-    v-if="search !== undefined || options.length >= 0"
+    v-if="options.length >= 0"
     size="large"
     vertical
     style="width: 100%; margin-top: 8px"
   >
-    <c-action-wrapper v-if="search !== undefined" title="搜索" size="large">
-      <input-with-suggestion
-        v-model:value="queryEdit"
-        :suggestions="search.suggestions"
-        :tags="search.tags"
-        :placeholder="`中/日文标题或作者`"
-        style="flex: 0 1 400px; margin-right: 8px"
-        :input-props="{ sselectedWithDefaultpellcheck: false }"
-        @select="onUpdateQuery"
-      />
-    </c-action-wrapper>
+    <template v-for="(option, optionIndex) in options" :key="option.label">
+      <c-action-wrapper
+        v-if="'history' in option"
+        :title="option.label"
+        size="large"
+      >
+        <NovelListControlSearch
+          :option="option"
+          v-model:value="queryEdit"
+          :placeholder="`中/日文标题或作者`"
+          style="flex: 0 1 400px; margin-right: 8px"
+          @select="onUpdateQuery"
+        />
+      </c-action-wrapper>
 
-    <NovelListOptionSelect
-      v-for="(option, optionIndex) in options"
-      :key="option.label"
-      :option="option"
-      :selected="selectedWithDefault[optionIndex]"
-      @update:selected="
-        (index) => {
-          selectedWithDefault[optionIndex] = index;
-          emits('update:selected', selectedWithDefault);
-        }
-      "
-    />
+      <NovelListControlSelect
+        v-else
+        :option="option"
+        :selected="selectedWithDefault[optionIndex]"
+        @update:selected="
+          (index) => {
+            selectedWithDefault[optionIndex] = index;
+            emits('update:selected', selectedWithDefault);
+          }
+        "
+      />
+    </template>
   </n-flex>
 </template>

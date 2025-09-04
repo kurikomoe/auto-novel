@@ -1,12 +1,8 @@
 <script lang="ts" setup>
 import { useWebNovelList } from '@/hooks';
 import router from '@/router';
-import {
-  useFavoredStore,
-  useWebSearchHistoryStore,
-  useWhoamiStore,
-} from '@/stores';
-import { getWebNovelOptions } from './components/option';
+import { useFavoredStore, useWhoamiStore } from '@/stores';
+import { getWebNovelOptions, NovelListSelectOption } from './components/option';
 
 const route = useRoute();
 
@@ -52,7 +48,7 @@ const { data: novelPage, error } = useWebNovelList(
         Pixiv: 'pixiv',
         Alphapolis: 'alphapolis',
       };
-      return options[n].tags
+      return (options[n] as NovelListSelectOption).tags
         .filter((_, index) => (selected[n] & (1 << index)) !== 0)
         .map((tag) => providerMap[tag])
         .join();
@@ -61,17 +57,9 @@ const { data: novelPage, error } = useWebNovelList(
       query,
       provider: parseProviderBitFlags(0),
       type: selected[1],
-      ...(whoami.value.allowNsfw
-        ? {
-            level: selected[2],
-            translate: selected[3],
-            sort: selected[4],
-          }
-        : {
-            level: 1,
-            translate: selected[2],
-            sort: selected[3],
-          }),
+      level: selected[2],
+      translate: selected[3],
+      sort: selected[4],
     };
   },
 );
@@ -86,29 +74,6 @@ watch(novelPage, (novelPage) => {
     }
   }
 });
-
-watch(
-  () => props.query,
-  (query) => {
-    if (query) {
-      document.title = '网络小说 搜索：' + query;
-      searchHistoryStore.addHistory(query);
-    }
-  },
-);
-
-const searchHistoryStore = useWebSearchHistoryStore();
-const { searchHistory } = storeToRefs(searchHistoryStore);
-
-const search = computed(() => {
-  return {
-    suggestions: searchHistory.value.queries,
-    tags: searchHistory.value.tags
-      .sort((a, b) => Math.log2(b.used) - Math.log2(a.used))
-      .map((it) => it.tag)
-      .slice(0, 8),
-  };
-});
 </script>
 
 <template>
@@ -116,10 +81,8 @@ const search = computed(() => {
     <n-h1>网络小说</n-h1>
 
     <NovelListControls
-      :page="page"
       :query="query"
       :selected="selected"
-      :search="search"
       :options="options"
       @update:query="onUpdatedQuery"
       @update:selected="onUpdatedSelected"

@@ -4,8 +4,9 @@ import { ChecklistOutlined } from '@vicons/material';
 import { useWebNovelFavoredList } from '@/hooks';
 import { useIsWideScreen } from '@/pages/util';
 import router from '@/router';
-import { useSettingStore, useWebSearchHistoryStore } from '@/stores';
+import { useSettingStore } from '@/stores';
 import NovelListWeb from '../list/components/NovelListWeb.vue';
+import { NovelListSelectOption } from '../list/components/option';
 
 const route = useRoute();
 
@@ -34,38 +35,45 @@ const isWideScreen = useIsWideScreen();
 const settingStore = useSettingStore();
 const { setting } = storeToRefs(settingStore);
 
-const options = computed(() => [
-  {
-    label: '来源',
-    tags: [
-      'Kakuyomu',
-      '成为小说家吧',
-      'Novelup',
-      'Hameln',
-      'Pixiv',
-      'Alphapolis',
+const options = computed(
+  () =>
+    <NovelListSelectOption[]>[
+      {
+        label: '搜索',
+        history: 'web',
+      },
+      {
+        label: '来源',
+        tags: [
+          'Kakuyomu',
+          '成为小说家吧',
+          'Novelup',
+          'Hameln',
+          'Pixiv',
+          'Alphapolis',
+        ],
+        multiple: true,
+      },
+      {
+        label: '类型',
+        tags: ['全部', '连载中', '已完结', '短篇'],
+      },
+      {
+        label: '分级',
+        tags: ['全部', '一般向', 'R18'],
+      },
+      {
+        label: '翻译',
+        tags: ['全部', 'GPT', 'Sakura'],
+      },
+      {
+        label: '排序',
+        tags: setting.value.favoriteCreateTimeFirst
+          ? ['收藏时间', '更新时间']
+          : ['更新时间', '收藏时间'],
+      },
     ],
-    multiple: true,
-  },
-  {
-    label: '类型',
-    tags: ['全部', '连载中', '已完结', '短篇'],
-  },
-  {
-    label: '分级',
-    tags: ['全部', '一般向', 'R18'],
-  },
-  {
-    label: '翻译',
-    tags: ['全部', 'GPT', 'Sakura'],
-  },
-  {
-    label: '排序',
-    tags: setting.value.favoriteCreateTimeFirst
-      ? ['收藏时间', '更新时间']
-      : ['更新时间', '收藏时间'],
-  },
-]);
+);
 
 const { data: novelPage, error } = useWebNovelFavoredList(
   () => props.page,
@@ -83,7 +91,7 @@ const { data: novelPage, error } = useWebNovelFavoredList(
         Pixiv: 'pixiv',
         Alphapolis: 'alphapolis',
       };
-      return options.value[n].tags
+      return (options.value[n] as NovelListSelectOption).tags
         .filter((_, index) => (selected[n] & (1 << index)) !== 0)
         .map((tag) => providerMap[tag])
         .join();
@@ -110,29 +118,6 @@ const { data: novelPage, error } = useWebNovelFavoredList(
     };
   },
 );
-
-watch(
-  () => props.query,
-  (query) => {
-    if (query) {
-      document.title = '我的收藏 搜索：' + query;
-      searchHistoryStore.addHistory(query);
-    }
-  },
-);
-
-const searchHistoryStore = useWebSearchHistoryStore();
-const { searchHistory } = storeToRefs(searchHistoryStore);
-
-const search = computed(() => {
-  return {
-    suggestions: searchHistory.value.queries,
-    tags: searchHistory.value.tags
-      .sort((a, b) => Math.log2(b.used) - Math.log2(a.used))
-      .map((it) => it.tag)
-      .slice(0, 8),
-  };
-});
 
 const showControlPanel = ref(false);
 
@@ -163,10 +148,8 @@ const novelListRef = ref<InstanceType<typeof NovelListWeb>>();
     </n-collapse-transition>
 
     <NovelListControls
-      :page="page"
       :query="query"
       :selected="selected"
-      :search="search"
       :options="options"
       @update:query="onUpdatedQuery"
       @update:selected="onUpdatedSelected"

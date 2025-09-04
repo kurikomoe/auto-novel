@@ -172,7 +172,6 @@ const { data: novelPage, error } = useWebNovelRankList(
     <n-h1>{{ descriptior.title }}</n-h1>
 
     <NovelListControls
-      :page="page"
       :selected="selected"
       :options="descriptior.options"
       @update:selected="onUpdatedSelected"
