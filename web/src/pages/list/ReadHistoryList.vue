@@ -20,7 +20,7 @@ const props = defineProps<{
 const message = useMessage();
 
 const readHistoryStore = useReadHistoryStore();
-const { readHistoryPaused } = readHistoryStore;
+const { readHistoryPaused } = storeToRefs(readHistoryStore);
 
 onMounted(() => {
   readHistoryStore.loadReadHistoryPausedState();
