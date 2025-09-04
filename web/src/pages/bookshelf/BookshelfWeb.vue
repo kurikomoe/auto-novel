@@ -91,8 +91,8 @@ const { data: novelPage, error } = useWebNovelFavoredList(
         Pixiv: 'pixiv',
         Alphapolis: 'alphapolis',
       };
-      return (options.value[n] as NovelListSelectOption).tags
-        .filter((_, index) => (selected[n] & (1 << index)) !== 0)
+      return (options.value[n + 1] as NovelListSelectOption).tags
+        .filter((_, index) => (selected[n] ?? 0xff & (1 << index)) !== 0)
         .map((tag) => providerMap[tag])
         .join();
     };
@@ -111,10 +111,10 @@ const { data: novelPage, error } = useWebNovelFavoredList(
     return {
       query,
       provider: parseProviderBitFlags(0),
-      type: selected[1],
-      level: selected[2],
-      translate: selected[3],
-      sort: parseSort(selected[4]),
+      type: selected[1] ?? 0,
+      level: selected[2] ?? 0,
+      translate: selected[3] ?? 0,
+      sort: parseSort(selected[4] ?? 0),
     };
   },
 );

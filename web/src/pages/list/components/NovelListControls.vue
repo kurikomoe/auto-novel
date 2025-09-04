@@ -58,9 +58,9 @@ watch(
   props,
   ({ options, selected }) => {
     const newSelected = options
-      .filter((option) => 'history' in option)
+      .filter((option) => !('history' in option))
       .map((option, index) => {
-        const { tags, multiple } = option as any as NovelListSelectOption;
+        const { tags, multiple } = option as unknown as NovelListSelectOption;
         const defaultSelected = multiple ? 2 ** tags.length - 1 : 0;
         return selected?.[index] ?? defaultSelected;
       });
@@ -78,6 +78,17 @@ watch(
   },
   { immediate: true },
 );
+
+function toSelectIndex(optionIndex: number) {
+  return props.options
+    .filter((option) => !('history' in option))
+    .indexOf(props.options[optionIndex]);
+}
+
+function onSelect(index: number, value: number) {
+  selectedWithDefault.value[toSelectIndex(index)] = value;
+  emits('update:selected', selectedWithDefault.value);
+}
 </script>
 
 <template>
@@ -105,13 +116,8 @@ watch(
       <NovelListControlSelect
         v-else
         :option="option"
-        :selected="selectedWithDefault[optionIndex]"
-        @update:selected="
-          (index) => {
-            selectedWithDefault[optionIndex] = index;
-            emits('update:selected', selectedWithDefault);
-          }
-        "
+        :selected="selectedWithDefault[toSelectIndex(optionIndex)]"
+        @update:selected="(index) => onSelect(optionIndex, index)"
       />
     </template>
   </n-flex>

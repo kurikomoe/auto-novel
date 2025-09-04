@@ -48,18 +48,18 @@ const { data: novelPage, error } = useWebNovelList(
         Pixiv: 'pixiv',
         Alphapolis: 'alphapolis',
       };
-      return (options[n] as NovelListSelectOption).tags
-        .filter((_, index) => (selected[n] & (1 << index)) !== 0)
+      return (options[n + 1] as NovelListSelectOption).tags
+        .filter((_, index) => ((selected[n] ?? 0xff) & (1 << index)) !== 0)
         .map((tag) => providerMap[tag])
         .join();
     };
     return {
       query,
       provider: parseProviderBitFlags(0),
-      type: selected[1],
-      level: selected[2],
-      translate: selected[3],
-      sort: selected[4],
+      type: selected[1] ?? 0,
+      level: selected[2] ?? 0,
+      translate: selected[3] ?? 0,
+      sort: selected[4] ?? 0,
     };
   },
 );
