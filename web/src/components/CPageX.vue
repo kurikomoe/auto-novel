@@ -15,7 +15,7 @@ const realPageNumber = ref(1);
 watch(
   () => props.pageNumber,
   (pageNumber) => {
-    if (pageNumber && pageNumber > 0) {
+    if (pageNumber !== undefined) {
       realPageNumber.value = pageNumber;
     }
   },
