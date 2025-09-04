@@ -1,4 +1,3 @@
-import { title } from 'process';
 import { LocationQuery, createRouter, createWebHistory } from 'vue-router';
 
 const parseSelected = (q: LocationQuery) => {
