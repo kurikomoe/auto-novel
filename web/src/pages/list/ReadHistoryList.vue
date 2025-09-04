@@ -1,14 +1,19 @@
 <script lang="ts" setup>
 import { DeleteOutlineOutlined } from '@vicons/material';
 
-import { WebNovelOutlineDto } from '@/model/WebNovel';
+import { useWebNovelHistoryList } from '@/hooks';
+import router from '@/router';
 import { useReadHistoryStore } from '@/stores';
-import { runCatching } from '@/util/result';
-
-import { Loader } from '../list/components/NovelPage.vue';
 import { doAction } from '../util';
 
-defineProps<{
+const route = useRoute();
+
+const onUpdatePage = (page: number) => {
+  const query = { ...route.query, page };
+  router.push({ path: route.path, query });
+};
+
+const props = defineProps<{
   page: number;
 }>();
 
@@ -21,8 +26,7 @@ onMounted(() => {
   readHistoryStore.loadReadHistoryPausedState();
 });
 
-const loader: Loader<WebNovelOutlineDto> = (page, _query, _selected) =>
-  runCatching(readHistoryStore.listReadHistoryWeb({ page, pageSize: 30 }));
+const { data: novelPage, error } = useWebNovelHistoryList(() => props.page);
 
 const clearHistory = () =>
   doAction(
@@ -70,17 +74,28 @@ const deleteHistory = (providerId: string, novelId: string) =>
       注意：历史功能已暂停
     </n-text>
 
-    <novel-page :page="page" :loader="loader" :options="[]" v-slot="{ items }">
-      <novel-list-web :items="items" simple>
-        <template #action="item">
-          <c-button
-            size="tiny"
-            label="删除"
-            style="margin-top: 2px"
-            @action="deleteHistory(item.providerId, item.novelId)"
-          />
-        </template>
-      </novel-list-web>
-    </novel-page>
+    <CPageX
+      :page="page"
+      :page-number="novelPage?.pageNumber"
+      @update:page="onUpdatePage"
+    >
+      <template v-if="novelPage">
+        <n-divider />
+        <NovelListWeb :items="novelPage.items" :option="[]" simple>
+          <template #action="item">
+            <c-button
+              size="tiny"
+              label="删除"
+              style="margin-top: 2px"
+              @action="deleteHistory(item.providerId, item.novelId)"
+            />
+          </template>
+        </NovelListWeb>
+        <n-empty v-if="novelPage.items.length === 0" description="空列表" />
+        <n-divider />
+      </template>
+
+      <CResultX v-else :error="error" title="加载错误" />
+    </CPageX>
   </div>
 </template>

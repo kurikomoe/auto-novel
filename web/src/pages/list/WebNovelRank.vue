@@ -1,10 +1,17 @@
 <script lang="ts" setup>
-import { WebNovelApi } from '@/data';
-import { WebNovelOutlineDto } from '@/model/WebNovel';
-import { runCatching } from '@/util/result';
+import { useWebNovelRankList } from '@/hooks';
+import router from '@/router';
 
-import { useIsWideScreen } from '@/pages/util';
-import { Loader } from './components/NovelPage.vue';
+const route = useRoute();
+
+const onUpdatePage = (page: number) => {
+  const query = { ...route.query, page };
+  router.push({ path: route.path, query });
+};
+const onUpdatedSelected = (selected: number[]) => {
+  const query = { ...route.query, selected, page: 1 };
+  router.push({ path: route.path, query });
+};
 
 const props = defineProps<{
   providerId: string;
@@ -12,9 +19,6 @@ const props = defineProps<{
   page: number;
   selected: number[];
 }>();
-
-const isWideScreen = useIsWideScreen();
-const route = useRoute();
 
 type Descriptor = {
   [key: string]: {
@@ -124,16 +128,15 @@ const descriptior = computed(
   () => descriptiors[props.providerId][props.typeId],
 );
 
-const loader = computed<Loader<WebNovelOutlineDto>>(() => {
-  const providerId = props.providerId;
-  const typeId = props.typeId;
-
-  return (page, _query, selected) => {
+const { data: novelPage, error } = useWebNovelRankList(
+  () => props.providerId,
+  () => {
+    const typeId = props.typeId;
     const optionNth = (n: number): string =>
-      descriptior.value.options[n].tags[selected[n]];
+      descriptior.value.options[n].tags[props.selected[n] ?? 0];
 
     let filters = {};
-    if (providerId == 'syosetu') {
+    if (props.providerId == 'syosetu') {
       const types: { [key: string]: string } = {
         '1': '流派',
         '2': '综合',
@@ -144,7 +147,7 @@ const loader = computed<Loader<WebNovelOutlineDto>>(() => {
           type: types[typeId],
           range: optionNth(0),
           status: optionNth(1),
-          page,
+          page: props.page,
         };
       } else {
         filters = {
@@ -152,37 +155,42 @@ const loader = computed<Loader<WebNovelOutlineDto>>(() => {
           genre: optionNth(0),
           range: optionNth(1),
           status: optionNth(2),
-          page,
+          page: props.page,
         };
       }
-    } else if (providerId == 'kakuyomu') {
+    } else if (props.providerId == 'kakuyomu') {
       filters = { genre: optionNth(0), range: optionNth(1) };
     }
-    return runCatching(WebNovelApi.listRank(providerId, filters));
-  };
-});
+    console.log(filters);
+    return filters;
+  },
+);
 </script>
 
 <template>
   <div class="layout-content">
     <n-h1>{{ descriptior.title }}</n-h1>
 
-    <novel-page
+    <NovelListControls
       :page="page"
       :selected="selected"
-      :loader="loader"
-      :search="
-        descriptior.search
-          ? {
-              suggestions: [],
-              tags: [],
-            }
-          : undefined
-      "
       :options="descriptior.options"
-      v-slot="{ items }"
+      @update:selected="onUpdatedSelected"
+    />
+
+    <CPageX
+      :page="page"
+      :page-number="novelPage?.pageNumber"
+      @update:page="onUpdatePage"
     >
-      <novel-list-web :items="items" />
-    </novel-page>
+      <template v-if="novelPage">
+        <n-divider />
+        <NovelListWeb :items="novelPage.items" />
+        <n-empty v-if="novelPage.items.length === 0" description="空列表" />
+        <n-divider />
+      </template>
+
+      <CResultX v-else :error="error" title="加载错误" />
+    </CPageX>
   </div>
 </template>

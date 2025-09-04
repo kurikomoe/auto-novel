@@ -1,16 +1,26 @@
 <script lang="ts" setup>
 import { ChecklistOutlined } from '@vicons/material';
 
-import { WebNovelOutlineDto } from '@/model/WebNovel';
+import { useWebNovelFavoredList } from '@/hooks';
 import { useIsWideScreen } from '@/pages/util';
-import {
-  useFavoredStore,
-  useSettingStore,
-  useWebSearchHistoryStore,
-} from '@/stores';
-import { runCatching } from '@/util/result';
+import router from '@/router';
+import { useSettingStore, useWebSearchHistoryStore } from '@/stores';
 import NovelListWeb from '../list/components/NovelListWeb.vue';
-import { Loader } from '../list/components/NovelPage.vue';
+
+const route = useRoute();
+
+const onUpdatePage = (page: number) => {
+  const query = { ...route.query, page };
+  router.push({ path: route.path, query });
+};
+const onUpdatedQuery = (query: string) => {
+  const q = { ...route.query, query, page: 1 };
+  router.push({ path: route.path, query: q });
+};
+const onUpdatedSelected = (selected: number[]) => {
+  const query = { ...route.query, selected, page: 1 };
+  router.push({ path: route.path, query });
+};
 
 const props = defineProps<{
   page: number;
@@ -18,8 +28,6 @@ const props = defineProps<{
   selected: number[];
   favoredId: string;
 }>();
-
-const route = useRoute();
 
 const isWideScreen = useIsWideScreen();
 
@@ -59,12 +67,13 @@ const options = computed(() => [
   },
 ]);
 
-const loader = computed<Loader<WebNovelOutlineDto>>(() => {
-  const { favoredId } = props;
-  return (page, query, selected) => {
-    if (query !== '') {
-      document.title = '我的收藏 搜索：' + query;
-    }
+const { data: novelPage, error } = useWebNovelFavoredList(
+  () => props.page,
+  () => props.favoredId,
+  () => {
+    const query = props.query;
+    const selected = props.selected;
+
     const parseProviderBitFlags = (n: number): string => {
       const providerMap: { [key: string]: string } = {
         Kakuyomu: 'kakuyomu',
@@ -91,22 +100,26 @@ const loader = computed<Loader<WebNovelOutlineDto>>(() => {
           return 'update';
       }
     };
-    return runCatching(
-      useFavoredStore()
-        .listFavoredWebNovel(favoredId, {
-          page,
-          pageSize: 30,
-          query,
-          provider: parseProviderBitFlags(0),
-          type: selected[1],
-          level: selected[2],
-          translate: selected[3],
-          sort: parseSort(selected[4]),
-        })
-        .then((it) => ({ type: 'web', ...it })),
-    );
-  };
-});
+    return {
+      query,
+      provider: parseProviderBitFlags(0),
+      type: selected[1],
+      level: selected[2],
+      translate: selected[3],
+      sort: parseSort(selected[4]),
+    };
+  },
+);
+
+watch(
+  () => props.query,
+  (query) => {
+    if (query) {
+      document.title = '我的收藏 搜索：' + query;
+      searchHistoryStore.addHistory(query);
+    }
+  },
+);
 
 const searchHistoryStore = useWebSearchHistoryStore();
 const { searchHistory } = storeToRefs(searchHistoryStore);
@@ -120,18 +133,6 @@ const search = computed(() => {
       .slice(0, 8),
   };
 });
-
-watch(
-  route,
-  async (route) => {
-    let query = '';
-    if (typeof route.query.query === 'string') {
-      query = route.query.query;
-    }
-    searchHistoryStore.addHistory(query);
-  },
-  { immediate: true },
-);
 
 const showControlPanel = ref(false);
 
@@ -161,21 +162,34 @@ const novelListRef = ref<InstanceType<typeof NovelListWeb>>();
       />
     </n-collapse-transition>
 
-    <novel-page
+    <NovelListControls
       :page="page"
       :query="query"
       :selected="selected"
-      :loader="loader"
-      :options="options"
       :search="search"
-      v-slot="{ items }"
+      :options="options"
+      @update:query="onUpdatedQuery"
+      @update:selected="onUpdatedSelected"
+    />
+
+    <CPageX
+      :page="page"
+      :page-number="novelPage?.pageNumber"
+      @update:page="onUpdatePage"
     >
-      <novel-list-web
-        ref="novelListRef"
-        :items="items"
-        :selectable="showControlPanel"
-        :simple="!setting.showTagInWebFavored"
-      />
-    </novel-page>
+      <template v-if="novelPage">
+        <n-divider />
+        <NovelListWeb
+          ref="novelListRef"
+          :items="novelPage.items"
+          :selectable="showControlPanel"
+          :simple="!setting.showTagInWebFavored"
+        />
+        <n-empty v-if="novelPage.items.length === 0" description="空列表" />
+        <n-divider />
+      </template>
+
+      <CResultX v-else :error="error" title="加载错误" />
+    </CPageX>
   </bookshelf-layout>
 </template>

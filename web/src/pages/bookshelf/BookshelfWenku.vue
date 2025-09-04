@@ -1,12 +1,22 @@
 <script lang="ts" setup>
 import { ChecklistOutlined } from '@vicons/material';
 
-import { WenkuNovelOutlineDto } from '@/model/WenkuNovel';
+import { useWenkuNovelFavoredList } from '@/hooks';
 import { useIsWideScreen } from '@/pages/util';
-import { useFavoredStore, useSettingStore } from '@/stores';
-import { runCatching } from '@/util/result';
+import router from '@/router';
+import { useSettingStore } from '@/stores';
 import NovelListWenku from '../list/components/NovelListWenku.vue';
-import { Loader } from '../list/components/NovelPage.vue';
+
+const route = useRoute();
+
+const onUpdatePage = (page: number) => {
+  const query = { ...route.query, page };
+  router.push({ path: route.path, query });
+};
+const onUpdatedSelected = (selected: number[]) => {
+  const query = { ...route.query, selected, page: 1 };
+  router.push({ path: route.path, query });
+};
 
 const props = defineProps<{
   page: number;
@@ -30,9 +40,12 @@ const options = computed(() => {
   ];
 });
 
-const loader = computed<Loader<WenkuNovelOutlineDto>>(() => {
-  const { favoredId } = props;
-  return (page, _query, selected) => {
+const { data: novelPage, error } = useWenkuNovelFavoredList(
+  () => props.page,
+  () => props.favoredId,
+  () => {
+    const selected = props.selected;
+
     const optionNth = (n: number): string => options.value[n].tags[selected[n]];
     const optionSort = () => {
       const option = optionNth(0);
@@ -42,17 +55,11 @@ const loader = computed<Loader<WenkuNovelOutlineDto>>(() => {
         return 'create';
       }
     };
-    return runCatching(
-      useFavoredStore()
-        .listFavoredWenkuNovel(favoredId, {
-          page,
-          pageSize: 24,
-          sort: optionSort(),
-        })
-        .then((it) => ({ type: 'wenku', ...it })),
-    );
-  };
-});
+    return {
+      sort: optionSort(),
+    };
+  },
+);
 
 const showControlPanel = ref(false);
 
@@ -82,19 +89,31 @@ const novelListRef = ref<InstanceType<typeof NovelListWenku>>();
       />
     </n-collapse-transition>
 
-    <novel-page
+    <NovelListControls
       :page="page"
       :selected="selected"
-      :loader="loader"
       :options="options"
-      v-slot="{ items }"
+      @update:selected="onUpdatedSelected"
+    />
+
+    <CPageX
+      :page="page"
+      :page-number="novelPage?.pageNumber"
+      @update:page="onUpdatePage"
     >
-      <novel-list-wenku
-        ref="novelListRef"
-        :items="items"
-        :selectable="showControlPanel"
-        simple
-      />
-    </novel-page>
+      <template v-if="novelPage">
+        <n-divider />
+        <NovelListWenku
+          ref="novelListRef"
+          :items="novelPage.items"
+          :selectable="showControlPanel"
+          simple
+        />
+        <n-empty v-if="novelPage.items.length === 0" description="空列表" />
+        <n-divider />
+      </template>
+
+      <CResultX v-else :error="error" title="加载错误" />
+    </CPageX>
   </bookshelf-layout>
 </template>

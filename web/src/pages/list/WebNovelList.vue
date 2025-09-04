@@ -1,87 +1,63 @@
 <script lang="ts" setup>
-import { WebNovelApi } from '@/data';
-import { WebNovelOutlineDto } from '@/model/WebNovel';
+import { useWebNovelList } from '@/hooks';
+import router from '@/router';
 import {
   useFavoredStore,
   useWebSearchHistoryStore,
   useWhoamiStore,
 } from '@/stores';
-import { runCatching } from '@/util/result';
-import { Loader } from './components/NovelPage.vue';
+import { getWebNovelOptions } from './components/option';
 
-defineProps<{
+const route = useRoute();
+
+const onUpdatePage = (page: number) => {
+  const query = { ...route.query, page };
+  router.push({ path: route.path, query });
+};
+const onUpdatedQuery = (query: string) => {
+  const q = { ...route.query, query, page: 1 };
+  router.push({ path: route.path, query: q });
+};
+const onUpdatedSelected = (selected: number[]) => {
+  const query = { ...route.query, selected, page: 1 };
+  router.push({ path: route.path, query });
+};
+
+const props = defineProps<{
   page: number;
   query: string;
   selected: number[];
 }>();
 
-const route = useRoute();
-
 const whoamiStore = useWhoamiStore();
 const { whoami } = storeToRefs(whoamiStore);
-
-const options = [
-  {
-    label: '来源',
-    tags: [
-      'Kakuyomu',
-      '成为小说家吧',
-      'Novelup',
-      'Hameln',
-      'Pixiv',
-      'Alphapolis',
-    ],
-    multiple: true,
-  },
-  {
-    label: '类型',
-    tags: ['全部', '连载中', '已完结', '短篇'],
-  },
-  ...(whoami.value.allowNsfw
-    ? [
-        {
-          label: '分级',
-          tags: ['全部', '一般向', 'R18'],
-        },
-      ]
-    : []),
-  {
-    label: '翻译',
-    tags: ['全部', 'GPT', 'Sakura'],
-  },
-  {
-    label: '排序',
-    tags: ['更新', '点击', '相关'],
-  },
-];
+const options = getWebNovelOptions(whoami.value.allowNsfw);
 
 const favoredStore = useFavoredStore();
 const { favoreds } = storeToRefs(favoredStore);
 onMounted(() => favoredStore.loadRemoteFavoreds());
 
-const loader: Loader<WebNovelOutlineDto> = (page, query, selected) => {
-  if (query !== '') {
-    document.title = '网络小说 搜索：' + query;
-  }
-  const parseProviderBitFlags = (n: number): string => {
-    const providerMap: { [key: string]: string } = {
-      Kakuyomu: 'kakuyomu',
-      成为小说家吧: 'syosetu',
-      Novelup: 'novelup',
-      Hameln: 'hameln',
-      Pixiv: 'pixiv',
-      Alphapolis: 'alphapolis',
-    };
-    return options[n].tags
-      .filter((_, index) => (selected[n] & (1 << index)) !== 0)
-      .map((tag) => providerMap[tag])
-      .join();
-  };
+const { data: novelPage, error } = useWebNovelList(
+  () => props.page,
+  () => {
+    const query = props.query;
+    const selected = props.selected;
 
-  return runCatching(
-    WebNovelApi.listNovel({
-      page,
-      pageSize: 20,
+    const parseProviderBitFlags = (n: number): string => {
+      const providerMap: { [key: string]: string } = {
+        Kakuyomu: 'kakuyomu',
+        成为小说家吧: 'syosetu',
+        Novelup: 'novelup',
+        Hameln: 'hameln',
+        Pixiv: 'pixiv',
+        Alphapolis: 'alphapolis',
+      };
+      return options[n].tags
+        .filter((_, index) => (selected[n] & (1 << index)) !== 0)
+        .map((tag) => providerMap[tag])
+        .join();
+    };
+    return {
       query,
       provider: parseProviderBitFlags(0),
       type: selected[1],
@@ -96,17 +72,30 @@ const loader: Loader<WebNovelOutlineDto> = (page, query, selected) => {
             translate: selected[2],
             sort: selected[3],
           }),
-    }).then((page) => {
-      const favoredIds = favoreds.value.web.map((it) => it.id);
-      for (const item of page.items) {
-        if (item.favored && !favoredIds.includes(item.favored)) {
-          item.favored = undefined;
-        }
+    };
+  },
+);
+
+watch(novelPage, (novelPage) => {
+  if (novelPage) {
+    const favoredIds = favoreds.value.web.map((it) => it.id);
+    for (const item of novelPage.items) {
+      if (item.favored && !favoredIds.includes(item.favored)) {
+        item.favored = undefined;
       }
-      return page;
-    }),
-  );
-};
+    }
+  }
+});
+
+watch(
+  () => props.query,
+  (query) => {
+    if (query) {
+      document.title = '网络小说 搜索：' + query;
+      searchHistoryStore.addHistory(query);
+    }
+  },
+);
 
 const searchHistoryStore = useWebSearchHistoryStore();
 const { searchHistory } = storeToRefs(searchHistoryStore);
@@ -120,34 +109,35 @@ const search = computed(() => {
       .slice(0, 8),
   };
 });
-
-watch(
-  route,
-  async (route) => {
-    let query = '';
-    if (typeof route.query.query === 'string') {
-      query = route.query.query;
-    }
-    searchHistoryStore.addHistory(query);
-  },
-  { immediate: true },
-);
 </script>
 
 <template>
   <div class="layout-content">
     <n-h1>网络小说</n-h1>
 
-    <novel-page
+    <NovelListControls
       :page="page"
       :query="query"
       :selected="selected"
-      :loader="loader"
       :search="search"
       :options="options"
-      v-slot="{ items }"
+      @update:query="onUpdatedQuery"
+      @update:selected="onUpdatedSelected"
+    />
+
+    <CPageX
+      :page="page"
+      :page-number="novelPage?.pageNumber"
+      @update:page="onUpdatePage"
     >
-      <novel-list-web :items="items" />
-    </novel-page>
+      <template v-if="novelPage">
+        <n-divider />
+        <NovelListWeb :items="novelPage.items" />
+        <n-empty v-if="novelPage.items.length === 0" description="空列表" />
+        <n-divider />
+      </template>
+
+      <CResultX v-else :error="error" title="加载错误" />
+    </CPageX>
   </div>
 </template>

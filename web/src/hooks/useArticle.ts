@@ -21,7 +21,7 @@ export const useArticleList = (
   category: MaybeRefOrGetter<ArticleCategory>,
 ) =>
   useQuery({
-    key: () => [ListKey, toValue(page), toValue(category)],
+    key: () => [ListKey, toValue(category), toValue(page)],
     query: () =>
       ArticleApi.listArticle({
         page: toValue(page) - 1,

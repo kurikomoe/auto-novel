@@ -1,66 +1,76 @@
 <script lang="ts" setup>
 import { PlusOutlined } from '@vicons/material';
 
-import { WenkuNovelApi } from '@/data';
-import { WenkuNovelOutlineDto } from '@/model/WenkuNovel';
+import { useWenkuNovelList } from '@/hooks';
+import router from '@/router';
 import {
   useFavoredStore,
   useWenkuSearchHistoryStore,
   useWhoamiStore,
 } from '@/stores';
-import { runCatching } from '@/util/result';
+import { getWenkuNovelOptions } from './components/option';
 
-import { Loader } from './components/NovelPage.vue';
+const route = useRoute();
 
-defineProps<{
+const onUpdatePage = (page: number) => {
+  const query = { ...route.query, page };
+  router.push({ path: route.path, query });
+};
+const onUpdatedQuery = (query: string) => {
+  const q = { ...route.query, query, page: 1 };
+  router.push({ path: route.path, query: q });
+};
+const onUpdatedSelected = (selected: number[]) => {
+  const query = { ...route.query, selected, page: 1 };
+  router.push({ path: route.path, query });
+};
+
+const props = defineProps<{
   page: number;
   query: string;
   selected: number[];
 }>();
 
-const route = useRoute();
-
 const whoamiStore = useWhoamiStore();
 const { whoami } = storeToRefs(whoamiStore);
 
-const options = [
-  {
-    label: '分级',
-    tags: whoami.value.allowNsfw
-      ? ['一般向', '成人向', '严肃向']
-      : ['一般向', '严肃向'],
-  },
-];
+const options = getWenkuNovelOptions(whoami.value.allowNsfw);
 
 const favoredStore = useFavoredStore();
 const { favoreds } = storeToRefs(favoredStore);
 onMounted(() => favoredStore.loadRemoteFavoreds());
 
-const loader: Loader<WenkuNovelOutlineDto> = (page, query, selected) => {
-  if (query !== '') {
-    document.title = '文库小说 搜索：' + query;
-  }
-  let level = selected[0] + 1;
-  if (!whoami.value.allowNsfw && level === 2) {
-    level = 3;
-  }
-  return runCatching(
-    WenkuNovelApi.listNovel({
-      page,
-      pageSize: 24,
-      query,
-      level,
-    }).then((page) => {
-      const favoredIds = favoreds.value.wenku.map((it) => it.id);
-      for (const item of page.items) {
-        if (item.favored && !favoredIds.includes(item.favored)) {
-          item.favored = undefined;
-        }
+const { data: novelPage, error } = useWenkuNovelList(
+  () => props.page,
+  () => {
+    let level = (props.selected[0] ?? 0) + 1;
+    if (!whoami.value.allowNsfw && level === 2) {
+      level = 3;
+    }
+    return { query: props.query, level };
+  },
+);
+
+watch(novelPage, (novelPage) => {
+  if (novelPage) {
+    const favoredIds = favoreds.value.wenku.map((it) => it.id);
+    for (const item of novelPage.items) {
+      if (item.favored && !favoredIds.includes(item.favored)) {
+        item.favored = undefined;
       }
-      return page;
-    }),
-  );
-};
+    }
+  }
+});
+
+watch(
+  () => props.query,
+  (query) => {
+    if (query) {
+      document.title = '文库小说 搜索：' + query;
+      searchHistoryStore.addHistory(query);
+    }
+  },
+);
 
 const searchHistoryStore = useWenkuSearchHistoryStore();
 const { searchHistory } = storeToRefs(searchHistoryStore);
@@ -100,17 +110,30 @@ watch(
       />
     </router-link>
 
-    <novel-page
+    <NovelListControls
       :page="page"
       :query="query"
       :selected="selected"
-      :loader="loader"
       :search="search"
       :options="options"
-      v-slot="{ items }"
+      @update:query="onUpdatedQuery"
+      @update:selected="onUpdatedSelected"
+    />
+
+    <CPageX
+      :page="page"
+      :page-number="novelPage?.pageNumber"
+      @update:page="onUpdatePage"
     >
-      <novel-list-wenku :items="items" />
-    </novel-page>
+      <template v-if="novelPage">
+        <n-divider />
+        <NovelListWenku :items="novelPage.items" />
+        <n-empty v-if="novelPage.items.length === 0" description="空列表" />
+        <n-divider />
+      </template>
+
+      <CResultX v-else :error="error" title="加载错误" />
+    </CPageX>
   </div>
 </template>
 
