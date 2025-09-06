@@ -2,7 +2,7 @@ export interface NovelListSelectOption {
   label: string;
   tags: string[];
   multiple?: boolean;
-  show?: boolean;
+  hide?: boolean;
 }
 
 export interface NovelListSearchOption {
@@ -37,7 +37,7 @@ export function getWebNovelOptions(allowNsfw: boolean): NovelListOption[] {
     {
       label: '分级',
       tags: ['全部', '一般向', 'R18'],
-      show: allowNsfw,
+      hide: !allowNsfw,
     },
     {
       label: '翻译',

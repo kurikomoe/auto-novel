@@ -114,7 +114,7 @@ function onSelect(index: number, value: number) {
       </c-action-wrapper>
 
       <NovelListControlSelect
-        v-else
+        v-else-if="!option.hide"
         :option="option"
         :selected="selectedWithDefault[toSelectIndex(optionIndex)]"
         @update:selected="(index) => onSelect(optionIndex, index)"
