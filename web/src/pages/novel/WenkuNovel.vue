@@ -2,8 +2,7 @@
 import { EditNoteOutlined, LanguageOutlined } from '@vicons/material';
 import { createReusableTemplate } from '@vueuse/core';
 
-import { WenkuNovelApi } from '@/data';
-import { invalidateWenkuNovel, useWenkuNovel } from '@/hooks';
+import { WenkuNovelRepo } from '@/hooks';
 import coverPlaceholder from '@/image/cover_placeholder.png';
 import { GenericNovelId } from '@/model/Common';
 import { doAction, useIsWideScreen } from '@/pages/util';
@@ -27,7 +26,7 @@ const { setting } = storeToRefs(settingStore);
 const whoamiStore = useWhoamiStore();
 const { whoami } = storeToRefs(whoamiStore);
 
-const { data: novel, error } = useWenkuNovel(novelId);
+const { data: novel, error } = WenkuNovelRepo.useWenkuNovel(novelId);
 
 watch(novel, (novel) => {
   if (novel) {
@@ -38,13 +37,7 @@ watch(novel, (novel) => {
 const translateOptions = ref<InstanceType<typeof TranslateOptions>>();
 
 const deleteVolume = (volumeId: string) =>
-  doAction(
-    WenkuNovelApi.deleteVolume(novelId, volumeId).then(() => {
-      invalidateWenkuNovel(novelId);
-    }),
-    '删除',
-    message,
-  );
+  doAction(WenkuNovelRepo.deleteVolume(novelId, volumeId), '删除', message);
 
 const buildSearchLink = (tag: string) => `/wenku?query="${tag}"`;
 

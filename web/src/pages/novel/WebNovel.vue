@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useWebNovel } from '@/hooks';
+import { WebNovelRepo } from '@/hooks';
 import { useIsWideScreen } from '@/pages/util';
 
 const { providerId, novelId } = defineProps<{
@@ -10,7 +10,7 @@ const { providerId, novelId } = defineProps<{
 const isWideScreen = useIsWideScreen();
 const router = useRouter();
 
-const { data: novel, error } = useWebNovel(providerId, novelId);
+const { data: novel, error } = WebNovelRepo.useWebNovel(providerId, novelId);
 
 watch(novel, (novel) => {
   if (novel) {

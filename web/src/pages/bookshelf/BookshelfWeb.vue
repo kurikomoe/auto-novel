@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ChecklistOutlined } from '@vicons/material';
 
-import { useWebNovelFavoredList } from '@/hooks';
+import { WebNovelRepo } from '@/hooks';
 import { useIsWideScreen } from '@/pages/util';
 import router from '@/router';
 import { useSettingStore } from '@/stores';
@@ -75,7 +75,7 @@ const options = computed(
     ],
 );
 
-const { data: novelPage, error } = useWebNovelFavoredList(
+const { data: novelPage, error } = WebNovelRepo.useWebNovelFavoredList(
   () => props.page,
   () => props.favoredId,
   () => {

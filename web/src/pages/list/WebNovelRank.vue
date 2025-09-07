@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useWebNovelRankList } from '@/hooks';
+import { WebNovelRepo } from '@/hooks';
 import router from '@/router';
 
 const route = useRoute();
@@ -128,7 +128,7 @@ const descriptior = computed(
   () => descriptiors[props.providerId][props.typeId],
 );
 
-const { data: novelPage, error } = useWebNovelRankList(
+const { data: novelPage, error } = WebNovelRepo.useWebNovelRankList(
   () => props.providerId,
   () => {
     const typeId = props.typeId;

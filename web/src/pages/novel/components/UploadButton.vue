@@ -6,8 +6,8 @@ import {
   UploadInst,
 } from 'naive-ui';
 
-import { formatError, WenkuNovelApi } from '@/data';
-import { invalidateWenkuNovel } from '@/hooks';
+import { formatError } from '@/data';
+import { WenkuNovelRepo } from '@/hooks';
 import { useNoticeStore, useWhoamiStore } from '@/stores';
 import { RegexUtil } from '@/util';
 import { getFullContent } from '@/util/file';
@@ -83,15 +83,13 @@ const customRequest = async ({
 
   try {
     const type = file.url === 'jp' ? 'jp' : 'zh';
-    await WenkuNovelApi.createVolume(
+    await WenkuNovelRepo.createVolume(
       props.novelId,
       file.name,
       type,
       file.file as File,
       (percent) => onProgress({ percent }),
-    ).then(() => {
-      invalidateWenkuNovel(props.novelId);
-    });
+    );
     onFinish();
   } catch (e) {
     onError();

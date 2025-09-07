@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { UploadOutlined } from '@vicons/material';
 
-import { WebNovelApi } from '@/data';
-import { useWebNovel } from '@/hooks';
+import { WebNovelRepo } from '@/hooks';
 import { doAction, useIsWideScreen } from '@/pages/util';
 
 const { providerId, novelId } = defineProps<{
@@ -24,7 +23,7 @@ const formValue = ref({
   toc: <{ jp: string; zh: string }[]>[],
 });
 
-useWebNovel(providerId, novelId, false)
+WebNovelRepo.useWebNovel(providerId, novelId, false)
   .refresh()
   .then(({ data, error }) => {
     if (data) {
@@ -59,7 +58,7 @@ const submit = async () => {
   }
 
   await doAction(
-    WebNovelApi.updateNovel(providerId, novelId, {
+    WebNovelRepo.updateNovel(providerId, novelId, {
       title: formValue.value.title.trim(),
       introduction: formValue.value.introduction.trim(),
       wenkuId: formValue.value.wenkuId.trim(),

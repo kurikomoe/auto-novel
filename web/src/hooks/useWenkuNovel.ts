@@ -1,25 +1,20 @@
-import { useQuery, useQueryCache } from '@pinia/colada';
+import { useQuery } from '@pinia/colada';
 
 import { FavoredApi, WenkuNovelApi } from '@/data';
+import { cache, withOnSuccess } from './cache';
 
 const ItemKey = 'wenku-novel';
 const ListKey = 'wenku-novel-list';
 const ListFavoredKey = 'wenku-novel-list-favored';
 
-export const useWenkuNovel = (novelId: string, enabled: boolean = true) =>
+const useWenkuNovel = (novelId: string, enabled: boolean = true) =>
   useQuery({
     enabled,
     key: [ItemKey, novelId],
     query: () => WenkuNovelApi.getNovel(novelId),
   });
 
-export const invalidateWenkuNovel = (novelId: string) =>
-  useQueryCache().invalidateQueries({
-    key: [ItemKey, novelId],
-    exact: true,
-  });
-
-export const useWenkuNovelList = (
+const useWenkuNovelList = (
   page: MaybeRefOrGetter<number>,
   option: MaybeRefOrGetter<{
     query?: string;
@@ -36,7 +31,7 @@ export const useWenkuNovelList = (
       }),
   });
 
-export const useWenkuNovelFavoredList = (
+const useWenkuNovelFavoredList = (
   page: MaybeRefOrGetter<number>,
   favoredId: MaybeRefOrGetter<string>,
   option: MaybeRefOrGetter<{
@@ -52,3 +47,31 @@ export const useWenkuNovelFavoredList = (
         ...toValue(option),
       }),
   });
+
+export const WenkuNovelRepo = {
+  useWenkuNovel,
+  useWenkuNovelList,
+  useWenkuNovelFavoredList,
+
+  createNovel: withOnSuccess(WenkuNovelApi.createNovel, () =>
+    cache.invalidateQueries({ key: [ListKey] }),
+  ),
+  updateNovel: withOnSuccess(WenkuNovelApi.updateNovel, (_, novelId) =>
+    cache.invalidateQueries({
+      key: [ItemKey, novelId],
+      exact: true,
+    }),
+  ),
+  createVolume: withOnSuccess(WenkuNovelApi.createVolume, (_, novelId) =>
+    cache.invalidateQueries({
+      key: [ItemKey, novelId],
+      exact: true,
+    }),
+  ),
+  deleteVolume: withOnSuccess(WenkuNovelApi.deleteVolume, (_, novelId) =>
+    cache.invalidateQueries({
+      key: [ItemKey, novelId],
+      exact: true,
+    }),
+  ),
+};

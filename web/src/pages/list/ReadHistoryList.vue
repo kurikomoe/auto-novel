@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { DeleteOutlineOutlined } from '@vicons/material';
 
-import { useWebNovelHistoryList } from '@/hooks';
+import { ReadHistoryApi } from '@/data';
+import { WebNovelRepo } from '@/hooks';
 import router from '@/router';
 import { useReadHistoryStore } from '@/stores';
 import { doAction } from '../util';
-import { ReadHistoryApi } from '@/data';
 
 const route = useRoute();
 
@@ -27,7 +27,9 @@ onMounted(() => {
   readHistoryStore.loadReadHistoryPausedState();
 });
 
-const { data: novelPage, error } = useWebNovelHistoryList(() => props.page);
+const { data: novelPage, error } = WebNovelRepo.useWebNovelHistoryList(
+  () => props.page,
+);
 
 const clearHistory = () =>
   doAction(

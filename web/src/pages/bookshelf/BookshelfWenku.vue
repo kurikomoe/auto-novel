@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ChecklistOutlined } from '@vicons/material';
 
-import { useWenkuNovelFavoredList } from '@/hooks';
+import { WenkuNovelRepo } from '@/hooks';
 import { useIsWideScreen } from '@/pages/util';
 import router from '@/router';
 import { useSettingStore } from '@/stores';
@@ -40,7 +40,7 @@ const options = computed(() => {
   ];
 });
 
-const { data: novelPage, error } = useWenkuNovelFavoredList(
+const { data: novelPage, error } = WenkuNovelRepo.useWenkuNovelFavoredList(
   () => props.page,
   () => props.favoredId,
   () => {

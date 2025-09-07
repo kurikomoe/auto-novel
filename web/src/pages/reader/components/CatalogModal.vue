@@ -7,7 +7,7 @@ import {
 
 import ChapterTocList from '@/components/ChapterTocList.vue';
 import { Locator } from '@/data';
-import { useWebNovel } from '@/hooks';
+import { WebNovelRepo } from '@/hooks';
 import { GenericNovelId } from '@/model/Common';
 import { ReadableTocItem } from '@/pages/novel/components/common';
 import { useTocExpansion } from '@/pages/novel/components/UseTocExpansion';
@@ -61,7 +61,7 @@ watch(
     if (show) {
       if (tocResult.value?.ok !== true) {
         const getWebToc = async (providerId: string, novelId: string) => {
-          const { data: novel } = await useWebNovel(
+          const { data: novel } = await WebNovelRepo.useWebNovel(
             providerId,
             novelId,
           ).refresh();

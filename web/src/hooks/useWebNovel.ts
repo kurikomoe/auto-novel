@@ -1,6 +1,7 @@
 import { useQuery, useQueryCache } from '@pinia/colada';
 
 import { FavoredApi, ReadHistoryApi, WebNovelApi } from '@/data';
+import { withOnSuccess } from './cache';
 
 const ItemKey = 'web-novel';
 const ListKey = 'web-novel-list';
@@ -8,7 +9,7 @@ const ListRankKey = 'web-novel-list-rank';
 const ListHistoryKey = 'web-novel-list-history';
 const ListFavoredKey = 'web-novel-list-favored';
 
-export const useWebNovel = (
+const useWebNovel = (
   providerId: string,
   novelId: string,
   enabled: boolean = true,
@@ -19,13 +20,7 @@ export const useWebNovel = (
     query: () => WebNovelApi.getNovel(providerId, novelId),
   });
 
-export const invalidateWebNovel = (providerId: string, novelId: string) =>
-  useQueryCache().invalidateQueries({
-    key: [ItemKey, providerId, novelId],
-    exact: true,
-  });
-
-export const useWebNovelList = (
+const useWebNovelList = (
   page: MaybeRefOrGetter<number>,
   option: MaybeRefOrGetter<{
     query?: string;
@@ -46,7 +41,7 @@ export const useWebNovelList = (
       }),
   });
 
-export const useWebNovelRankList = (
+const useWebNovelRankList = (
   providerId: MaybeRefOrGetter<string>,
   params: MaybeRefOrGetter<{ [key: string]: string }>,
 ) =>
@@ -55,7 +50,7 @@ export const useWebNovelRankList = (
     query: () => WebNovelApi.listRank(toValue(providerId), toValue(params)),
   });
 
-export const useWebNovelHistoryList = (page: MaybeRefOrGetter<number>) =>
+const useWebNovelHistoryList = (page: MaybeRefOrGetter<number>) =>
   useQuery({
     key: () => [ListHistoryKey, toValue(page)],
     query: () =>
@@ -91,3 +86,20 @@ export const useWebNovelFavoredList = (
         ...toValue(option),
       }),
   });
+
+export const WebNovelRepo = {
+  useWebNovel,
+  useWebNovelList,
+  useWebNovelRankList,
+  useWebNovelHistoryList,
+  useWebNovelFavoredList,
+
+  updateNovel: withOnSuccess(
+    WebNovelApi.updateNovel,
+    (_, providerId, novelId) =>
+      useQueryCache().invalidateQueries({
+        key: [ItemKey, providerId, novelId],
+        exact: true,
+      }),
+  ),
+};

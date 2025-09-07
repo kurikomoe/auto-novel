@@ -7,7 +7,7 @@ import {
   StarBorderOutlined,
 } from '@vicons/material';
 
-import { useWebNovelList, useWenkuNovelList } from '@/hooks';
+import { WebNovelRepo, WenkuNovelRepo } from '@/hooks';
 import bannerUrl from '@/image/banner.webp';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
 import { useBreakPoints } from '@/pages/util';
@@ -68,17 +68,15 @@ watch(
   { immediate: true },
 );
 
-const { data: mostVisitedWeb, error: mostVisitedWebError } = useWebNovelList(
-  1,
-  {
+const { data: mostVisitedWeb, error: mostVisitedWebError } =
+  WebNovelRepo.useWebNovelList(1, {
     provider: 'kakuyomu,syosetu,novelup,hameln,pixiv,alphapolis',
     sort: 1,
     level: 1,
-  },
-);
+  });
 
 const { data: latestUpdateWenku, error: latestUpdateWenkuError } =
-  useWenkuNovelList(1, { level: 1 });
+  WenkuNovelRepo.useWenkuNovelList(1, { level: 1 });
 
 const showHowToUseModal = ref(false);
 const linkExample = [

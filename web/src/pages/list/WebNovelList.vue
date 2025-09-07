@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useWebNovelList } from '@/hooks';
+import { WebNovelRepo } from '@/hooks';
 import router from '@/router';
 import { useFavoredStore, useWhoamiStore } from '@/stores';
 import { getWebNovelOptions, NovelListSelectOption } from './components/option';
@@ -33,7 +33,7 @@ const favoredStore = useFavoredStore();
 const { favoreds } = storeToRefs(favoredStore);
 onMounted(() => favoredStore.loadRemoteFavoreds());
 
-const { data: novelPage, error } = useWebNovelList(
+const { data: novelPage, error } = WebNovelRepo.useWebNovelList(
   () => props.page,
   () => {
     const query = props.query;

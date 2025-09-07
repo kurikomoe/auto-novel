@@ -10,7 +10,7 @@ import { VueDraggable } from 'vue-draggable-plus';
 
 import { WenkuNovelApi } from '@/data';
 import { prettyCover, smartImport } from '@/domain/smart-import';
-import { invalidateWenkuNovel, useWenkuNovel } from '@/hooks';
+import { WenkuNovelRepo } from '@/hooks';
 import coverPlaceholder from '@/image/cover_placeholder.png';
 import {
   WenkuNovelOutlineDto,
@@ -100,7 +100,7 @@ const formRules: FormRules = {
 const amazonUrl = ref('');
 
 if (novelId !== undefined) {
-  useWenkuNovel(novelId, false)
+  WenkuNovelRepo.useWenkuNovel(novelId, false)
     .refresh()
     .then(({ data, error }) => {
       if (data) {
@@ -168,7 +168,7 @@ const submit = async () => {
 
   if (novelId === undefined) {
     await doAction(
-      WenkuNovelApi.createNovel(body).then((id) => {
+      WenkuNovelRepo.createNovel(body).then((id) => {
         router.push({ path: `/wenku/${id}` });
       }),
       '新建文库',
@@ -176,8 +176,7 @@ const submit = async () => {
     );
   } else {
     await doAction(
-      WenkuNovelApi.updateNovel(novelId, body).then(() => {
-        invalidateWenkuNovel(novelId);
+      WenkuNovelRepo.updateNovel(novelId, body).then(() => {
         router.push({ path: `/wenku/${novelId}` });
       }),
       '编辑文库',

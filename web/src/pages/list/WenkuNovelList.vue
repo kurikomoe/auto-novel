@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { PlusOutlined } from '@vicons/material';
 
-import { useWenkuNovelList } from '@/hooks';
+import { WenkuNovelRepo } from '@/hooks';
 import router from '@/router';
 import { useFavoredStore, useWhoamiStore } from '@/stores';
 import { getWenkuNovelOptions } from './components/option';
@@ -36,7 +36,7 @@ const favoredStore = useFavoredStore();
 const { favoreds } = storeToRefs(favoredStore);
 onMounted(() => favoredStore.loadRemoteFavoreds());
 
-const { data: novelPage, error } = useWenkuNovelList(
+const { data: novelPage, error } = WenkuNovelRepo.useWenkuNovelList(
   () => props.page,
   () => {
     let level = (props.selected[0] ?? 0) + 1;
