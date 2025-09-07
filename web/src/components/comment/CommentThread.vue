@@ -1,9 +1,7 @@
 <script lang="ts" setup>
-import { CommentApi } from '@/data';
-import { invalidateCommentList, useCommentList } from '@/hooks';
+import { CommentRepo } from '@/hooks';
 import { Comment1 } from '@/model/Comment';
-import { copyToClipBoard, doAction } from '@/pages/util';
-import { useBlacklistStore, useDraftStore } from '@/stores';
+import { useDraftStore } from '@/stores';
 
 const props = defineProps<{
   site: string;
@@ -11,19 +9,11 @@ const props = defineProps<{
   locked: boolean;
 }>();
 
-const message = useMessage();
-
 const draftStore = useDraftStore();
 const draftId = `comment-${props.site}`;
 
-const blacklistStore = useBlacklistStore();
-
-const emit = defineEmits<{
-  deleted: [];
-}>();
-
 const page = ref(1);
-const { data: commentPage, error } = useCommentList(
+const { data: commentPage, error } = CommentRepo.useCommentList(
   page,
   () => props.site,
   () => props.comment.id,
@@ -41,74 +31,17 @@ watch(page, () => {
 
 function onReplied() {
   showInput.value = false;
-  invalidateCommentList(props.site, props.comment.id);
   draftStore.cancelAddDraft();
   draftStore.removeDraft(draftId);
 }
-
-const copyComment = (comment: Comment1) =>
-  copyToClipBoard(comment.content).then((isSuccess) => {
-    if (isSuccess) message.success('复制成功');
-    else message.error('复制失败');
-  });
-
-const deleteComment = (commentToDelete: Comment1) =>
-  doAction(
-    CommentApi.deleteComment(commentToDelete.id).then(() => {
-      if (commentToDelete.id === props.comment.id) {
-        emit('deleted');
-      }
-    }),
-    '删除',
-    message,
-  );
-
-const hideComment = (comment: Comment1) =>
-  doAction(
-    CommentApi.hideComment(comment.id).then(() => (comment.hidden = true)),
-    '隐藏',
-    message,
-  );
-
-const unhideComment = (comment: Comment1) =>
-  doAction(
-    CommentApi.unhideComment(comment.id).then(() => (comment.hidden = false)),
-    '解除隐藏',
-    message,
-  );
-
-const blockUserComment = async (comment: Comment1) =>
-  doAction(
-    (async () => {
-      blacklistStore.add(comment.user.username);
-    })(),
-    '屏蔽用户',
-    message,
-  );
-
-const unblockUserComment = async (comment: Comment1) =>
-  doAction(
-    (async () => {
-      blacklistStore.remove(comment.user.username);
-    })(),
-    '解除屏蔽用户',
-    message,
-  );
-
 const showInput = ref(false);
 </script>
 
 <template>
   <div ref="anchor" />
   <CommentItem
+    :site="site"
     :comment="comment"
-    top-level
-    @copy="copyComment"
-    @delete="deleteComment"
-    @hide="hideComment"
-    @unhide="unhideComment"
-    @block="blockUserComment"
-    @unblock="unblockUserComment"
     @reply="showInput = !showInput"
   />
 
@@ -136,13 +69,9 @@ const showInput = ref(false);
           style="margin-top: 20px; margin-bottom: 20px"
         >
           <CommentItem
+            :site="site"
+            :parent-id="comment.id"
             :comment="replyComment"
-            @copy="copyComment"
-            @delete="deleteComment"
-            @hide="hideComment"
-            @unhide="unhideComment"
-            @block="blockUserComment"
-            @unblock="unblockUserComment"
           />
         </div>
       </template>

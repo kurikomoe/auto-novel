@@ -1,12 +1,13 @@
-import { useQuery, useQueryCache } from '@pinia/colada';
+import { useQuery } from '@pinia/colada';
 
 import { CommentApi } from '@/data';
 import { Comment1 } from '@/model/Comment';
 import { Page } from '@/model/Page';
+import { cache, withOnSuccess } from './cache';
 
 const ListKey = 'comment-list';
 
-export const useCommentList = (
+const useCommentList = (
   page: MaybeRefOrGetter<number>,
   site: MaybeRefOrGetter<string>,
   parentId: MaybeRefOrGetter<string | undefined> = undefined,
@@ -24,5 +25,18 @@ export const useCommentList = (
     initialData: () => initialData,
   });
 
-export const invalidateCommentList = (site: string, parentId?: string) =>
-  useQueryCache().invalidateQueries({ key: [ListKey, site, parentId ?? ''] });
+export const CommentRepo = {
+  useCommentList,
+
+  createComment: withOnSuccess(CommentApi.createComment, (_, comment) =>
+    cache.invalidateQueries({
+      key: [ListKey, comment.site, comment.parent ?? ''],
+    }),
+  ),
+  deleteComment: (id: string, site: string, parentId?: string) =>
+    CommentApi.deleteComment(id).then(() => {
+      cache.invalidateQueries({ key: [ListKey, site, parentId ?? ''] });
+    }),
+  hideComment: CommentApi.hideComment,
+  unhideComment: CommentApi.unhideComment,
+};

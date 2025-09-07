@@ -2,7 +2,7 @@
 import { CommentOutlined } from '@vicons/material';
 
 import SectionHeader from '@/components/SectionHeader.vue';
-import { invalidateCommentList, useCommentList } from '@/hooks';
+import { CommentRepo } from '@/hooks';
 import { useDraftStore } from '@/stores';
 
 const props = defineProps<{
@@ -11,7 +11,10 @@ const props = defineProps<{
 }>();
 
 const page = ref(1);
-const { data: commentPage, error } = useCommentList(page, () => props.site);
+const { data: commentPage, error } = CommentRepo.useCommentList(
+  page,
+  () => props.site,
+);
 
 const draftStore = useDraftStore();
 const draftId = `comment-${props.site}`;
@@ -24,7 +27,6 @@ watch(page, () => {
 
 function onReplied() {
   showInput.value = false;
-  invalidateCommentList(props.site);
   draftStore.cancelAddDraft();
   draftStore.removeDraft(draftId);
 }
@@ -64,12 +66,7 @@ const showInput = ref(false);
   <CPage v-model:page="page" :page-number="commentPage?.pageNumber" disable-top>
     <template v-if="commentPage">
       <template v-for="comment in commentPage.items" :key="comment.id">
-        <CommentThread
-          :site="site"
-          :comment="comment"
-          :locked="locked"
-          @deleted="invalidateCommentList(site)"
-        />
+        <CommentThread :site="site" :comment="comment" :locked="locked" />
         <n-divider />
       </template>
       <n-empty

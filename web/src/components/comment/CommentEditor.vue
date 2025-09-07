@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { CommentApi } from '@/data';
+import { CommentRepo } from '@/hooks';
 import { doAction } from '@/pages/util';
 
 const props = defineProps<{
@@ -25,7 +25,7 @@ const reply = async () => {
   }
 
   await doAction(
-    CommentApi.createComment({
+    CommentRepo.createComment({
       site: props.site,
       parent: props.parent,
       content: content.value,

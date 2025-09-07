@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useArticle } from '@/hooks';
+import { ArticleRepo } from '@/hooks';
 import { doAction } from '@/pages//util';
 import { useBlacklistStore, useWhoamiStore } from '@/stores';
 
@@ -12,7 +12,7 @@ const blacklistStore = useBlacklistStore();
 
 const message = useMessage();
 
-const { data: article, error } = useArticle(articleId);
+const { data: article, error } = ArticleRepo.useArticle(articleId);
 
 watch(
   article,

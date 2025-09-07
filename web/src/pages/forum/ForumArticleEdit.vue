@@ -2,8 +2,7 @@
 import { UploadOutlined } from '@vicons/material';
 import { FormInst, FormItemRule, FormRules } from 'naive-ui';
 
-import { ArticleApi } from '@/data';
-import { invalidateArticle, useArticle } from '@/hooks';
+import { ArticleRepo } from '@/hooks';
 import { ArticleCategory } from '@/model/Article';
 import { doAction, useIsWideScreen } from '@/pages/util';
 import { useDraftStore, useWhoamiStore } from '@/stores';
@@ -79,7 +78,7 @@ const formRules: FormRules = {
 };
 
 if (articleId !== undefined) {
-  useArticle(articleId, true)
+  ArticleRepo.useArticle(articleId, true)
     .refresh()
     .then(({ data, error }) => {
       if (data) {
@@ -109,7 +108,7 @@ const submit = async () => {
 
   if (articleId === undefined) {
     await doAction(
-      ArticleApi.createArticle(formValue.value).then((id) => {
+      ArticleRepo.createArticle(formValue.value).then((id) => {
         draftStore.removeDraft(draftId);
         router.push({ path: `/forum/${id}` });
       }),
@@ -118,8 +117,7 @@ const submit = async () => {
     );
   } else {
     await doAction(
-      ArticleApi.updateArticle(articleId, formValue.value).then(() => {
-        invalidateArticle(articleId);
+      ArticleRepo.updateArticle(articleId, formValue.value).then(() => {
         draftStore.removeDraft(draftId);
         router.push({ path: `/forum/${articleId}` });
       }),

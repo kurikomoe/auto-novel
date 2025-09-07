@@ -7,21 +7,20 @@ import {
 
 import { Comment1 } from '@/model/Comment';
 import { useBlacklistStore, useWhoamiStore } from '@/stores';
+import { CommentRepo } from '@/hooks';
+import { copyToClipBoard, doAction } from '@/pages/util';
 
-const { comment, topLevel } = defineProps<{
+const props = defineProps<{
+  site: string;
+  parentId?: string;
   comment: Comment1;
-  topLevel?: boolean;
 }>();
 
 const emit = defineEmits<{
-  copy: [Comment1];
-  delete: [Comment1];
-  hide: [Comment1];
-  unhide: [Comment1];
-  block: [Comment1];
-  unblock: [Comment1];
   reply: [Comment1];
 }>();
+
+const message = useMessage();
 
 const whoamiStore = useWhoamiStore();
 const { whoami } = storeToRefs(whoamiStore);
@@ -30,65 +29,94 @@ const blacklistStore = useBlacklistStore();
 const { blacklist } = storeToRefs(blacklistStore);
 
 const options = computed(() => {
-  const options = [
-    {
-      label: '复制',
-      key: 'copy',
-    },
-  ];
+  const options = [{ label: '复制', key: 'copy' }];
   if (whoami.value.asAdmin) {
-    if (comment.hidden) {
-      options.push({
-        label: '解除隐藏',
-        key: 'unhide',
-      });
+    if (props.comment.hidden) {
+      options.push({ label: '解除隐藏', key: 'unhide' });
     } else {
-      options.push({
-        label: '隐藏',
-        key: 'hide',
-      });
+      options.push({ label: '隐藏', key: 'hide' });
     }
   }
-  if (blacklist.value.usernames.includes(comment.user.username)) {
-    options.push({
-      label: '解除屏蔽',
-      key: 'unblock',
-    });
+  if (blacklist.value.usernames.includes(props.comment.user.username)) {
+    options.push({ label: '解除屏蔽', key: 'unblock' });
   } else {
-    options.push({
-      label: '屏蔽用户',
-      key: 'block',
-    });
+    options.push({ label: '屏蔽用户', key: 'block' });
   }
   return options;
 });
 
 const handleSelect = (key: string) => {
   if (key === 'copy') {
-    emit('copy', comment);
-  } else if (key === 'delete') {
-    emit('delete', comment);
+    copyComment(props.comment);
   } else if (key === 'hide') {
-    emit('hide', comment);
+    hideComment(props.comment);
   } else if (key === 'unhide') {
-    emit('unhide', comment);
+    unhideComment(props.comment);
   } else if (key === 'block') {
-    emit('block', comment);
+    blockUser(props.comment);
   } else if (key === 'unblock') {
-    emit('unblock', comment);
+    unblockUser(props.comment);
   }
 };
+
+function deleteComment() {
+  doAction(
+    CommentRepo.deleteComment(props.comment.id, props.site, props.parentId),
+    '删除',
+    message,
+  );
+}
+
+function copyComment(comment: Comment1) {
+  doAction(copyToClipBoard(comment.content), '复制', message);
+}
+
+function hideComment(comment: Comment1) {
+  doAction(
+    CommentRepo.hideComment(comment.id).then(() => (comment.hidden = true)),
+    '隐藏',
+    message,
+  );
+}
+
+function unhideComment(comment: Comment1) {
+  doAction(
+    CommentRepo.unhideComment(comment.id).then(() => (comment.hidden = false)),
+    '解除隐藏',
+    message,
+  );
+}
+
+function blockUser(comment: Comment1) {
+  doAction(
+    (async () => {
+      blacklistStore.add(comment.user.username);
+    })(),
+    '屏蔽用户',
+    message,
+  );
+}
+
+function unblockUser(comment: Comment1) {
+  doAction(
+    (async () => {
+      blacklistStore.remove(comment.user.username);
+    })(),
+    '解除屏蔽用户',
+    message,
+  );
+}
 
 const isDeletable = computed(() => {
   return (
     whoami.value.asAdmin ||
-    (whoami.value.isMe(comment.user.username) &&
-      Date.now() / 1000 - comment.createAt < 3600 * 24)
+    (whoami.value.isMe(props.comment.user.username) &&
+      Date.now() / 1000 - props.comment.createAt < 3600 * 24)
   );
 });
 
 const isBlocked = computed(() => {
-  return blacklist.value.usernames.includes(comment.user.username);
+  return blacklist.value.usernames.includes(props.comment.user.username);
 });
 </script>
 
@@ -104,7 +132,7 @@ const isBlocked = computed(() => {
     <div style="flex: 1" />
 
     <c-button
-      v-if="topLevel && whoami.allowAdvancedFeatures"
+      v-if="parentId === undefined && whoami.allowAdvancedFeatures"
       label="回复"
       :icon="CommentOutlined"
       require-login
@@ -125,7 +153,7 @@ const isBlocked = computed(() => {
       type="tertiary"
       size="tiny"
       style="margin-right: 4px"
-      @action="emit('delete', comment)"
+      @action="deleteComment()"
     />
 
     <n-dropdown trigger="click" :options="options" @select="handleSelect">

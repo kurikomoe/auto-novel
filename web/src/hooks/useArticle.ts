@@ -1,22 +1,20 @@
-import { useQuery, useQueryCache } from '@pinia/colada';
+import { useQuery } from '@pinia/colada';
 
 import { ArticleApi } from '@/data';
 import { ArticleCategory } from '@/model/Article';
+import { cache, withOnSuccess } from './cache';
 
 const ItemKey = 'article';
 const ListKey = 'article-list';
 
-export const useArticle = (id: string, enabled: boolean = true) =>
+const useArticle = (id: string, enabled: boolean = true) =>
   useQuery({
     enabled,
     key: [ItemKey, id],
     query: () => ArticleApi.getArticle(id),
   });
 
-export const invalidateArticle = (id: string) =>
-  useQueryCache().invalidateQueries({ key: [ItemKey, id], exact: true });
-
-export const useArticleList = (
+const useArticleList = (
   page: MaybeRefOrGetter<number>,
   category: MaybeRefOrGetter<ArticleCategory>,
 ) =>
@@ -29,3 +27,24 @@ export const useArticleList = (
         category: toValue(category),
       }),
   });
+
+export const ArticleRepo = {
+  useArticle,
+  useArticleList,
+
+  createArticle: withOnSuccess(ArticleApi.createArticle, (_, article) =>
+    cache.invalidateQueries({ key: [ListKey, article.category] }),
+  ),
+  deleteArticle: withOnSuccess(ArticleApi.deleteArticle, () =>
+    cache.invalidateQueries({ key: [ListKey] }),
+  ),
+  updateArticle: withOnSuccess(ArticleApi.updateArticle, (_, id) =>
+    cache.invalidateQueries({ key: [ItemKey, id], exact: true }),
+  ),
+  pinArticle: ArticleApi.pinArticle,
+  unpinArticle: ArticleApi.unpinArticle,
+  lockArticle: ArticleApi.lockArticle,
+  unlockArticle: ArticleApi.unlockArticle,
+  hideArticle: ArticleApi.hideArticle,
+  unhideArticle: ArticleApi.unhideArticle,
+};
