@@ -4,7 +4,7 @@ import { useKeyModifier } from '@vueuse/core';
 import { Locator } from '@/data';
 import { TranslateTaskDescriptor } from '@/model/Translator';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
-import { useFavoredStore, useSettingStore } from '@/stores';
+import { FavoredRepo, useSettingStore } from '@/stores';
 
 const props = defineProps<{
   selectedNovels: WebNovelOutlineDto[];
@@ -20,7 +20,7 @@ const message = useMessage();
 const settingStore = useSettingStore();
 const { setting } = storeToRefs(settingStore);
 
-const favoredStore = useFavoredStore();
+const favoredStore = FavoredRepo.useFavoredStore();
 const { favoreds } = storeToRefs(favoredStore);
 
 // 删除小说
@@ -40,7 +40,7 @@ const deleteSelected = async () => {
   let failed = 0;
   for (const { providerId, novelId } of novels) {
     try {
-      await favoredStore.unfavoriteNovel(props.favoredId, {
+      await FavoredRepo.unfavoriteNovel(props.favoredId, {
         type: 'web',
         providerId,
         novelId,
@@ -72,7 +72,7 @@ const moveToFavored = async () => {
   let failed = 0;
   for (const { providerId, novelId } of novels) {
     try {
-      await favoredStore.unfavoriteNovel(targetFavoredId.value, {
+      await FavoredRepo.unfavoriteNovel(targetFavoredId.value, {
         type: 'web',
 
         providerId,

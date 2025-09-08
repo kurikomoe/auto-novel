@@ -3,7 +3,7 @@ import { PlusOutlined } from '@vicons/material';
 import { FormInst, FormItemRule, FormRules } from 'naive-ui';
 
 import { doAction } from '@/pages/util';
-import { useFavoredStore } from '@/stores';
+import { FavoredRepo } from '@/stores';
 
 const message = useMessage();
 
@@ -41,11 +41,9 @@ const addFavorite = async () => {
 
   const { type, title } = formValue.value;
   await doAction(
-    useFavoredStore()
-      .createFavored(type, title)
-      .then(() => {
-        showAddModal.value = false;
-      }),
+    FavoredRepo.createFavored(type, title).then(() => {
+      showAddModal.value = false;
+    }),
     '收藏夹创建',
     message,
   );

@@ -3,7 +3,7 @@ import { useKeyModifier } from '@vueuse/core';
 
 import { Locator } from '@/data';
 import { useIsWideScreen } from '@/pages/util';
-import { Setting, useFavoredStore, useSettingStore } from '@/stores';
+import { FavoredRepo, Setting, useSettingStore } from '@/stores';
 import { useBookshelfLocalStore } from '../BookshelfLocalStore';
 
 const props = defineProps<{
@@ -65,7 +65,7 @@ const downloadRawSelected = async () => {
 };
 
 // 移动小说
-const favoredStore = useFavoredStore();
+const favoredStore = FavoredRepo.useFavoredStore();
 const { favoreds } = storeToRefs(favoredStore);
 
 const targetFavoredId = ref(props.favoredId);

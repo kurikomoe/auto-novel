@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { FavoriteBorderOutlined, FavoriteOutlined } from '@vicons/material';
 
-import { useFavoredStore, useWhoamiStore } from '@/stores';
 import { doAction } from '@/pages/util';
+import { FavoredRepo } from '@/stores';
 
 const props = defineProps<{
   favored: string | undefined;
@@ -16,21 +16,8 @@ const emit = defineEmits<{
 
 const message = useMessage();
 
-const whoamiStore = useWhoamiStore();
-const { whoami } = storeToRefs(whoamiStore);
-
-const favoredStore = useFavoredStore();
+const favoredStore = FavoredRepo.useFavoredStore();
 const { favoreds: favoredFull } = storeToRefs(favoredStore);
-
-onMounted(async () => {
-  if (whoami.value.isSignedIn) {
-    try {
-      await favoredStore.loadRemoteFavoreds();
-    } catch (e) {
-      message.error(`获取收藏列表失败：${e}`);
-    }
-  }
-});
 
 const favoreds = computed(() => favoredFull.value[props.novel.type]);
 const favoredTitle = computed(
@@ -39,7 +26,7 @@ const favoredTitle = computed(
 
 const favoriteNovel = (favoredId: string) =>
   doAction(
-    favoredStore.favoriteNovel(favoredId, props.novel).then(() => {
+    FavoredRepo.favoriteNovel(favoredId, props.novel).then(() => {
       emit('update:favored', favoredId);
       showFavoredModal.value = false;
     }),
@@ -50,7 +37,7 @@ const favoriteNovel = (favoredId: string) =>
 const unfavoriteNovel = async () => {
   if (props.favored === undefined) return;
   await doAction(
-    favoredStore.unfavoriteNovel(props.favored, props.novel).then(() => {
+    FavoredRepo.unfavoriteNovel(props.favored, props.novel).then(() => {
       emit('update:favored', undefined);
       showFavoredModal.value = false;
     }),

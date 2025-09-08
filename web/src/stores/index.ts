@@ -1,7 +1,7 @@
 export * from './forum/useBlacklistStore';
 export * from './forum/useDraftStore';
 
-export * from './useFavoredStore';
+export * from './useFavored';
 export * from './useNoticeStore';
 export * from './useReadHistoryStore';
 export * from './useSearchHistoryStore';

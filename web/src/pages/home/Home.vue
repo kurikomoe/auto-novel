@@ -7,11 +7,12 @@ import {
   StarBorderOutlined,
 } from '@vicons/material';
 
+import { FavoredApi } from '@/data';
 import { WebNovelRepo, WenkuNovelRepo } from '@/hooks';
 import bannerUrl from '@/image/banner.webp';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
 import { useBreakPoints } from '@/pages/util';
-import { useFavoredStore, useWhoamiStore } from '@/stores';
+import { useWhoamiStore } from '@/stores';
 import { WebUtil } from '@/util/web';
 
 const bp = useBreakPoints();
@@ -41,18 +42,16 @@ const favoriteList = ref<{
 }>({ error: null });
 const loadFavorite = async () => {
   try {
-    const data = await useFavoredStore()
-      .listFavoredWebNovel('default', {
-        page: 0,
-        pageSize: 8,
-        query: '',
-        provider: 'kakuyomu,syosetu,novelup,hameln,pixiv,alphapolis',
-        type: 0,
-        level: 0,
-        translate: 0,
-        sort: 'update',
-      })
-      .then((it) => it.items);
+    const data = await FavoredApi.listFavoredWebNovel('default', {
+      page: 0,
+      pageSize: 8,
+      query: '',
+      provider: 'kakuyomu,syosetu,novelup,hameln,pixiv,alphapolis',
+      type: 0,
+      level: 0,
+      translate: 0,
+      sort: 'update',
+    }).then((it) => it.items);
     favoriteList.value = { data, error: null };
   } catch (e) {
     favoriteList.value = { error: e as Error };

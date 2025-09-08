@@ -3,7 +3,7 @@ import { PlusOutlined } from '@vicons/material';
 
 import { WenkuNovelRepo } from '@/hooks';
 import router from '@/router';
-import { useFavoredStore, useWhoamiStore } from '@/stores';
+import { FavoredRepo, useWhoamiStore } from '@/stores';
 import { getWenkuNovelOptions } from './components/option';
 
 const route = useRoute();
@@ -32,9 +32,8 @@ const { whoami } = storeToRefs(whoamiStore);
 
 const options = getWenkuNovelOptions(whoami.value.allowNsfw);
 
-const favoredStore = useFavoredStore();
+const favoredStore = FavoredRepo.useFavoredStore();
 const { favoreds } = storeToRefs(favoredStore);
-onMounted(() => favoredStore.loadRemoteFavoreds());
 
 const { data: novelPage, error } = WenkuNovelRepo.useWenkuNovelList(
   () => props.page,

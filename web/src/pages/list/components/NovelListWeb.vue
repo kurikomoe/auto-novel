@@ -3,10 +3,10 @@ import { StarFilled } from '@vicons/material';
 import { createReusableTemplate } from '@vueuse/core';
 
 import { WebNovelOutlineDto } from '@/model/WebNovel';
-import { useFavoredStore } from '@/stores';
+import { FavoredRepo } from '@/stores';
 import { WebUtil } from '@/util/web';
 
-const favoredStore = useFavoredStore();
+const favoredStore = FavoredRepo.useFavoredStore();
 const { favoreds } = storeToRefs(favoredStore);
 
 const favoredTitleMap = computed(() => {

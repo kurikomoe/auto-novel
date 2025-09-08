@@ -1,26 +1,14 @@
 <script lang="ts" setup>
 import { MenuOption } from 'naive-ui';
 
-import { useFavoredStore, useWhoamiStore } from '@/stores';
+import { FavoredRepo, useWhoamiStore } from '@/stores';
 import BookshelfMenuItem from './BookshelfMenuItem.vue';
-
-const message = useMessage();
 
 const whoamiStore = useWhoamiStore();
 const { whoami } = storeToRefs(whoamiStore);
 
-const favoredStore = useFavoredStore();
+const favoredStore = FavoredRepo.useFavoredStore();
 const { favoreds } = storeToRefs(favoredStore);
-
-onMounted(async () => {
-  if (whoami.value.isSignedIn) {
-    try {
-      await favoredStore.loadRemoteFavoreds();
-    } catch (e) {
-      message.error(`获取收藏列表失败：${e}`);
-    }
-  }
-});
 
 const menuOption = (
   type: 'web' | 'wenku' | 'local',

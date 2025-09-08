@@ -3,7 +3,7 @@ import { MoreVertOutlined } from '@vicons/material';
 import { FormInst, FormItemRule, FormRules } from 'naive-ui';
 
 import { doAction } from '@/pages/util';
-import { useFavoredStore } from '@/stores';
+import { FavoredRepo } from '@/stores';
 import { useBookshelfLocalStore } from '../BookshelfLocalStore';
 
 const { id, type, title } = defineProps<{
@@ -65,11 +65,9 @@ const updateFavored = async () => {
   const title = formValue.value.title;
 
   await doAction(
-    useFavoredStore()
-      .updateFavored(type, id, title)
-      .then(() => {
-        showEditModal.value = false;
-      }),
+    FavoredRepo.updateFavored(type, id, title).then(() => {
+      showEditModal.value = false;
+    }),
     '收藏夹更新',
     message,
   );
@@ -90,7 +88,7 @@ const showDeleteModal = ref(false);
 const deleteFavored = () =>
   doAction(
     deleteFavoredNovels()
-      .then(() => useFavoredStore().deleteFavored(type, id))
+      .then(() => FavoredRepo.deleteFavored(type, id))
       .then(() => (showDeleteModal.value = false)),
     '收藏夹删除',
     message,

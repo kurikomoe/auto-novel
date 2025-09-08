@@ -6,7 +6,7 @@ import {
   BookshelfLocalUtil,
   useBookshelfLocalStore,
 } from '@/pages/bookshelf/BookshelfLocalStore';
-import { Setting, useFavoredStore, useSettingStore } from '@/stores';
+import { FavoredRepo, Setting, useSettingStore } from '@/stores';
 
 const props = defineProps<{
   options?: { [key: string]: (volumes: LocalVolumeMetadata[]) => void };
@@ -76,7 +76,7 @@ const search = reactive({
   enableRegexMode: false,
 });
 
-const favoredStore = useFavoredStore();
+const favoredStore = FavoredRepo.useFavoredStore();
 const { favoreds } = storeToRefs(favoredStore);
 
 const selectedFavored = ref<string | undefined>(favoreds.value.local[0]?.id);

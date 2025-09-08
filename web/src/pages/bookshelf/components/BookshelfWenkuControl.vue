@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { WenkuNovelOutlineDto } from '@/model/WenkuNovel';
-import { useFavoredStore } from '@/stores';
+import { FavoredRepo } from '@/stores';
 
 const props = defineProps<{
   selectedNovels: WenkuNovelOutlineDto[];
@@ -13,7 +13,7 @@ defineEmits<{
 
 const message = useMessage();
 
-const favoredStore = useFavoredStore();
+const favoredStore = FavoredRepo.useFavoredStore();
 const { favoreds } = storeToRefs(favoredStore);
 
 // 删除小说
@@ -33,7 +33,7 @@ const deleteSelected = async () => {
   let failed = 0;
   for (const { id } of novels) {
     try {
-      await favoredStore.unfavoriteNovel(props.favoredId, {
+      await FavoredRepo.unfavoriteNovel(props.favoredId, {
         type: 'wenku',
         novelId: id,
       });
@@ -64,7 +64,7 @@ const moveToFavored = async () => {
   let failed = 0;
   for (const { id } of novels) {
     try {
-      await favoredStore.favoriteNovel(props.favoredId, {
+      await FavoredRepo.favoriteNovel(props.favoredId, {
         type: 'wenku',
         novelId: id,
       });
