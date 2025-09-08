@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { formatError } from '@/data';
 import { WebNovelRepo } from '@/hooks';
 import { useIsWideScreen } from '@/pages/util';
 
@@ -18,9 +19,9 @@ watch(novel, (novel) => {
   }
 });
 
-watch(error, (error) => {
+watch(error, async (error) => {
   if (!error) return;
-  const message = error.message;
+  const message = await formatError(error);
   if (message.includes('小说ID不合适，应当使用：')) {
     const targetNovelPath = message.split('小说ID不合适，应当使用：')[1];
     router.push({ path: `/novel${targetNovelPath}` });

@@ -60,7 +60,7 @@ const useWebNovelHistoryList = (page: MaybeRefOrGetter<number>) =>
       }),
   });
 
-export const useWebNovelFavoredList = (
+const useWebNovelFavoredList = (
   page: MaybeRefOrGetter<number>,
   favoredId: MaybeRefOrGetter<string>,
   option: MaybeRefOrGetter<{
