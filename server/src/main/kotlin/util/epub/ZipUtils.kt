@@ -3,6 +3,7 @@ package util.epub
 import com.google.common.jimfs.Configuration
 import com.google.common.jimfs.Jimfs
 import net.lingala.zip4j.io.inputstream.ZipInputStream
+import java.io.Closeable
 import java.nio.file.FileSystem
 import java.nio.file.Files
 import java.nio.file.Path
@@ -25,7 +26,7 @@ object ZipUtils {
     /**
      * @param zipPath epub/zip 文件路径
      */
-    fun use(zipPath: Path, block: (FileSystem) -> Unit) {
+    inline fun use(zipPath: Path, block: (FileSystem) -> Unit) {
         val jimfs = Jimfs.newFileSystem(Configuration.unix())
 
         jimfs.use { fs ->
@@ -38,7 +39,7 @@ object ZipUtils {
      * @param zipPath zip 文件路径
      * @param fs 任意一个 filesystem 对象，例如 jimfs
      */
-    private fun unzipToAnyfs(zipPath: Path, fs: FileSystem) {
+    fun unzipToAnyfs(zipPath: Path, fs: FileSystem) {
         // FIXME(kuriko): 请考虑把所有常量找个地方放一起。
         val MAX_ALLOWED_EPUB_SIZE = 50 * 1024 * 1024  // 50MiB
 

@@ -37,7 +37,7 @@ object Epub {
         dstPath: Path,
         modify: (name: String, bytes: ByteArray) -> ByteArray,
     ) {
-        FileSystems.newFileSystem(srcPath).use { fs ->
+        ZipUtils.use(srcPath) { fs ->
             ZipOutputStream(BufferedOutputStream(dstPath.outputStream())).use { zipOut ->
                 Files
                     .walk(fs.rootDirectories.first())
