@@ -71,6 +71,7 @@ watch(novelPage, (novelPage) => {
     </router-link>
 
     <NovelListControls
+      :query="query"
       :selected="selected"
       :options="options"
       @update:query="onUpdatedQuery"
