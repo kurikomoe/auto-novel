@@ -35,7 +35,7 @@ const useWenkuNovelFavoredList = (
   page: MaybeRefOrGetter<number>,
   favoredId: MaybeRefOrGetter<string>,
   option: MaybeRefOrGetter<{
-    sort: 'create' | 'update';
+    sort: string;
   }>,
 ) =>
   useQuery({

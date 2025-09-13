@@ -1,42 +1,37 @@
 <script setup lang="ts">
 import { SyncAltOutlined } from '@vicons/material';
+import { ListSelectOption } from './types';
 
-import { NovelListSelectOption } from './option';
+const value = defineModel<number>('value', { required: true });
 
 const props = defineProps<{
-  option: NovelListSelectOption;
-  selected: number;
-}>();
-
-const emits = defineEmits<{
-  (e: 'update:selected', selected: number): void;
+  label: string;
+  option: ListSelectOption;
 }>();
 
 function isSelected(index: number) {
   if (props.option.multiple) {
-    return (props.selected & (1 << index)) != 0;
+    return (value.value & (1 << index)) != 0;
   } else {
-    return props.selected === index;
+    return value.value === index;
   }
 }
 
-const updateSelect = (optionIndex: number) => {
-  const index = props.option.multiple
-    ? props.selected ^ (1 << optionIndex)
+function updateSelect(optionIndex: number) {
+  value.value = props.option.multiple
+    ? value.value ^ (1 << optionIndex)
     : optionIndex;
-  emits('update:selected', index);
-};
+}
 
 function invertSelection() {
   if (props.option.multiple) {
-    const index = props.selected ^ (2 ** props.option.tags.length - 1);
-    emits('update:selected', index);
+    value.value = value.value ^ (2 ** props.option.tags.length - 1);
   }
 }
 </script>
 
 <template>
-  <c-action-wrapper :title="option.label" align="baseline" size="large">
+  <CActionWrapper :title="label" align="baseline" size="large">
     <n-flex :size="[16, 4]">
       <n-text
         v-for="(tag, index) in option.tags"
@@ -57,5 +52,5 @@ function invertSelection() {
         @click="invertSelection()"
       />
     </n-flex>
-  </c-action-wrapper>
+  </CActionWrapper>
 </template>

@@ -3,20 +3,14 @@ import { ChecklistOutlined } from '@vicons/material';
 
 import { WenkuNovelRepo } from '@/hooks';
 import { useIsWideScreen } from '@/pages/util';
-import router from '@/router';
 import { useSettingStore } from '@/stores';
 import NovelListWenku from '../list/components/NovelListWenku.vue';
-
-const route = useRoute();
-
-const onUpdatePage = (page: number) => {
-  const query = { ...route.query, page };
-  router.push({ path: route.path, query });
-};
-const onUpdatedSelected = (selected: number[]) => {
-  const query = { ...route.query, selected, page: 1 };
-  router.push({ path: route.path, query });
-};
+import { onUpdateListValue, onUpdatePage } from '../list/option';
+import {
+  getWenkuFavoredListOptions,
+  parseFavoredListValueSort,
+  WenkuFavoredListValue,
+} from './option';
 
 const props = defineProps<{
   page: number;
@@ -29,36 +23,23 @@ const isWideScreen = useIsWideScreen();
 const settingStore = useSettingStore();
 const { setting } = storeToRefs(settingStore);
 
-const options = computed(() => {
-  return [
-    {
-      label: '排序',
-      tags: setting.value.favoriteCreateTimeFirst
-        ? ['收藏时间', '更新时间']
-        : ['更新时间', '收藏时间'],
+const listOptions = getWenkuFavoredListOptions(
+  setting.value.favoriteCreateTimeFirst,
+);
+
+const listValue = computed(
+  () =>
+    <WenkuFavoredListValue>{
+      排序: props.selected[4] ?? 0,
     },
-  ];
-});
+);
 
 const { data: novelPage, error } = WenkuNovelRepo.useWenkuNovelFavoredList(
   () => props.page,
   () => props.favoredId,
-  () => {
-    const selected = props.selected;
-
-    const optionNth = (n: number): string => options.value[n].tags[selected[n]];
-    const optionSort = () => {
-      const option = optionNth(0);
-      if (option === '更新时间') {
-        return 'update';
-      } else {
-        return 'create';
-      }
-    };
-    return {
-      sort: optionSort(),
-    };
-  },
+  () => ({
+    sort: parseFavoredListValueSort(listOptions.排序, listValue.value.排序),
+  }),
 );
 
 const showControlPanel = ref(false);
@@ -89,10 +70,10 @@ const novelListRef = ref<InstanceType<typeof NovelListWenku>>();
       />
     </n-collapse-transition>
 
-    <NovelListControls
-      :selected="selected"
-      :options="options"
-      @update:selected="onUpdatedSelected"
+    <ListFilter
+      :options="listOptions"
+      :value="listValue"
+      @update:value="onUpdateListValue(listOptions, $event)"
     />
 
     <CPage

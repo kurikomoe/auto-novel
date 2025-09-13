@@ -26,7 +26,7 @@ const listFavoredWebNovel = (
     type?: number;
     level?: number;
     translate?: number;
-    sort: 'create' | 'update';
+    sort: string;
   },
 ) =>
   client
@@ -61,7 +61,7 @@ const listFavoredWenkuNovel = (
   searchParams: {
     page: number;
     pageSize: number;
-    sort: 'create' | 'update';
+    sort: string;
   },
 ) =>
   client

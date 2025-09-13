@@ -3,25 +3,18 @@ import { ChecklistOutlined } from '@vicons/material';
 
 import { WebNovelRepo } from '@/hooks';
 import { useIsWideScreen } from '@/pages/util';
-import router from '@/router';
-import { useSettingStore } from '@/stores';
+import { useSettingStore, useWhoamiStore } from '@/stores';
 import NovelListWeb from '../list/components/NovelListWeb.vue';
-import { NovelListSelectOption } from '../list/components/option';
-
-const route = useRoute();
-
-const onUpdatePage = (page: number) => {
-  const query = { ...route.query, page };
-  router.push({ path: route.path, query });
-};
-const onUpdatedQuery = (query: string) => {
-  const q = { ...route.query, query, page: 1 };
-  router.push({ path: route.path, query: q });
-};
-const onUpdatedSelected = (selected: number[]) => {
-  const query = { ...route.query, selected, page: 1 };
-  router.push({ path: route.path, query });
-};
+import {
+  onUpdateListValue,
+  onUpdatePage,
+  parseWebListValueProvider,
+} from '../list/option';
+import {
+  getWebFavoredListOptions,
+  parseFavoredListValueSort,
+  WebFavoredListValue,
+} from './option';
 
 const props = defineProps<{
   page: number;
@@ -32,91 +25,40 @@ const props = defineProps<{
 
 const isWideScreen = useIsWideScreen();
 
+const whoamiStore = useWhoamiStore();
+const { whoami } = storeToRefs(whoamiStore);
+
 const settingStore = useSettingStore();
 const { setting } = storeToRefs(settingStore);
 
-const options = computed(
+const listOptions = getWebFavoredListOptions(
+  whoami.value.allowNsfw,
+  setting.value.favoriteCreateTimeFirst,
+);
+
+const listValue = computed(
   () =>
-    <NovelListSelectOption[]>[
-      {
-        label: '搜索',
-        history: 'web',
-      },
-      {
-        label: '来源',
-        tags: [
-          'Kakuyomu',
-          '成为小说家吧',
-          'Novelup',
-          'Hameln',
-          'Pixiv',
-          'Alphapolis',
-        ],
-        multiple: true,
-      },
-      {
-        label: '类型',
-        tags: ['全部', '连载中', '已完结', '短篇'],
-      },
-      {
-        label: '分级',
-        tags: ['全部', '一般向', 'R18'],
-      },
-      {
-        label: '翻译',
-        tags: ['全部', 'GPT', 'Sakura'],
-      },
-      {
-        label: '排序',
-        tags: setting.value.favoriteCreateTimeFirst
-          ? ['收藏时间', '更新时间']
-          : ['更新时间', '收藏时间'],
-      },
-    ],
+    <WebFavoredListValue>{
+      搜索: props.query,
+      来源: props.selected[0] ?? 0xff,
+      类型: props.selected[1] ?? 0,
+      分级: props.selected[2] ?? 0,
+      翻译: props.selected[3] ?? 0,
+      排序: props.selected[4] ?? 0,
+    },
 );
 
 const { data: novelPage, error } = WebNovelRepo.useWebNovelFavoredList(
   () => props.page,
   () => props.favoredId,
-  () => {
-    const query = props.query;
-    const selected = props.selected;
-
-    const parseProviderBitFlags = (n: number): string => {
-      const providerMap: { [key: string]: string } = {
-        Kakuyomu: 'kakuyomu',
-        成为小说家吧: 'syosetu',
-        Novelup: 'novelup',
-        Hameln: 'hameln',
-        Pixiv: 'pixiv',
-        Alphapolis: 'alphapolis',
-      };
-      return (options.value[n + 1] as NovelListSelectOption).tags
-        .filter((_, index) => (selected[n] ?? 0xff & (1 << index)) !== 0)
-        .map((tag) => providerMap[tag])
-        .join();
-    };
-
-    const parseSort = (sortIndex: number): 'create' | 'update' => {
-      const sortOption = (options.value.find((opt) => opt.label === '排序')
-        ?.tags ?? [])[sortIndex];
-      switch (sortOption) {
-        case '收藏时间':
-          return 'create';
-        case '更新时间':
-        default:
-          return 'update';
-      }
-    };
-    return {
-      query,
-      provider: parseProviderBitFlags(0),
-      type: selected[1] ?? 0,
-      level: selected[2] ?? 0,
-      translate: selected[3] ?? 0,
-      sort: parseSort(selected[4] ?? 0),
-    };
-  },
+  () => ({
+    query: listValue.value.搜索,
+    provider: parseWebListValueProvider(listValue.value.来源),
+    type: listValue.value.类型,
+    level: listValue.value.分级,
+    translate: listValue.value.翻译,
+    sort: parseFavoredListValueSort(listOptions.排序, listValue.value.排序),
+  }),
 );
 
 const showControlPanel = ref(false);
@@ -147,12 +89,10 @@ const novelListRef = ref<InstanceType<typeof NovelListWeb>>();
       />
     </n-collapse-transition>
 
-    <NovelListControls
-      :query="query"
-      :selected="selected"
-      :options="options"
-      @update:query="onUpdatedQuery"
-      @update:selected="onUpdatedSelected"
+    <ListFilter
+      :options="listOptions"
+      :value="listValue"
+      @update:value="onUpdateListValue(listOptions, $event)"
     />
 
     <CPage

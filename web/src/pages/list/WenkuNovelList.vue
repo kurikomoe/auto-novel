@@ -2,24 +2,13 @@
 import { PlusOutlined } from '@vicons/material';
 
 import { WenkuNovelRepo } from '@/hooks';
-import router from '@/router';
 import { FavoredRepo, useWhoamiStore } from '@/stores';
-import { getWenkuNovelOptions } from './components/option';
-
-const route = useRoute();
-
-const onUpdatePage = (page: number) => {
-  const query = { ...route.query, page };
-  router.push({ path: route.path, query });
-};
-const onUpdatedQuery = (query: string) => {
-  const q = { ...route.query, query, page: 1 };
-  router.push({ path: route.path, query: q });
-};
-const onUpdatedSelected = (selected: number[]) => {
-  const query = { ...route.query, selected, page: 1 };
-  router.push({ path: route.path, query });
-};
+import {
+  getWenkuListOptions,
+  onUpdateListValue,
+  onUpdatePage,
+  WenkuListValue,
+} from './option';
 
 const props = defineProps<{
   page: number;
@@ -30,20 +19,28 @@ const props = defineProps<{
 const whoamiStore = useWhoamiStore();
 const { whoami } = storeToRefs(whoamiStore);
 
-const options = getWenkuNovelOptions(whoami.value.allowNsfw);
-
 const favoredStore = FavoredRepo.useFavoredStore();
 const { favoreds } = storeToRefs(favoredStore);
 
+const listOptions = getWenkuListOptions(whoami.value.allowNsfw);
+
+const listValue = computed(
+  () =>
+    <WenkuListValue>{
+      搜索: props.query,
+      分级: props.selected[0] ?? 0,
+    },
+);
+
 const { data: novelPage, error } = WenkuNovelRepo.useWenkuNovelList(
   () => props.page,
-  () => {
-    let level = (props.selected[0] ?? 0) + 1;
-    if (!whoami.value.allowNsfw && level === 2) {
-      level = 3;
-    }
-    return { query: props.query, level };
-  },
+  () => ({
+    query: listValue.value.搜索,
+    level:
+      listValue.value.分级 == 0 || whoami.value.allowNsfw
+        ? listValue.value.分级 + 1
+        : listValue.value.分级 + 2,
+  }),
 );
 
 watch(novelPage, (novelPage) => {
@@ -70,12 +67,10 @@ watch(novelPage, (novelPage) => {
       />
     </router-link>
 
-    <NovelListControls
-      :query="query"
-      :selected="selected"
-      :options="options"
-      @update:query="onUpdatedQuery"
-      @update:selected="onUpdatedSelected"
+    <ListFilter
+      :options="listOptions"
+      :value="listValue"
+      @update:value="onUpdateListValue(listOptions, $event)"
     />
 
     <CPage

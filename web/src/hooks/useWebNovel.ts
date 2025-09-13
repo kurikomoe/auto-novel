@@ -69,7 +69,7 @@ const useWebNovelFavoredList = (
     type?: number;
     level?: number;
     translate?: number;
-    sort: 'create' | 'update';
+    sort: string;
   }>,
 ) =>
   useQuery({

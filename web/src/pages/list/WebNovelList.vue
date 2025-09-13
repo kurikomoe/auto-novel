@@ -1,23 +1,13 @@
 <script lang="ts" setup>
 import { WebNovelRepo } from '@/hooks';
-import router from '@/router';
 import { FavoredRepo, useWhoamiStore } from '@/stores';
-import { getWebNovelOptions, NovelListSelectOption } from './components/option';
-
-const route = useRoute();
-
-const onUpdatePage = (page: number) => {
-  const query = { ...route.query, page };
-  router.push({ path: route.path, query });
-};
-const onUpdatedQuery = (query: string) => {
-  const q = { ...route.query, query, page: 1 };
-  router.push({ path: route.path, query: q });
-};
-const onUpdatedSelected = (selected: number[]) => {
-  const query = { ...route.query, selected, page: 1 };
-  router.push({ path: route.path, query });
-};
+import {
+  getWebListOptions,
+  onUpdateListValue,
+  onUpdatePage,
+  parseWebListValueProvider,
+  WebListValue,
+} from './option';
 
 const props = defineProps<{
   page: number;
@@ -27,40 +17,34 @@ const props = defineProps<{
 
 const whoamiStore = useWhoamiStore();
 const { whoami } = storeToRefs(whoamiStore);
-const options = getWebNovelOptions(whoami.value.allowNsfw);
 
 const favoredStore = FavoredRepo.useFavoredStore();
 const { favoreds } = storeToRefs(favoredStore);
 
+const listOptions = getWebListOptions(whoami.value.allowNsfw);
+
+const listValue = computed(
+  () =>
+    <WebListValue>{
+      搜索: props.query,
+      来源: props.selected[0] ?? 0xff,
+      类型: props.selected[1] ?? 0,
+      分级: props.selected[2] ?? 0,
+      翻译: props.selected[3] ?? 0,
+      排序: props.selected[4] ?? 0,
+    },
+);
+
 const { data: novelPage, error } = WebNovelRepo.useWebNovelList(
   () => props.page,
-  () => {
-    const query = props.query;
-    const selected = props.selected;
-
-    const parseProviderBitFlags = (n: number): string => {
-      const providerMap: { [key: string]: string } = {
-        Kakuyomu: 'kakuyomu',
-        成为小说家吧: 'syosetu',
-        Novelup: 'novelup',
-        Hameln: 'hameln',
-        Pixiv: 'pixiv',
-        Alphapolis: 'alphapolis',
-      };
-      return (options[n + 1] as NovelListSelectOption).tags
-        .filter((_, index) => ((selected[n] ?? 0xff) & (1 << index)) !== 0)
-        .map((tag) => providerMap[tag])
-        .join();
-    };
-    return {
-      query,
-      provider: parseProviderBitFlags(0),
-      type: selected[1] ?? 0,
-      level: selected[2] ?? 0,
-      translate: selected[3] ?? 0,
-      sort: selected[4] ?? 0,
-    };
-  },
+  () => ({
+    query: listValue.value.搜索,
+    provider: parseWebListValueProvider(listValue.value.来源),
+    type: listValue.value.类型,
+    level: listValue.value.分级,
+    translate: listValue.value.翻译,
+    sort: listValue.value.排序,
+  }),
 );
 
 watch(novelPage, (novelPage) => {
@@ -79,12 +63,10 @@ watch(novelPage, (novelPage) => {
   <div class="layout-content">
     <n-h1>网络小说</n-h1>
 
-    <NovelListControls
-      :query="query"
-      :selected="selected"
-      :options="options"
-      @update:query="onUpdatedQuery"
-      @update:selected="onUpdatedSelected"
+    <ListFilter
+      :options="listOptions"
+      :value="listValue"
+      @update:value="onUpdateListValue(listOptions, $event)"
     />
 
     <CPage
