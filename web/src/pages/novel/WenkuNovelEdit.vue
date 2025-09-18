@@ -80,6 +80,13 @@ const formRules: FormRules = {
       trigger: 'input',
     },
   ],
+  cover: [
+    {
+      validator: (_rule: FormItemRule, value: string) => RegexUtil.isUrl(value),
+      message: '封面链接必须是有效的URL',
+      trigger: 'input',
+    },
+  ],
   level: [
     {
       validator: (_rule: FormItemRule, value: string) =>

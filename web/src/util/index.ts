@@ -173,6 +173,15 @@ export namespace RegexUtil {
     return countResult;
   };
 
+  export function isUrl(str: string) {
+    try {
+      new URL(str);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
   export const getLeadingSpaces = (str: string) => str.match(/^\s*/)?.[0] ?? '';
 
   export const isSafari = (agent: string) =>
