@@ -1,6 +1,7 @@
 import { setTokenGetter } from '@/data/api/client';
 import { useUserData } from '@/util';
 import { LSKey } from './key';
+import { UserRole } from '@/model/User';
 
 export const useWhoamiStore = defineStore(LSKey.Auth, () => {
   const { userData, refresh, logout } = useUserData('n');
@@ -19,16 +20,7 @@ export const useWhoamiStore = defineStore(LSKey.Auth, () => {
 
     const buildRoleLabel = () => {
       if (!profile) return '';
-
-      const roleToString = {
-        admin: '管理员',
-        trusted: '信任用户',
-        member: '普通用户',
-        restricted: '受限用户',
-        banned: '封禁用户',
-      };
-      const roleString = roleToString[profile.role] ?? '未知用户';
-      return roleString + (adminMode ? '+' : '');
+      return UserRole.toString(profile.role) + (adminMode ? '+' : '');
     };
 
     return {

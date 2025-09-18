@@ -256,7 +256,12 @@ const router = createRouter({
           children: [
             {
               path: 'user',
-              component: () => import('./pages/admin/AdminUserManagement.vue'),
+              component: () => import('./pages/admin/AdminUser.vue'),
+              props: (route) => ({
+                page: Number(route.query.page) || 1,
+                query: route.query.query || '',
+                selected: parseSelected(route.query),
+              }),
             },
             {
               path: 'operation',

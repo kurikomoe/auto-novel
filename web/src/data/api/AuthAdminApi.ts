@@ -1,4 +1,4 @@
-import { Page } from '@/model/Page';
+import { PageX } from '@/model/Page';
 import { UserRole } from '@/model/User';
 import { client } from './client';
 
@@ -7,12 +7,12 @@ export const AuthUrl = window.location.hostname.includes('fishhawk.top')
   : 'https://auth.novelia.cc';
 
 const clientAuth = client.extend({
-  prefixUrl: AuthUrl + '/api/v1',
+  prefixUrl: AuthUrl + '/api/v1/admin',
   credentials: 'include',
 });
 
-export interface UserInfo {
-  username: string;
+export interface UserResponse {
+  name: string;
   email: string;
   role: UserRole;
   createdAt: number;
@@ -20,8 +20,15 @@ export interface UserInfo {
   attr: object;
 }
 
-const listUser = (params: { page: number; pageSize: number; role: UserRole }) =>
-  clientAuth.get('user', { searchParams: params }).json<Page<UserInfo>>();
+const listUser = (params: {
+  page: number;
+  pageSize: number;
+  username?: string;
+  role?: UserRole;
+  create_after?: number;
+  create_before?: number;
+}) =>
+  clientAuth.get('user', { searchParams: params }).json<PageX<UserResponse>>();
 
 interface RestrictUserRequest {
   username: string;

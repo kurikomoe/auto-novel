@@ -4,6 +4,8 @@ import { onKeyDown } from '@/pages/util';
 const props = defineProps<{
   page: number;
   pageNumber?: number;
+  pageSize?: number;
+  total?: number;
   disableTop?: boolean;
 }>();
 
@@ -11,9 +13,16 @@ const emits = defineEmits<{
   (e: 'update:page', page: number): void;
 }>();
 
+const calculatedPageNumber = computed(() => {
+  if (props.pageSize !== undefined && props.total !== undefined) {
+    return Math.ceil(props.total / props.pageSize);
+  }
+  return props.pageNumber ?? 0;
+});
+
 const realPageNumber = ref(1);
 watch(
-  () => props.pageNumber,
+  calculatedPageNumber,
   (pageNumber) => {
     if (pageNumber !== undefined) {
       realPageNumber.value = pageNumber;
