@@ -1,7 +1,7 @@
 import { MD5 } from 'crypto-es/lib/md5';
 import { customAlphabet } from 'nanoid';
 
-import { Locator } from '@/data';
+import { TranslationCacheRepo } from '@/hooks';
 import { Glossary } from '@/model/Glossary';
 import { TranslatorId } from '@/model/Translator';
 
@@ -177,11 +177,9 @@ export const createSegIndexedDbCache = async (
       MD5(JSON.stringify({ seg, extra })).toString(),
 
     get: (hash: string): Promise<string[] | undefined> =>
-      Locator.cachedSegRepository().then((repo) => repo.get(storeName, hash)),
+      TranslationCacheRepo.get(storeName, hash),
 
     save: (hash: string, text: string[]): Promise<void> =>
-      Locator.cachedSegRepository()
-        .then((repo) => repo.create(storeName, hash, text))
-        .then(() => {}),
+      TranslationCacheRepo.create(storeName, hash, text).then(() => {}),
   };
 };

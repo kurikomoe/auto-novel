@@ -8,10 +8,10 @@ import { VueDraggable } from 'vue-draggable-plus';
 
 import { Locator } from '@/data';
 import { SakuraTranslator } from '@/domain/translate';
+import { TranslationCacheRepo } from '@/hooks';
 import { TranslateJob } from '@/model/Translator';
-import SoundAllTaskCompleted from '@/sound/all_task_completed.mp3';
-
 import { doAction } from '@/pages/util';
+import SoundAllTaskCompleted from '@/sound/all_task_completed.mp3';
 import { useSettingStore } from '@/stores';
 
 const message = useMessage();
@@ -85,13 +85,7 @@ const onProgressUpdated = (
 };
 
 const clearCache = async () =>
-  doAction(
-    Locator.cachedSegRepository().then((repo) =>
-      repo.clear('sakura-seg-cache'),
-    ),
-    '缓存清除',
-    message,
-  );
+  doAction(TranslationCacheRepo.clear('sakura-seg-cache'), '缓存清除', message);
 </script>
 
 <template>

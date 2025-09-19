@@ -200,6 +200,17 @@ export namespace Humanize {
     unit(rawNum, ['B', 'KB', 'MB', 'GB', 'TB', 'PB'], 1024);
 }
 
+export const lazy = <T>(factory: () => T) => {
+  let value: T;
+  const get = () => {
+    if (value === undefined) {
+      value = factory();
+    }
+    return value;
+  };
+  return get;
+};
+
 export * from './useOpenCC';
 export * from './useStorage';
 export * from './useUserData';

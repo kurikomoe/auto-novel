@@ -7,8 +7,8 @@ import {
 import { VueDraggable } from 'vue-draggable-plus';
 
 import { Locator } from '@/data';
+import { TranslationCacheRepo } from '@/hooks';
 import { TranslateJob } from '@/model/Translator';
-
 import { doAction } from '@/pages/util';
 
 const message = useMessage();
@@ -75,11 +75,7 @@ const onProgressUpdated = (
 };
 
 const clearCache = async () =>
-  doAction(
-    Locator.cachedSegRepository().then((repo) => repo.clear('gpt-seg-cache')),
-    '缓存清除',
-    message,
-  );
+  doAction(TranslationCacheRepo.clear('gpt-seg-cache'), '缓存清除', message);
 </script>
 
 <template>
