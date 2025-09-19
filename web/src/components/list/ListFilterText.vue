@@ -21,6 +21,12 @@ const props = defineProps<{
 
 const text = ref(value.value);
 
+watch(value, (newVal) => {
+  if (newVal !== text.value) {
+    text.value = newVal;
+  }
+});
+
 const searchHistoryStore =
   props.option.history === 'web'
     ? useWebSearchHistoryStore()
