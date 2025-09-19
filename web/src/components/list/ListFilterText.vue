@@ -100,8 +100,9 @@ function processQueryWithLocaleAware(input: string): string {
 }
 
 const confirm = (key: string) => {
-  console.log(key);
-  value.value = processQueryWithLocaleAware(key);
+  const newValue = processQueryWithLocaleAware(key);
+  value.value = newValue;
+  text.value = newValue;
   searchHistoryStore.addHistory(key);
   input.value?.blur();
   showSuggestions.value = false;
