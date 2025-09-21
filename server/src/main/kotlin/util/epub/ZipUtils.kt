@@ -2,18 +2,13 @@ package util.epub
 
 import com.google.common.jimfs.Configuration
 import com.google.common.jimfs.Jimfs
-import net.lingala.zip4j.io.inputstream.ZipInputStream
-import java.io.Closeable
+import org.slf4j.LoggerFactory
 import java.nio.file.FileSystem
+import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Path
 
 
-/**
- * 修正 zip 内路径访问。
- *
- * @param: zip 内文件路径
- */
 fun FileSystem.zipGetPath(path: String): Path {
     return if (!path.startsWith("/")) {
         getPath(Path.of("/").resolve(path).toString())
@@ -23,29 +18,32 @@ fun FileSystem.zipGetPath(path: String): Path {
 }
 
 object ZipUtils {
+    val logger = LoggerFactory.getLogger(ZipUtils::class.java)
+
+    const val MAX_ALLOWED_EPUB_SIZE = 50 * 1024 * 1024  // 50MiB
+
     /**
      * @param zipPath epub/zip 文件路径
      */
     inline fun use(zipPath: Path, block: (FileSystem) -> Unit) {
-        val jimfs = Jimfs.newFileSystem(Configuration.unix())
-
-        jimfs.use { fs ->
-            unzipToAnyfs(zipPath, fs)
-            block(fs)
+        val unzipMethods = listOf(ZipUtils::unzipByJDK, ZipUtils::unzipByZip4J)
+        for (method in unzipMethods) {
+            try {
+                method(zipPath).use(block)
+                return
+            } catch (e: Exception) {
+                logger.warn("Failed to unzip $zipPath with ${method.name}.", e)
+            }
         }
+        throw Exception("Failed to unzip $zipPath.")
     }
 
-    /**
-     * @param zipPath zip 文件路径
-     * @param fs 任意一个 filesystem 对象，例如 jimfs
-     */
-    fun unzipToAnyfs(zipPath: Path, fs: FileSystem) {
-        // FIXME(kuriko): 请考虑把所有常量找个地方放一起。
-        val MAX_ALLOWED_EPUB_SIZE = 50 * 1024 * 1024  // 50MiB
-
+    // Consider moving the unzipByXXX methods to a separate class and make them reusable.
+    fun unzipByZip4J(zipPath: Path): FileSystem {
+        val fs = Jimfs.newFileSystem(Configuration.unix())
         var decSize = 0
         Files.newInputStream(zipPath).use { inputStream ->
-            ZipInputStream(inputStream).use { zipInputStream ->
+            net.lingala.zip4j.io.inputstream.ZipInputStream(inputStream).use { zipInputStream ->
                 generateSequence { zipInputStream.nextEntry }.forEach { localFileHeader ->
                     var readLen: Int
                     val readBuffer = ByteArray(4096)
@@ -58,7 +56,7 @@ object ZipUtils {
                         // NOTE(kuriko): 以防万一 zip iter 顺序并非目录在前。
                         Files.createDirectories(extractedFilePath.parent ?: fs.getPath("/"))
                         Files.newOutputStream(extractedFilePath).use { outputStream ->
-                            while ((zipInputStream.read(readBuffer).also { readLen = it }) != -1) {
+                            while ((zipInputStream.read(readBuffer).also { readLen = it }) > 0) {
                                 outputStream.write(readBuffer, 0, readLen)
                                 decSize += readLen
                                 if (decSize > MAX_ALLOWED_EPUB_SIZE) {
@@ -70,6 +68,11 @@ object ZipUtils {
                 }
             }
         }
+        return fs
+    }
+
+    fun unzipByJDK(zipPath: Path): FileSystem {
+        return FileSystems.newFileSystem(zipPath)
     }
 }
 

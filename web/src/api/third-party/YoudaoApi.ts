@@ -1,4 +1,3 @@
-import { lazy } from '@/util';
 import { AES } from 'crypto-es/lib/aes';
 import { Utf8 } from 'crypto-es/lib/core';
 import { MD5 } from 'crypto-es/lib/md5';
@@ -39,17 +38,10 @@ const decode = (src: string) => {
   return dec;
 };
 
-const useClient = lazy(() =>
-  ky.create({
-    credentials: 'include',
-    retry: 0,
-  }),
-);
-
 let key = 'fsdsogkndfokasodnaso';
 
 const rlog = () =>
-  useClient().get('https://rlogs.youdao.com/rlog.php', {
+  ky.get('https://rlogs.youdao.com/rlog.php', {
     searchParams: {
       _npid: 'fanyiweb',
       _ncat: 'pageview',
@@ -58,22 +50,26 @@ const rlog = () =>
       _nver: '1.2.0',
       _ntms: Date.now().toString(),
     },
+    credentials: 'include',
+    retry: 0,
   });
 
 const refreshKey = () =>
-  useClient()
+  ky
     .get('https://dict.youdao.com/webtranslate/key', {
       searchParams: {
         keyid: 'webfanyi-key-getter',
         ...getBaseBody('asdjnjfenknafdfsdfsd'),
       },
+      credentials: 'include',
+      retry: 0,
     })
     .json()
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .then((json: any) => (key = json['data']['secretKey']));
 
 const webtranslate = (query: string, from: string, options?: Options) =>
-  useClient()
+  ky
     .post('https://dict.youdao.com/webtranslate', {
       body: new URLSearchParams({
         i: query,
@@ -86,6 +82,8 @@ const webtranslate = (query: string, from: string, options?: Options) =>
       headers: {
         Accept: 'application/json, text/plain, */*',
       },
+      credentials: 'include',
+      retry: 0,
       ...options,
     })
     .text()

@@ -4,14 +4,6 @@ export interface UserReference {
   username: string;
 }
 
-export interface UserOutline {
-  id: string;
-  email: string;
-  username: string;
-  role: UserRole;
-  createdAt: number;
-}
-
 export namespace UserRole {
   export function toString(role: UserRole) {
     switch (role) {
