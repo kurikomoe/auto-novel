@@ -1,6 +1,5 @@
-import { Locator } from '@/data';
+import { YoudaoApi } from '@/data';
 import { RegexUtil, safeJson } from '@/util';
-
 import {
   Logger,
   SegmentContext,
@@ -12,7 +11,6 @@ import {
 export class YoudaoTranslator implements SegmentTranslator {
   id = <const>'youdao';
   log: Logger;
-  private api = Locator.youdaoRepository();
 
   constructor(log: Logger) {
     this.log = log;
@@ -20,8 +18,8 @@ export class YoudaoTranslator implements SegmentTranslator {
 
   async init() {
     try {
-      await this.api.rlog();
-      await this.api.refreshKey();
+      await YoudaoApi.rlog();
+      await YoudaoApi.refreshKey();
     } catch (e) {
       this.log('无法获得Key，使用默认值');
     }
@@ -50,7 +48,7 @@ export class YoudaoTranslator implements SegmentTranslator {
       from = 'en';
     }
 
-    const decoded = await this.api.webtranslate(seg.join('\n'), from, {
+    const decoded = await YoudaoApi.webtranslate(seg.join('\n'), from, {
       signal,
     });
     const decodedJson = safeJson<{ translateResult: { tgt: string }[][] }>(

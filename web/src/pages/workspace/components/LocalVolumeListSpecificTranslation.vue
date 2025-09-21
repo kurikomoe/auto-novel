@@ -2,7 +2,7 @@
 import { DeleteOutlineOutlined } from '@vicons/material';
 import { useKeyModifier } from '@vueuse/core';
 
-import { Locator } from '@/data';
+import { useLocalVolumeStore } from '@/data';
 import { GenericNovelId } from '@/model/Common';
 import { LocalVolumeMetadata } from '@/model/LocalVolume';
 import { useBookshelfLocalStore } from '@/pages/bookshelf/BookshelfLocalStore';
@@ -84,7 +84,7 @@ const queueVolume = (volumeId: string, total: number = 65536) => {
 
 const downloadVolume = async (volumeId: string) => {
   const { mode } = setting.value.downloadFormat;
-  const repo = await Locator.localVolumeRepository();
+  const repo = await useLocalVolumeStore();
 
   try {
     const { filename, blob } = await repo.getTranslationFile({

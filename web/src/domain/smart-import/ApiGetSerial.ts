@@ -1,4 +1,4 @@
-import { Locator } from '@/data';
+import { AmazonApi } from '@/data';
 import { extractAsin } from './Common';
 
 const parseSerial = (doc: Document) => {
@@ -47,4 +47,4 @@ const parseSerial = (doc: Document) => {
 };
 
 export const getSerial = (asin: string, total: string) =>
-  Locator.amazonRepository().getSerial(asin, total).then(parseSerial);
+  AmazonApi.getSerial(asin, total).then(parseSerial);

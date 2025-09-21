@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { LSKey } from '@/data/LocalStorage';
+import { LSKey } from '@/stores/key';
 
 const newDomain = 'https://n.novelia.cc';
 const inOldDomain = location.hostname.includes('fishhawk');

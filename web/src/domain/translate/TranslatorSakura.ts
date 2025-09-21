@@ -1,11 +1,11 @@
-import { Locator } from '@/data';
+import { createOpenAiApi } from '@/data';
 import { Glossary } from '@/model/Glossary';
 
 import {
+  createLengthSegmentor,
   Logger,
   SegmentContext,
   SegmentTranslator,
-  createLengthSegmentor,
 } from './Common';
 
 export class SakuraTranslator implements SegmentTranslator {
@@ -26,7 +26,7 @@ export class SakuraTranslator implements SegmentTranslator {
     { endpoint, segLength, prevSegLength }: SakuraTranslator.Config,
   ) {
     this.log = log;
-    this.api = Locator.openAiRepositoryFactory(endpoint, 'no-key');
+    this.api = createOpenAiApi(endpoint, 'no-key');
     if (segLength !== undefined) {
       this.segmentor = createLengthSegmentor(segLength);
       this.segLength = segLength;

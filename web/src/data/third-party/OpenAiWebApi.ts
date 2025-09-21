@@ -2,10 +2,7 @@ import ky, { KyInstance, Options } from 'ky';
 
 import { parseEventStream } from '@/util';
 
-export const createOpenAiWebRepository = (
-  endpoint: string,
-  accessToken: string,
-) => {
+export const createOpenAiWebApi = (endpoint: string, accessToken: string) => {
   const client = ky.create({
     prefixUrl: endpoint,
     headers: {

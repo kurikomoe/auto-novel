@@ -1,4 +1,4 @@
-import { Locator } from '@/data';
+import { AmazonApi } from '@/data';
 import { extractAsin } from './Common';
 
 const parseSearch = (doc: Document) => {
@@ -45,4 +45,4 @@ const parseSearch = (doc: Document) => {
 };
 
 export const search = (query: string) =>
-  Locator.amazonRepository().search(query).then(parseSearch);
+  AmazonApi.search(query).then(parseSearch);

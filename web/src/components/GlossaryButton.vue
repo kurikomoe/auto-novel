@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import { DeleteOutlineOutlined } from '@vicons/material';
 
+import { useLocalVolumeStore, WebNovelApi, WenkuNovelApi } from '@/data';
 import { GenericNovelId } from '@/model/Common';
 import { Glossary } from '@/model/Glossary';
-import { useWhoamiStore } from '@/stores';
-
-import { Locator, WebNovelApi, WenkuNovelApi } from '@/data';
 import { copyToClipBoard, doAction } from '@/pages/util';
+import { useWhoamiStore } from '@/stores';
 import { downloadFile } from '@/util';
 
 const props = defineProps<{
@@ -54,7 +53,7 @@ const updateGlossary = async () => {
   } else if (gnid.type === 'wenku') {
     await WenkuNovelApi.updateGlossary(gnid.novelId, glossaryValue);
   } else {
-    const repo = await Locator.localVolumeRepository();
+    const repo = await useLocalVolumeStore();
     await repo.updateGlossary(gnid.volumeId, glossaryValue);
   }
 };

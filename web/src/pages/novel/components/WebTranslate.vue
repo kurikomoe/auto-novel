@@ -3,7 +3,7 @@ import { useKeyModifier } from '@vueuse/core';
 import ky from 'ky';
 
 import TranslateTask from '@/components/TranslateTask.vue';
-import { Locator, WebNovelApi } from '@/data';
+import { useLocalVolumeStore, WebNovelApi } from '@/data';
 import { GenericNovelId } from '@/model/Common';
 import { TranslateTaskDescriptor } from '@/model/Translator';
 import { useSettingStore, useWhoamiStore, useWorkspaceStore } from '@/stores';
@@ -82,7 +82,7 @@ const importToWorkspace = async () => {
   const blob = await ky.get(files.value.jp.url).blob();
   const file = new File([blob], files.value.jp.filename);
 
-  const repo = await Locator.localVolumeRepository();
+  const repo = await useLocalVolumeStore();
   await repo
     .createVolume(file, 'default')
     .then(() => repo.updateGlossary(file.name, toRaw(props.glossary)))

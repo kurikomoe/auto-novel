@@ -6,12 +6,12 @@ import {
 } from '@vicons/material';
 
 import ChapterTocList from '@/components/ChapterTocList.vue';
-import { Locator } from '@/data';
-import { WebNovelRepo } from '@/repos';
+import { useLocalVolumeStore } from '@/data';
 import { GenericNovelId } from '@/model/Common';
 import { ReadableTocItem } from '@/pages/novel/components/common';
 import { useTocExpansion } from '@/pages/novel/components/UseTocExpansion';
 import { useIsWideScreen } from '@/pages/util';
+import { WebNovelRepo } from '@/repos';
 import { useSettingStore } from '@/stores';
 import { Err, Ok, Result, runCatching } from '@/util/result';
 
@@ -83,7 +83,7 @@ watch(
         };
 
         const getLocalToc = async (volumeId: string) => {
-          const repo = await Locator.localVolumeRepository();
+          const repo = await useLocalVolumeStore();
           const volume = await repo.getVolume(volumeId);
           if (volume === undefined) throw Error('小说不存在');
           return volume.toc.map(

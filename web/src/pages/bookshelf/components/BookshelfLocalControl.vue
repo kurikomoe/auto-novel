@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useKeyModifier } from '@vueuse/core';
 
-import { Locator } from '@/data';
+import { useLocalVolumeStore } from '@/data';
 import { useIsWideScreen } from '@/pages/util';
 import { FavoredRepo, Setting, useSettingStore } from '@/stores';
 import { useBookshelfLocalStore } from '../BookshelfLocalStore';
@@ -82,7 +82,7 @@ const moveToFavored = async () => {
     return;
   }
 
-  const localVolumeRepository = await Locator.localVolumeRepository();
+  const localVolumeRepository = await useLocalVolumeStore();
 
   let failed = 0;
   for (const volumeId of novels) {

@@ -2,7 +2,7 @@
 import { DeleteOutlineOutlined, PlusOutlined } from '@vicons/material';
 import { UploadCustomRequestOptions } from 'naive-ui';
 
-import { Locator } from '@/data';
+import { useLocalVolumeStore } from '@/data';
 import { ParsedFile, parseFile } from '@/util/file';
 
 const message = useMessage();
@@ -35,7 +35,7 @@ const clearFile = () => {
 };
 
 const loadLocalFile = (volumeId: string) =>
-  Locator.localVolumeRepository()
+  useLocalVolumeStore()
     .then((repo) => repo.getFile(volumeId))
     .then((file) => {
       if (file === undefined) throw '小说不存在';

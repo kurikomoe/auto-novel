@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { useEventListener } from '@vueuse/core';
 
-import { Locator } from '@/data';
 import { useDraftStore } from '@/stores';
-
 import { useIsWideScreen } from '@/pages/util';
 
 const props = defineProps<{

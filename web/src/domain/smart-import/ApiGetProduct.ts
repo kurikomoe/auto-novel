@@ -1,4 +1,4 @@
-import { Locator } from '@/data';
+import { AmazonApi } from '@/data';
 import { extractAsin } from './Common';
 
 const parseAuthor = (elements: HTMLCollectionOf<Element>) => {
@@ -167,4 +167,4 @@ const parseProductVolume = (doc: Document) => {
 };
 
 export const getProduct = (asin: string) =>
-  Locator.amazonRepository().getProduct(asin).then(parseProduct);
+  AmazonApi.getProduct(asin).then(parseProduct);

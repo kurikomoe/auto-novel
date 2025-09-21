@@ -1,5 +1,5 @@
-export { createAmazonRepository } from './AmazonRepository';
-export { createBaiduRepository } from './BaiduRepository';
-export { createOpenAiRepository } from './OpenAiRepository';
-export { createOpenAiWebRepository } from './OpenAiWebRepository';
-export { createYoudaoRepository } from './YoudaoRepository';
+export * from './AmazonApi';
+export * from './BaiduApi';
+export * from './OpenAiApi';
+export * from './OpenAiWebApi';
+export * from './YoudaoApi';

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { createReusableTemplate, onKeyDown } from '@vueuse/core';
 
-import { Locator, ReadHistoryApi } from '@/data';
+import { ReadHistoryApi, useLocalVolumeStore } from '@/data';
 import { GenericNovelId } from '@/model/Common';
 import { TranslatorId } from '@/model/Translator';
 import { checkIsMobile, useIsWideScreen } from '@/pages/util';
@@ -84,9 +84,7 @@ const navToChapter = async (chapterId: string) => {
           chapterId,
         );
       } else if (gnid.type === 'local') {
-        Locator.localVolumeRepository().then((it) =>
-          it.updateReadAt(gnid.volumeId),
-        );
+        useLocalVolumeStore().then((it) => it.updateReadAt(gnid.volumeId));
       }
       if (result.value.nextId) {
         store.preloadChapter(result.value.nextId);

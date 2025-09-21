@@ -1,4 +1,4 @@
-import { Locator, formatError } from '@/data';
+import { formatError, useLocalVolumeStore } from '@/data';
 import { ChapterTranslation, LocalVolumeMetadata } from '@/model/LocalVolume';
 import {
   LocalTranslateTaskDesc,
@@ -15,7 +15,7 @@ export const translateLocal = async (
   translator: Translator,
   signal?: AbortSignal,
 ) => {
-  const localVolumeRepository = await Locator.localVolumeRepository();
+  const localVolumeRepository = await useLocalVolumeStore();
   // Api
   const getVolume = () => localVolumeRepository.getVolume(volumeId);
 

@@ -1,4 +1,4 @@
-import { Locator, WebNovelApi } from '@/data';
+import { useLocalVolumeStore, WebNovelApi } from '@/data';
 import { GenericNovelId } from '@/model/Common';
 import { Ok, Result, runCatching } from '@/util/result';
 
@@ -77,7 +77,7 @@ const getChapter = async (
   } else if (gnid.type === 'wenku') {
     throw '不支持文库';
   } else {
-    const repo = await Locator.localVolumeRepository();
+    const repo = await useLocalVolumeStore();
 
     const volumeId = gnid.volumeId;
     const volume = await repo.getVolume(volumeId);

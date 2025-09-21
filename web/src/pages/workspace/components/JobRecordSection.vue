@@ -5,7 +5,6 @@ import {
   RefreshOutlined,
 } from '@vicons/material';
 
-import { Locator } from '@/data';
 import { TranslateJob, TranslateTaskDescriptor } from '@/model/Translator';
 import { useBookshelfLocalStore } from '@/pages/bookshelf/BookshelfLocalStore';
 import { useWorkspaceStore } from '@/stores';

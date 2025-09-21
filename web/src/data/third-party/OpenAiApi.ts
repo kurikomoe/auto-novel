@@ -3,7 +3,7 @@ import ky, { HTTPError, Options } from 'ky';
 
 import { parseEventStream, safeJson } from '@/util';
 
-export const createOpenAiRepository = (endpoint: string, key: string) => {
+export const createOpenAiApi = (endpoint: string, key: string) => {
   const endpointUrl = new URL(endpoint);
   if (endpointUrl.pathname === '/') {
     endpointUrl.pathname = 'v1';

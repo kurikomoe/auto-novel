@@ -1,6 +1,5 @@
-import { Locator } from '@/data';
+import { BaiduApi } from '@/data';
 import { RegexUtil } from '@/util';
-
 import {
   Logger,
   SegmentContext,
@@ -12,14 +11,12 @@ import {
 export class BaiduTranslator implements SegmentTranslator {
   id = <const>'baidu';
   log: (message: string) => void;
-  private api = Locator.baiduRepository();
-
   constructor(log: Logger) {
     this.log = log;
   }
 
   async init() {
-    await this.api.sug();
+    await BaiduApi.sug();
     return this;
   }
 
@@ -45,7 +42,7 @@ export class BaiduTranslator implements SegmentTranslator {
     } else if (RegexUtil.hasEnglishChars(query)) {
       from = 'en';
     }
-    const chunks = await this.api.translate(query, from, { signal });
+    const chunks = await BaiduApi.translate(query, from, { signal });
 
     const lineParts: { paraIdx: number; dst: string }[] = [];
     Array.from(chunks).forEach((chunk) => {

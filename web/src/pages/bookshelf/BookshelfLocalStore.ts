@@ -1,4 +1,4 @@
-import { Locator } from '@/data';
+import { useLocalVolumeStore } from '@/data';
 import { LocalVolumeMetadata } from '@/model/LocalVolume';
 import { TranslateTaskDescriptor } from '@/model/Translator';
 import { useSettingStore, useWorkspaceStore } from '@/stores';
@@ -15,22 +15,22 @@ export const useBookshelfLocalStore = defineStore('BookshelfLocal', {
     },
   actions: {
     async loadVolumes() {
-      const repo = await Locator.localVolumeRepository();
+      const repo = await useLocalVolumeStore();
       this.volumes = await repo.listVolume();
       return this.volumes;
     },
     async addVolume(file: File, favoredId: string) {
-      const repo = await Locator.localVolumeRepository();
+      const repo = await useLocalVolumeStore();
       await repo.createVolume(file, favoredId);
       await this.loadVolumes();
     },
     async deleteVolume(id: string) {
-      const repo = await Locator.localVolumeRepository();
+      const repo = await useLocalVolumeStore();
       await repo.deleteVolume(id);
       this.volumes = this.volumes.filter((it) => it.id !== id);
     },
     async deleteVolumes(ids: string[]) {
-      const repo = await Locator.localVolumeRepository();
+      const repo = await useLocalVolumeStore();
 
       let failed = 0;
       await Promise.all(
@@ -53,7 +53,7 @@ export const useBookshelfLocalStore = defineStore('BookshelfLocal', {
       const { mode, translationsMode, translations } =
         setting.value.downloadFormat;
 
-      const repo = await Locator.localVolumeRepository();
+      const repo = await useLocalVolumeStore();
 
       const { BlobReader, BlobWriter, ZipWriter } = await import(
         '@zip.js/zip.js'
@@ -87,7 +87,7 @@ export const useBookshelfLocalStore = defineStore('BookshelfLocal', {
     },
 
     async downloadRawVolumes(ids: string[]) {
-      const repo = await Locator.localVolumeRepository();
+      const repo = await useLocalVolumeStore();
 
       const { BlobReader, BlobWriter, ZipWriter } = await import(
         '@zip.js/zip.js'

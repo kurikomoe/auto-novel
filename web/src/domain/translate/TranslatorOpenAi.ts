@@ -1,18 +1,18 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { Locator, OpenAiError } from '@/data';
+import { createOpenAiApi, createOpenAiWebApi, OpenAiError } from '@/data';
 import { Glossary } from '@/model/Glossary';
 import { delay, RegexUtil } from '@/util';
 
 import {
+  createLengthSegmentor,
   Logger,
   SegmentContext,
   SegmentTranslator,
-  createLengthSegmentor,
 } from './Common';
 
-type OpenAi = ReturnType<typeof Locator.openAiRepositoryFactory>;
-type OpenAiWeb = ReturnType<typeof Locator.openAiWebRepositoryFactory>;
+type OpenAi = ReturnType<typeof createOpenAiApi>;
+type OpenAiWeb = ReturnType<typeof createOpenAiWebApi>;
 
 export class OpenAiTranslator implements SegmentTranslator {
   id = <const>'gpt';
@@ -27,9 +27,9 @@ export class OpenAiTranslator implements SegmentTranslator {
     this.log = log;
     this.model = model;
     if (type === 'web') {
-      this.api = Locator.openAiWebRepositoryFactory(endpoint, key);
+      this.api = createOpenAiWebApi(endpoint, key);
     } else {
-      this.api = Locator.openAiRepositoryFactory(endpoint, key);
+      this.api = createOpenAiApi(endpoint, key);
     }
   }
 
