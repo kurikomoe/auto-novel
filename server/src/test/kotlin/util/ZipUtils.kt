@@ -12,8 +12,7 @@ class EpubZipTest : DescribeSpec({
         it("processing all EPUB files in the 'resources/util' directory") {
             val epubFiles = Path("data/files-test").listDirectoryEntries()
             epubFiles.forEach { epubPath ->
-                println(epubPath)
-                ZipUtils.use(epubPath) { fs ->
+                ZipUtils.unzip(epubPath).use { fs ->
                     val root = fs.rootDirectories.first()
                     println("Checking epub: ${epubPath.name}")
                     println("Root directory inside epub: $root")

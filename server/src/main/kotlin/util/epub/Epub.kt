@@ -20,7 +20,7 @@ private fun FileSystem.readFileAsXHtml(path: String): Document {
 
 object Epub {
     fun forEachXHtmlFile(path: Path, block: (xhtmlPath: String, doc: Document) -> Unit) {
-        ZipUtils.use(path) { fs ->
+        ZipUtils.unzip(path).use { fs ->
             val xmlContainer = fs.readFileAsXHtml("/META-INF/container.xml")
             val opfPath = xmlContainer.selectFirst("rootfile")!!.attr("full-path")
 
@@ -37,7 +37,7 @@ object Epub {
         dstPath: Path,
         modify: (name: String, bytes: ByteArray) -> ByteArray,
     ) {
-        ZipUtils.use(srcPath) { fs ->
+        ZipUtils.unzip(srcPath).use { fs ->
             ZipOutputStream(BufferedOutputStream(dstPath.outputStream())).use { zipOut ->
                 Files
                     .walk(fs.rootDirectories.first())

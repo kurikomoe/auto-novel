@@ -18,19 +18,15 @@ fun FileSystem.zipGetPath(path: String): Path {
 }
 
 object ZipUtils {
-    val logger = LoggerFactory.getLogger(ZipUtils::class.java)
+    private val logger = LoggerFactory.getLogger(ZipUtils::class.java)
 
     const val MAX_ALLOWED_EPUB_SIZE = 50 * 1024 * 1024  // 50MiB
 
-    /**
-     * @param zipPath epub/zip 文件路径
-     */
-    inline fun use(zipPath: Path, block: (FileSystem) -> Unit) {
+    fun unzip(zipPath: Path): FileSystem {
         val unzipMethods = listOf(ZipUtils::unzipByJDK, ZipUtils::unzipByZip4J)
         for (method in unzipMethods) {
             try {
-                method(zipPath).use(block)
-                return
+                return method(zipPath)
             } catch (e: Exception) {
                 logger.warn("Failed to unzip $zipPath with ${method.name}.", e)
             }
