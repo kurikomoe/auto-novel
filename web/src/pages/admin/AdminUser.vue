@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AdminRepo } from '@/hooks/useAdmin';
+import { AdminRepo } from '@/hooks';
 import { UserRole } from '@/model/User';
 import { getUserListOptions, UserListValue } from './option';
 import { onUpdateListValue, onUpdatePage } from './option';
