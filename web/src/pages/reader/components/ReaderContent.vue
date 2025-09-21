@@ -6,7 +6,7 @@ import { GenericNovelId } from '@/model/Common';
 import { WebNovelChapterDto } from '@/model/WebNovel';
 import { useReaderSettingStore } from '@/stores';
 import { buildParagraphs } from './BuildParagraphs';
-import { ReadPositionRepo } from '@/hooks';
+import { ReadPositionRepo } from '@/repos';
 
 const props = defineProps<{
   gnid: GenericNovelId;

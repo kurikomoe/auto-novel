@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ArticleRepo } from '@/hooks';
+import { ArticleRepo } from '@/repos';
 import { doAction } from '@/pages//util';
 import { useBlacklistStore, useWhoamiStore } from '@/stores';
 

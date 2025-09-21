@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ChecklistOutlined } from '@vicons/material';
 
-import { WenkuNovelRepo } from '@/hooks';
+import { WenkuNovelRepo } from '@/repos';
 import { useIsWideScreen } from '@/pages/util';
 import { useSettingStore } from '@/stores';
 import NovelListWenku from '../list/components/NovelListWenku.vue';

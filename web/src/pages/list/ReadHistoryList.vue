@@ -2,7 +2,7 @@
 import { DeleteOutlineOutlined } from '@vicons/material';
 
 import { ReadHistoryApi } from '@/data';
-import { WebNovelRepo } from '@/hooks';
+import { WebNovelRepo } from '@/repos';
 import router from '@/router';
 import { useReadHistoryStore } from '@/stores';
 import { doAction } from '../util';

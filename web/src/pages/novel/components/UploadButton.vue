@@ -7,7 +7,7 @@ import {
 } from 'naive-ui';
 
 import { formatError } from '@/data';
-import { WenkuNovelRepo } from '@/hooks';
+import { WenkuNovelRepo } from '@/repos';
 import { useNoticeStore, useWhoamiStore } from '@/stores';
 import { RegexUtil } from '@/util';
 import { getFullContent } from '@/util/file';

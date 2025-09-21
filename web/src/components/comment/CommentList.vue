@@ -2,7 +2,7 @@
 import { CommentOutlined } from '@vicons/material';
 
 import SectionHeader from '@/components/SectionHeader.vue';
-import { CommentRepo } from '@/hooks';
+import { CommentRepo } from '@/repos';
 import { useDraftStore } from '@/stores';
 
 const props = defineProps<{

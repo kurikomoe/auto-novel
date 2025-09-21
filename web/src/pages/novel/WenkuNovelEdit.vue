@@ -10,7 +10,7 @@ import { VueDraggable } from 'vue-draggable-plus';
 
 import { WenkuNovelApi } from '@/data';
 import { prettyCover, smartImport } from '@/domain/smart-import';
-import { WenkuNovelRepo } from '@/hooks';
+import { WenkuNovelRepo } from '@/repos';
 import coverPlaceholder from '@/image/cover_placeholder.png';
 import {
   WenkuNovelOutlineDto,

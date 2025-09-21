@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ListOptions, ListValue } from '@/components/list/types';
-import { WebNovelRepo } from '@/hooks';
+import { WebNovelRepo } from '@/repos';
 import {
   getWebRankListOptions,
   onUpdateListValue,

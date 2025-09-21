@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ChecklistOutlined } from '@vicons/material';
 
-import { WebNovelRepo } from '@/hooks';
+import { WebNovelRepo } from '@/repos';
 import { useIsWideScreen } from '@/pages/util';
 import { useSettingStore, useWhoamiStore } from '@/stores';
 import NovelListWeb from '../list/components/NovelListWeb.vue';

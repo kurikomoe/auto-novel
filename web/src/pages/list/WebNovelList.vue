@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { WebNovelRepo } from '@/hooks';
+import { WebNovelRepo } from '@/repos';
 import { FavoredRepo, useWhoamiStore } from '@/stores';
 import {
   getWebListOptions,

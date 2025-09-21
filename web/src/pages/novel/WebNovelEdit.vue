@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { UploadOutlined } from '@vicons/material';
 
-import { WebNovelRepo } from '@/hooks';
+import { WebNovelRepo } from '@/repos';
 import { doAction, useIsWideScreen } from '@/pages/util';
 
 const { providerId, novelId } = defineProps<{

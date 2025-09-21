@@ -8,7 +8,7 @@ import {
 } from '@vicons/material';
 
 import { FavoredApi } from '@/data';
-import { WebNovelRepo, WenkuNovelRepo } from '@/hooks';
+import { WebNovelRepo, WenkuNovelRepo } from '@/repos';
 import bannerUrl from '@/image/banner.webp';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
 import { useBreakPoints } from '@/pages/util';

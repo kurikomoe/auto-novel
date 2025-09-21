@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { CommentRepo } from '@/hooks';
+import { CommentRepo } from '@/repos';
 import { doAction } from '@/pages/util';
 
 const props = defineProps<{

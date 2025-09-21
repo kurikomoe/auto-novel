@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { LockOutlined, PlusOutlined, PushPinOutlined } from '@vicons/material';
 
-import { ArticleRepo } from '@/hooks';
+import { ArticleRepo } from '@/repos';
 import { ArticleCategory, ArticleSimplified } from '@/model/Article';
 import { doAction } from '@/pages/util';
 import { useBlacklistStore, useWhoamiStore } from '@/stores';

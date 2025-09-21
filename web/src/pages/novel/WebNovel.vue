@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { formatError } from '@/data';
-import { WebNovelRepo } from '@/hooks';
+import { WebNovelRepo } from '@/repos';
 import { useIsWideScreen } from '@/pages/util';
 
 const { providerId, novelId } = defineProps<{

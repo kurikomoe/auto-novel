@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { PlusOutlined } from '@vicons/material';
 
-import { WenkuNovelRepo } from '@/hooks';
+import { WenkuNovelRepo } from '@/repos';
 import { FavoredRepo, useWhoamiStore } from '@/stores';
 import {
   getWenkuListOptions,

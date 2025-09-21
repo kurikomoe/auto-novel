@@ -7,7 +7,7 @@ import {
 
 import ChapterTocList from '@/components/ChapterTocList.vue';
 import { Locator } from '@/data';
-import { WebNovelRepo } from '@/hooks';
+import { WebNovelRepo } from '@/repos';
 import { GenericNovelId } from '@/model/Common';
 import { ReadableTocItem } from '@/pages/novel/components/common';
 import { useTocExpansion } from '@/pages/novel/components/UseTocExpansion';

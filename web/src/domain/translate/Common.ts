@@ -1,7 +1,7 @@
 import { MD5 } from 'crypto-es/lib/md5';
 import { customAlphabet } from 'nanoid';
 
-import { TranslationCacheRepo } from '@/hooks';
+import { TranslationCacheRepo } from '@/repos';
 import { Glossary } from '@/model/Glossary';
 import { TranslatorId } from '@/model/Translator';
 

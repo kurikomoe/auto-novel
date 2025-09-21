@@ -7,7 +7,7 @@ import {
 
 import { Comment1 } from '@/model/Comment';
 import { useBlacklistStore, useWhoamiStore } from '@/stores';
-import { CommentRepo } from '@/hooks';
+import { CommentRepo } from '@/repos';
 import { copyToClipBoard, doAction } from '@/pages/util';
 
 const props = defineProps<{

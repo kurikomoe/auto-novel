@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { CommentRepo } from '@/hooks';
+import { CommentRepo } from '@/repos';
 import { Comment1 } from '@/model/Comment';
 import { useDraftStore } from '@/stores';
 

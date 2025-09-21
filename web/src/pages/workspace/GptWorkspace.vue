@@ -6,7 +6,7 @@ import {
 } from '@vicons/material';
 import { VueDraggable } from 'vue-draggable-plus';
 
-import { TranslationCacheRepo } from '@/hooks';
+import { TranslationCacheRepo } from '@/repos';
 import { TranslateJob } from '@/model/Translator';
 import { doAction } from '@/pages/util';
 import { useGptWorkspaceStore } from '@/stores';
