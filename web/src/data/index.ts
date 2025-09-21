@@ -1,10 +1,6 @@
 import { createGlobalState } from '@vueuse/core';
 import { createLocalVolumeRepository } from './local';
 import {
-  createGptWorkspaceRepository,
-  createSakuraWorkspaceRepository,
-} from './stores';
-import {
   createAmazonRepository,
   createBaiduRepository,
   createOpenAiRepository,
@@ -38,9 +34,6 @@ const lazyAsync = <T>(factory: () => Promise<T>) => {
 
 export const Locator = {
   localVolumeRepository: lazyAsync(createLocalVolumeRepository),
-  //
-  gptWorkspaceRepository: lazy(createGptWorkspaceRepository),
-  sakuraWorkspaceRepository: lazy(createSakuraWorkspaceRepository),
   //
   amazonRepository: lazy(createAmazonRepository),
   baiduRepository: lazy(createBaiduRepository),

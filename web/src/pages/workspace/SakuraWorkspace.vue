@@ -6,20 +6,19 @@ import {
 } from '@vicons/material';
 import { VueDraggable } from 'vue-draggable-plus';
 
-import { Locator } from '@/data';
 import { SakuraTranslator } from '@/domain/translate';
 import { TranslationCacheRepo } from '@/hooks';
 import { TranslateJob } from '@/model/Translator';
 import { doAction } from '@/pages/util';
 import SoundAllTaskCompleted from '@/sound/all_task_completed.mp3';
-import { useSettingStore } from '@/stores';
+import { useSakuraWorkspaceStore, useSettingStore } from '@/stores';
 
 const message = useMessage();
 
 const settingStore = useSettingStore();
 const { setting } = storeToRefs(settingStore);
 
-const workspace = Locator.sakuraWorkspaceRepository();
+const workspace = useSakuraWorkspaceStore();
 const workspaceRef = workspace.ref;
 
 const showCreateWorkerModal = ref(false);

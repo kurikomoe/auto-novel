@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import { useKeyModifier } from '@vueuse/core';
 
-import { Locator } from '@/data';
 import { TranslateTaskDescriptor } from '@/model/Translator';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
-import { FavoredRepo, useSettingStore } from '@/stores';
+import { FavoredRepo, useSettingStore, useWorkspaceStore } from '@/stores';
 
 const props = defineProps<{
   selectedNovels: WebNovelOutlineDto[];
@@ -102,10 +101,7 @@ const queueJobs = (type: 'gpt' | 'sakura') => {
     return;
   }
 
-  const workspace =
-    type === 'gpt'
-      ? Locator.gptWorkspaceRepository()
-      : Locator.sakuraWorkspaceRepository();
+  const workspace = useWorkspaceStore(type);
 
   if (reverseOrder.value) {
     novels = novels.slice().reverse();

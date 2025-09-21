@@ -6,14 +6,14 @@ import {
 } from '@vicons/material';
 import { VueDraggable } from 'vue-draggable-plus';
 
-import { Locator } from '@/data';
 import { TranslationCacheRepo } from '@/hooks';
 import { TranslateJob } from '@/model/Translator';
 import { doAction } from '@/pages/util';
+import { useGptWorkspaceStore } from '@/stores';
 
 const message = useMessage();
 
-const workspace = Locator.gptWorkspaceRepository();
+const workspace = useGptWorkspaceStore();
 const workspaceRef = workspace.ref;
 
 const showCreateWorkerModal = ref(false);

@@ -6,7 +6,7 @@ import TranslateTask from '@/components/TranslateTask.vue';
 import { Locator, WebNovelApi } from '@/data';
 import { GenericNovelId } from '@/model/Common';
 import { TranslateTaskDescriptor } from '@/model/Translator';
-import { useSettingStore, useWhoamiStore } from '@/stores';
+import { useSettingStore, useWhoamiStore, useWorkspaceStore } from '@/stores';
 import TranslateOptions from './TranslateOptions.vue';
 
 const props = defineProps<{
@@ -127,10 +127,8 @@ const submitJob = (id: 'gpt' | 'sakura') => {
     tasks.push(task);
   }
 
-  const workspace =
-    id === 'gpt'
-      ? Locator.gptWorkspaceRepository()
-      : Locator.sakuraWorkspaceRepository();
+  const workspace = useWorkspaceStore(id);
+
   const results = tasks.map((task) => {
     const job = {
       task,

@@ -3,13 +3,13 @@ import { FileDownloadOutlined } from '@vicons/material';
 import { useKeyModifier } from '@vueuse/core';
 
 import TranslateTask from '@/components/TranslateTask.vue';
-import { Locator, WenkuNovelApi } from '@/data';
+import { WenkuNovelApi } from '@/data';
 import {
   TranslateTaskDescriptor,
   TranslateTaskParams,
 } from '@/model/Translator';
 import { VolumeJpDto } from '@/model/WenkuNovel';
-import { useSettingStore, useWhoamiStore } from '@/stores';
+import { useSettingStore, useWhoamiStore, useWorkspaceStore } from '@/stores';
 
 const { novelId, volume, getParams } = defineProps<{
   novelId: string;
@@ -58,10 +58,7 @@ const submitJob = (id: 'gpt' | 'sakura') => {
     volume.volumeId,
     getParams(),
   );
-  const workspace =
-    id === 'gpt'
-      ? Locator.gptWorkspaceRepository()
-      : Locator.sakuraWorkspaceRepository();
+  const workspace = useWorkspaceStore(id);
   const job = {
     task,
     description: volume.volumeId,

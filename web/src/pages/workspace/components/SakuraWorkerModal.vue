@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { FormInst, FormItemRule, FormRules } from 'naive-ui';
 
-import { Locator } from '@/data';
 import { SakuraWorker } from '@/model/Translator';
+import { useSakuraWorkspaceStore } from '@/stores';
 
 const props = defineProps<{
   show: boolean;
@@ -12,7 +12,7 @@ const emit = defineEmits<{
   'update:show': [boolean];
 }>();
 
-const workspace = Locator.sakuraWorkspaceRepository();
+const workspace = useSakuraWorkspaceStore();
 const workspaceRef = workspace.ref;
 
 const initFormValue = () => {

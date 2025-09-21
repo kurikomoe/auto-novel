@@ -7,3 +7,6 @@ export * from './useReadHistoryStore';
 export * from './useSearchHistoryStore';
 export * from './useSettingStore';
 export * from './useWhoamiStore';
+
+// legacy
+export * from './useWorkspaceStore';

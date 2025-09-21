@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { Locator } from '@/data';
 import { Translator, TranslatorConfig } from '@/domain/translate';
 import { Glossary } from '@/model/Glossary';
 import { GptWorker, SakuraWorker, TranslatorId } from '@/model/Translator';
+import { useGptWorkspaceStore, useSakuraWorkspaceStore } from '@/stores';
 
 const message = useMessage();
 
@@ -24,10 +24,10 @@ watch(translatorId, () => {
   textZh.value = '';
 });
 
-const gptWorkspaceRef = Locator.gptWorkspaceRepository().ref;
+const gptWorkspaceRef = useGptWorkspaceStore().ref;
 const selectedGptWorkerId = ref(gptWorkspaceRef.value.workers[0]?.id);
 
-const sakuraWorkspaceRef = Locator.sakuraWorkspaceRepository().ref;
+const sakuraWorkspaceRef = useSakuraWorkspaceStore().ref;
 const selectedSakuraWorkerId = ref(sakuraWorkspaceRef.value.workers[0]?.id);
 
 interface SavedTranslation {

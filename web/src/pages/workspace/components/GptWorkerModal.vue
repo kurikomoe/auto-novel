@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { FormInst, FormItemRule, FormRules } from 'naive-ui';
 
-import { Locator } from '@/data';
 import { GptWorker } from '@/model/Translator';
+import { useGptWorkspaceStore } from '@/stores';
 
 const props = defineProps<{
   show: boolean;
@@ -12,7 +12,7 @@ const emit = defineEmits<{
   'update:show': [boolean];
 }>();
 
-const workspace = Locator.gptWorkspaceRepository();
+const workspace = useGptWorkspaceStore();
 const workspaceRef = workspace.ref;
 
 const initFormValue = (): {

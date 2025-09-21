@@ -1,7 +1,7 @@
 import { Locator } from '@/data';
 import { LocalVolumeMetadata } from '@/model/LocalVolume';
 import { TranslateTaskDescriptor } from '@/model/Translator';
-import { useSettingStore } from '@/stores';
+import { useSettingStore, useWorkspaceStore } from '@/stores';
 import { downloadFile, querySearch } from '@/util';
 
 type BookshelfLocalStore = {
@@ -139,10 +139,7 @@ export const useBookshelfLocalStore = defineStore('BookshelfLocal', {
         total: number;
       },
     ) {
-      const workspace =
-        type === 'gpt'
-          ? Locator.gptWorkspaceRepository()
-          : Locator.sakuraWorkspaceRepository();
+      const workspace = useWorkspaceStore(type);
       const tasks: string[] = [];
       if (taskNumber > 1) {
         const taskSize = (Math.min(endIndex, total) - startIndex) / taskNumber;
@@ -194,11 +191,7 @@ export const useBookshelfLocalStore = defineStore('BookshelfLocal', {
         shouldTop: boolean;
       },
     ) {
-      const workspace =
-        type === 'gpt'
-          ? Locator.gptWorkspaceRepository()
-          : Locator.sakuraWorkspaceRepository();
-
+      const workspace = useWorkspaceStore(type);
       let failed = 0;
       ids.forEach((id) => {
         const task = TranslateTaskDescriptor.local(id, {

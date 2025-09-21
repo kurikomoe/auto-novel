@@ -4,9 +4,9 @@ import {
   TranslateJob,
   TranslateJobRecord,
 } from '@/model/Translator';
-import { useLocalStorage } from '@/util';
+import { lazy, useLocalStorage } from '@/util';
 
-import { LSKey } from '../LocalStorage';
+import { LSKey } from './key';
 
 interface Workspace<T> {
   workers: T[];
@@ -15,7 +15,7 @@ interface Workspace<T> {
   uncompletedJobs: TranslateJobRecord[];
 }
 
-const createWorkspaceRepository = <W extends GptWorker | SakuraWorker>(
+const createWorkspaceStore = <W extends GptWorker | SakuraWorker>(
   id: string,
   workers: W[],
   migrate?: (ref: Ref<Workspace<W>>) => void,
@@ -118,8 +118,8 @@ const createWorkspaceRepository = <W extends GptWorker | SakuraWorker>(
   };
 };
 
-export const createGptWorkspaceRepository = () =>
-  createWorkspaceRepository<GptWorker>(LSKey.WorkspaceGpt, [], (workspace) => {
+const createGptWorkspaceStore = () =>
+  createWorkspaceStore<GptWorker>(LSKey.WorkspaceGpt, [], (workspace) => {
     // 2024-3-8
     workspace.value.workers.forEach((it: GptWorker) => {
       if (it.endpoint.length === 0) {
@@ -139,8 +139,8 @@ export const createGptWorkspaceRepository = () =>
     });
   });
 
-export const createSakuraWorkspaceRepository = () =>
-  createWorkspaceRepository<SakuraWorker>(
+const createSakuraWorkspaceStore = () =>
+  createWorkspaceStore<SakuraWorker>(
     LSKey.WorkspaceSakura,
     [
       { id: '共享', endpoint: 'https://sakura-share.one' },
@@ -172,3 +172,16 @@ export const createSakuraWorkspaceRepository = () =>
       }
     },
   );
+
+export const useGptWorkspaceStore = lazy(createGptWorkspaceStore);
+export const useSakuraWorkspaceStore = lazy(createSakuraWorkspaceStore);
+
+export function useWorkspaceStore(type: 'gpt' | 'sakura') {
+  if (type === 'gpt') {
+    return useGptWorkspaceStore();
+  } else if (type === 'sakura') {
+    return useSakuraWorkspaceStore();
+  } else {
+    return type satisfies never;
+  }
+}

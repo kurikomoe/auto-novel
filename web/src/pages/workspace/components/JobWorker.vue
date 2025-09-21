@@ -10,14 +10,14 @@ import {
   StopOutlined,
 } from '@vicons/material';
 
-import { Locator } from '@/data';
+import TranslateTask from '@/components/TranslateTask.vue';
 import { Translator, TranslatorConfig } from '@/domain/translate';
 import {
   GptWorker,
   SakuraWorker,
   TranslateTaskDescriptor,
 } from '@/model/Translator';
-import TranslateTask from '@/components/TranslateTask.vue';
+import { useWorkspaceStore } from '@/stores';
 
 const props = defineProps<{
   worker:
@@ -134,10 +134,7 @@ const stopWorker = () => {
 const deleteWorker = () => {
   const worker = props.worker;
   abortHandler();
-  const workspace =
-    worker.translatorId === 'gpt'
-      ? Locator.gptWorkspaceRepository()
-      : Locator.sakuraWorkspaceRepository();
+  const workspace = useWorkspaceStore(worker.translatorId);
   workspace.deleteWorker(worker.id);
 };
 
