@@ -2,11 +2,11 @@
 import { useScroll } from '@vueuse/core';
 import { useOsTheme } from 'naive-ui';
 
-import { Locator } from '@/data';
 import { GenericNovelId } from '@/model/Common';
 import { WebNovelChapterDto } from '@/model/WebNovel';
 import { useReaderSettingStore } from '@/stores';
 import { buildParagraphs } from './BuildParagraphs';
+import { ReadPositionRepo } from '@/hooks';
 
 const props = defineProps<{
   gnid: GenericNovelId;
@@ -18,10 +18,8 @@ const osThemeRef = useOsTheme();
 
 const paragraphs = computed(() => buildParagraphs(props.gnid, props.chapter));
 
-const readPositionRepository = Locator.readPositionRepository();
-
 const addReadPosition = () => {
-  readPositionRepository.addPosition(props.gnid, {
+  ReadPositionRepo.addPosition(props.gnid, {
     chapterId: props.chapterId,
     scrollY: window.scrollY,
   });
@@ -30,7 +28,7 @@ const addReadPosition = () => {
 useScroll(window, { onScroll: addReadPosition, throttle: 1000 });
 
 onMounted(async () => {
-  const readPosition = readPositionRepository.getPosition(props.gnid);
+  const readPosition = ReadPositionRepo.getPosition(props.gnid);
   if (readPosition && readPosition.chapterId === props.chapterId) {
     // hacky: 等待段落显示完成
     await nextTick();
