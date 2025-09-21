@@ -1,6 +1,6 @@
 import { useQuery } from '@pinia/colada';
 
-import { FavoredApi, WenkuNovelApi } from '@/data';
+import { FavoredApi, WenkuNovelApi } from '@/api';
 import { cache, withOnSuccess } from './cache';
 
 const ItemKey = 'wenku-novel';

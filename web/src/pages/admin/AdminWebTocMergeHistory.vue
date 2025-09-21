@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { OperationApi } from '@/data';
+import { OperationApi } from '@/api';
 import { Result, runCatching } from '@/util/result';
 import { MergeHistoryDto } from '@/model/Operation';
 import { Page } from '@/model/Page';

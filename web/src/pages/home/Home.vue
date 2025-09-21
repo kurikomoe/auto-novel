@@ -7,7 +7,7 @@ import {
   StarBorderOutlined,
 } from '@vicons/material';
 
-import { FavoredApi } from '@/data';
+import { FavoredApi } from '@/api';
 import { WebNovelRepo, WenkuNovelRepo } from '@/repos';
 import bannerUrl from '@/image/banner.webp';
 import { WebNovelOutlineDto } from '@/model/WebNovel';

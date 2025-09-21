@@ -1,4 +1,4 @@
-import { WenkuNovelApi, formatError } from '@/data';
+import { WenkuNovelApi, formatError } from '@/api';
 import {
   TranslateTaskCallback,
   TranslateTaskParams,

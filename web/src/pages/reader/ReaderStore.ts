@@ -1,5 +1,6 @@
-import { useLocalVolumeStore, WebNovelApi } from '@/data';
+import { WebNovelApi } from '@/api';
 import { GenericNovelId } from '@/model/Common';
+import { useLocalVolumeStore } from '@/stores';
 import { Ok, Result, runCatching } from '@/util/result';
 
 export interface ReaderChapter {

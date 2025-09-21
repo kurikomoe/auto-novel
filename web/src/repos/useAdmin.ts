@@ -1,6 +1,6 @@
 import { useQuery } from '@pinia/colada';
 
-import { AuthAdminApi } from '@/data';
+import { AuthAdminApi } from '@/api';
 import { UserRole } from '@/model/User';
 
 const ListKey = 'admin-user-list';

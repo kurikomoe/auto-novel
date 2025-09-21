@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { DeleteOutlineOutlined } from '@vicons/material';
 
-import { useLocalVolumeStore, WebNovelApi, WenkuNovelApi } from '@/data';
+import { WebNovelApi, WenkuNovelApi } from '@/api';
 import { GenericNovelId } from '@/model/Common';
 import { Glossary } from '@/model/Glossary';
 import { copyToClipBoard, doAction } from '@/pages/util';
-import { useWhoamiStore } from '@/stores';
+import { useLocalVolumeStore, useWhoamiStore } from '@/stores';
 import { downloadFile } from '@/util';
 
 const props = defineProps<{

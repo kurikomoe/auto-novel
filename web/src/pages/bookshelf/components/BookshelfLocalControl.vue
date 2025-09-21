@@ -1,9 +1,13 @@
 <script lang="ts" setup>
 import { useKeyModifier } from '@vueuse/core';
 
-import { useLocalVolumeStore } from '@/data';
 import { useIsWideScreen } from '@/pages/util';
-import { FavoredRepo, Setting, useSettingStore } from '@/stores';
+import {
+  FavoredRepo,
+  Setting,
+  useLocalVolumeStore,
+  useSettingStore,
+} from '@/stores';
 import { useBookshelfLocalStore } from '../BookshelfLocalStore';
 
 const props = defineProps<{

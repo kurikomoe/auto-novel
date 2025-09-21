@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { formatError } from '@/data';
+import { formatError } from '@/api';
 
 const message = useMessage();
 

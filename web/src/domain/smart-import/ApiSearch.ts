@@ -1,4 +1,4 @@
-import { AmazonApi } from '@/data';
+import { AmazonApi } from '@/api';
 import { extractAsin } from './Common';
 
 const parseSearch = (doc: Document) => {

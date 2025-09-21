@@ -1,4 +1,4 @@
-import { createOpenAiApi } from '@/data';
+import { createOpenAiApi } from '@/api';
 import { Glossary } from '@/model/Glossary';
 
 import {

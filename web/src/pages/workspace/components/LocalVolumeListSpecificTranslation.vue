@@ -2,13 +2,12 @@
 import { DeleteOutlineOutlined } from '@vicons/material';
 import { useKeyModifier } from '@vueuse/core';
 
-import { useLocalVolumeStore } from '@/data';
 import { GenericNovelId } from '@/model/Common';
 import { LocalVolumeMetadata } from '@/model/LocalVolume';
 import { useBookshelfLocalStore } from '@/pages/bookshelf/BookshelfLocalStore';
 import TranslateOptions from '@/pages/novel/components/TranslateOptions.vue';
 import { doAction } from '@/pages/util';
-import { Setting, useSettingStore } from '@/stores';
+import { Setting, useLocalVolumeStore, useSettingStore } from '@/stores';
 import { downloadFile } from '@/util';
 
 const translateOptions = ref<InstanceType<typeof TranslateOptions>>();

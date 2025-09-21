@@ -12,7 +12,7 @@ import { createVolume } from './CreateVolume';
 import { getTranslationFile } from './GetTranslationFile';
 import { LocalVolumeDao, createLocalVolumeDao } from './LocalVolumeDao';
 
-export const createLocalVolumeRepository = async () => {
+export const createLocalVolumeStore = async () => {
   const dao = await createLocalVolumeDao();
 
   const deleteVolume = (id: string) =>

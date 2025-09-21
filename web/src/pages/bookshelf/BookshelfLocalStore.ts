@@ -1,7 +1,10 @@
-import { useLocalVolumeStore } from '@/data';
 import { LocalVolumeMetadata } from '@/model/LocalVolume';
 import { TranslateTaskDescriptor } from '@/model/Translator';
-import { useSettingStore, useWorkspaceStore } from '@/stores';
+import {
+  useLocalVolumeStore,
+  useSettingStore,
+  useWorkspaceStore,
+} from '@/stores';
 import { downloadFile, querySearch } from '@/util';
 
 type BookshelfLocalStore = {

@@ -3,10 +3,15 @@ import { useKeyModifier } from '@vueuse/core';
 import ky from 'ky';
 
 import TranslateTask from '@/components/TranslateTask.vue';
-import { useLocalVolumeStore, WebNovelApi } from '@/data';
+import { WebNovelApi } from '@/api';
 import { GenericNovelId } from '@/model/Common';
 import { TranslateTaskDescriptor } from '@/model/Translator';
-import { useSettingStore, useWhoamiStore, useWorkspaceStore } from '@/stores';
+import {
+  useLocalVolumeStore,
+  useSettingStore,
+  useWhoamiStore,
+  useWorkspaceStore,
+} from '@/stores';
 import TranslateOptions from './TranslateOptions.vue';
 
 const props = defineProps<{

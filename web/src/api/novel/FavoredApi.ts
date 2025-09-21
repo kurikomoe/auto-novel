@@ -1,7 +1,7 @@
-import { client } from '@/data/api/client';
 import { Page } from '@/model/Page';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
 import { WenkuNovelOutlineDto } from '@/model/WenkuNovel';
+import { client } from './client';
 
 export interface Favored {
   id: string;

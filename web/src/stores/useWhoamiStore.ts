@@ -1,4 +1,4 @@
-import { setTokenGetter } from '@/data/api/client';
+import { setTokenGetter } from '@/api/novel/client';
 import { useUserData } from '@/util';
 import { LSKey } from './key';
 import { UserRole } from '@/model/User';

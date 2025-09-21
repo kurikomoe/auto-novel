@@ -1,4 +1,4 @@
-import { BaiduApi } from '@/data';
+import { BaiduApi } from '@/api';
 import { RegexUtil } from '@/util';
 import {
   Logger,

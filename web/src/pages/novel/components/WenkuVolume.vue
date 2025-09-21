@@ -3,7 +3,7 @@ import { FileDownloadOutlined } from '@vicons/material';
 import { useKeyModifier } from '@vueuse/core';
 
 import TranslateTask from '@/components/TranslateTask.vue';
-import { WenkuNovelApi } from '@/data';
+import { WenkuNovelApi } from '@/api';
 import {
   TranslateTaskDescriptor,
   TranslateTaskParams,

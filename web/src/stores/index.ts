@@ -9,4 +9,5 @@ export * from './useSettingStore';
 export * from './useWhoamiStore';
 
 // legacy
+export * from './local';
 export * from './useWorkspaceStore';

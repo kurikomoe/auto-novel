@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { DeleteOutlineOutlined } from '@vicons/material';
 
-import { ReadHistoryApi } from '@/data';
+import { ReadHistoryApi } from '@/api';
 import { WebNovelRepo } from '@/repos';
 import router from '@/router';
 import { useReadHistoryStore } from '@/stores';

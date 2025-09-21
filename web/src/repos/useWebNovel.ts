@@ -1,6 +1,6 @@
 import { useQuery, useQueryCache } from '@pinia/colada';
 
-import { FavoredApi, ReadHistoryApi, WebNovelApi } from '@/data';
+import { FavoredApi, ReadHistoryApi, WebNovelApi } from '@/api';
 import { withOnSuccess } from './cache';
 
 const ItemKey = 'web-novel';

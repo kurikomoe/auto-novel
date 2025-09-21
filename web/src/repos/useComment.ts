@@ -1,6 +1,6 @@
 import { useQuery } from '@pinia/colada';
 
-import { CommentApi } from '@/data';
+import { CommentApi } from '@/api';
 import { Comment1 } from '@/model/Comment';
 import { Page } from '@/model/Page';
 import { cache, withOnSuccess } from './cache';

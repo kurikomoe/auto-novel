@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { createOpenAiApi, createOpenAiWebApi, OpenAiError } from '@/data';
+import { createOpenAiApi, createOpenAiWebApi, OpenAiError } from '@/api';
 import { Glossary } from '@/model/Glossary';
 import { delay, RegexUtil } from '@/util';
 

@@ -6,13 +6,12 @@ import {
 } from '@vicons/material';
 
 import ChapterTocList from '@/components/ChapterTocList.vue';
-import { useLocalVolumeStore } from '@/data';
 import { GenericNovelId } from '@/model/Common';
 import { ReadableTocItem } from '@/pages/novel/components/common';
 import { useTocExpansion } from '@/pages/novel/components/UseTocExpansion';
 import { useIsWideScreen } from '@/pages/util';
 import { WebNovelRepo } from '@/repos';
-import { useSettingStore } from '@/stores';
+import { useLocalVolumeStore, useSettingStore } from '@/stores';
 import { Err, Ok, Result, runCatching } from '@/util/result';
 
 const props = defineProps<{

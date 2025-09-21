@@ -8,7 +8,7 @@ import {
 import { FormInst, FormItemRule, FormRules } from 'naive-ui';
 import { VueDraggable } from 'vue-draggable-plus';
 
-import { WenkuNovelApi } from '@/data';
+import { WenkuNovelApi } from '@/api';
 import { prettyCover, smartImport } from '@/domain/smart-import';
 import { WenkuNovelRepo } from '@/repos';
 import coverPlaceholder from '@/image/cover_placeholder.png';

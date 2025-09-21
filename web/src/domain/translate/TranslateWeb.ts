@@ -1,4 +1,4 @@
-import { WebNovelApi, formatError } from '@/data';
+import { WebNovelApi, formatError } from '@/api';
 import {
   TranslateTaskCallback,
   TranslateTaskParams,

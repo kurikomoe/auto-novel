@@ -1,6 +1,6 @@
 import { useQuery } from '@pinia/colada';
 
-import { ArticleApi } from '@/data';
+import { ArticleApi } from '@/api';
 import { ArticleCategory } from '@/model/Article';
 import { cache, withOnSuccess } from './cache';
 

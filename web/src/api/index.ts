@@ -1,14 +1,8 @@
 import { HTTPError, TimeoutError } from 'ky';
 
-export * from './ArticleApi';
-export * from './CommentApi';
-export * from './OperationApi';
-export * from './FavoredApi';
-export * from './ReadHistoryApi';
-export * from './WebNovelApi';
-export * from './WenkuNovelApi';
-
-export * from './AuthAdminApi';
+export * from './auth';
+export * from './novel';
+export * from './third-party';
 
 export const formatError = (error: unknown) => {
   if (error instanceof HTTPError) {

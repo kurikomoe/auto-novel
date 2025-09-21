@@ -1,11 +1,11 @@
-import { formatError, useLocalVolumeStore } from '@/data';
+import { formatError } from '@/api';
 import { ChapterTranslation, LocalVolumeMetadata } from '@/model/LocalVolume';
 import {
   LocalTranslateTaskDesc,
   TranslateTaskCallback,
   TranslateTaskParams,
 } from '@/model/Translator';
-
+import { useLocalVolumeStore } from '@/stores';
 import { Translator } from './Translator';
 
 export const translateLocal = async (

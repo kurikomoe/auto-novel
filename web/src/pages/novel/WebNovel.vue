@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { formatError } from '@/data';
+import { formatError } from '@/api';
 import { WebNovelRepo } from '@/repos';
 import { useIsWideScreen } from '@/pages/util';
 

@@ -1,6 +1,6 @@
-import { client } from '@/data/api/client';
 import { Page } from '@/model/Page';
 import { WebNovelOutlineDto } from '@/model/WebNovel';
+import { client } from './client';
 
 const listReadHistoryWeb = (searchParams: { page: number; pageSize: number }) =>
   client

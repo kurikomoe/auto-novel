@@ -1,11 +1,15 @@
 <script lang="ts" setup>
 import { createReusableTemplate, onKeyDown } from '@vueuse/core';
 
-import { ReadHistoryApi, useLocalVolumeStore } from '@/data';
+import { ReadHistoryApi } from '@/api';
 import { GenericNovelId } from '@/model/Common';
 import { TranslatorId } from '@/model/Translator';
 import { checkIsMobile, useIsWideScreen } from '@/pages/util';
-import { useReaderSettingStore, useWhoamiStore } from '@/stores';
+import {
+  useLocalVolumeStore,
+  useReaderSettingStore,
+  useWhoamiStore,
+} from '@/stores';
 import { Result } from '@/util/result';
 import { WebUtil } from '@/util/web';
 import { ReaderChapter, useReaderStore } from './ReaderStore';

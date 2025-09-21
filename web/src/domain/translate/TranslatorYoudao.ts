@@ -1,4 +1,4 @@
-import { YoudaoApi } from '@/data';
+import { YoudaoApi } from '@/api';
 import { RegexUtil, safeJson } from '@/util';
 import {
   Logger,

@@ -2,7 +2,7 @@
 import { DeleteOutlineOutlined, PlusOutlined } from '@vicons/material';
 import { UploadCustomRequestOptions } from 'naive-ui';
 
-import { useLocalVolumeStore } from '@/data';
+import { useLocalVolumeStore } from '@/stores';
 import { ParsedFile, parseFile } from '@/util/file';
 
 const message = useMessage();

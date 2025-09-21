@@ -6,7 +6,7 @@ import {
   UploadInst,
 } from 'naive-ui';
 
-import { formatError } from '@/data';
+import { formatError } from '@/api';
 import { WenkuNovelRepo } from '@/repos';
 import { useNoticeStore, useWhoamiStore } from '@/stores';
 import { RegexUtil } from '@/util';
