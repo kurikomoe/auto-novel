@@ -11,6 +11,7 @@ import infra.web.*
 import infra.web.datasource.providers.Hameln
 import infra.web.datasource.providers.Kakuyomu
 import infra.web.datasource.providers.NovelIdShouldBeReplacedException
+import infra.web.datasource.providers.Pixiv
 import infra.web.datasource.providers.Syosetu
 import infra.web.repository.*
 import infra.wenku.repository.WenkuNovelMetadataRepository
@@ -295,6 +296,10 @@ private val disgustingFascistNovelList = mapOf(
         "291561",
         "1472",
         "363542",
+        "67369",
+    ),
+    Pixiv.id to listOf(
+        "12802876",
     ),
 )
 
