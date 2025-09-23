@@ -5,9 +5,7 @@ import {
   SortOutlined,
 } from '@vicons/material';
 import { NScrollbar } from 'naive-ui';
-import { computed, ref } from 'vue';
 
-import ChapterTocList from '@/components/ChapterTocList.vue';
 import { WebNovelDto, WebNovelTocItemDto } from '@/model/WebNovel';
 import { useSettingStore } from '@/stores';
 import { useTocExpansion } from './UseTocExpansion';
@@ -71,7 +69,7 @@ const { expandedNames, hasSeparators, isAnyExpanded, toggleAll, tocSections } =
   <n-divider />
 
   <template v-if="setting.tocCollapseInNarrowScreen">
-    <chapter-toc-item
+    <ChapterTocItem
       v-if="startReadChapter !== undefined"
       :provider-id="providerId"
       :novel-id="novelId"
@@ -125,7 +123,7 @@ const { expandedNames, hasSeparators, isAnyExpanded, toggleAll, tocSections } =
       content-style="padding: 6px 0px 0px;"
     >
       <b style="padding-left: 6px">上次读到:</b>
-      <chapter-toc-item
+      <ChapterTocItem
         :provider-id="providerId"
         :novel-id="novelId"
         :toc-item="lastReadChapter"
@@ -135,7 +133,7 @@ const { expandedNames, hasSeparators, isAnyExpanded, toggleAll, tocSections } =
       />
     </n-card>
     <n-scrollbar>
-      <chapter-toc-list
+      <ChapterTocList
         :toc-sections="tocSections"
         v-model:expanded-names="expandedNames"
         :last-read-chapter-id="novel.lastReadChapterId"
@@ -180,7 +178,7 @@ const { expandedNames, hasSeparators, isAnyExpanded, toggleAll, tocSections } =
     </template>
 
     <div style="flex: 1; min-height: 0; padding: 16px 16px 16px 8px">
-      <chapter-toc-list
+      <ChapterTocList
         :toc-sections="tocSections"
         v-model:expanded-names="expandedNames"
         :last-read-chapter-id="novel.lastReadChapterId"

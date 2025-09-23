@@ -5,7 +5,6 @@ import {
   SortOutlined,
 } from '@vicons/material';
 
-import ChapterTocList from '@/components/ChapterTocList.vue';
 import { GenericNovelId } from '@/model/Common';
 import { ReadableTocItem } from '@/pages/novel/components/common';
 import { useTocExpansion } from '@/pages/novel/components/UseTocExpansion';
@@ -159,7 +158,7 @@ const onTocItemClick = (item: ReadableTocItem) => {
     </template>
 
     <c-result :result="tocResult">
-      <chapter-toc-list
+      <ChapterTocList
         v-if="gnid.type === 'web' && tocSections"
         :toc-sections="tocSections"
         v-model:expanded-names="expandedNames"
@@ -176,7 +175,7 @@ const onTocItemClick = (item: ReadableTocItem) => {
         @item-click="onTocItemClick"
         style="height: 100%"
       />
-      <chapter-toc-list
+      <ChapterTocList
         v-else-if="gnid.type === 'local' && tocSections"
         :toc-sections="tocSections"
         v-model:expanded-names="expandedNames"

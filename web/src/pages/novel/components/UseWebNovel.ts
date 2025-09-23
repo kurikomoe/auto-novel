@@ -1,4 +1,3 @@
-import { computed, ComputedRef } from 'vue';
 import { WebNovelDto } from '@/model/WebNovel';
 
 import { ReadableTocItem } from './common';

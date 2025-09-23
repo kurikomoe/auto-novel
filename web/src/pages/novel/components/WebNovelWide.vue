@@ -5,9 +5,7 @@ import {
   SortOutlined,
 } from '@vicons/material';
 import { NScrollbar } from 'naive-ui';
-import { computed } from 'vue';
 
-import ChapterTocList from '@/components/ChapterTocList.vue';
 import { WebNovelDto, WebNovelTocItemDto } from '@/model/WebNovel';
 import { useSettingStore } from '@/stores';
 import { useTocExpansion } from './UseTocExpansion';
@@ -90,7 +88,7 @@ const { expandedNames, hasSeparators, isAnyExpanded, toggleAll, tocSections } =
       </section-header>
 
       <n-scrollbar style="flex: 1; min-height: 0; padding: 0 16px 0 0">
-        <chapter-toc-list
+        <ChapterTocList
           :toc-sections="tocSections"
           v-model:expanded-names="expandedNames"
           :last-read-chapter-id="novel.lastReadChapterId"

@@ -5,9 +5,6 @@ import { OperationHistory, OperationType } from '@/model/Operation';
 import { Page } from '@/model/Page';
 import { doAction } from '@/pages/util';
 
-import OperationWenkuEdit from './components/OperationWenkuEdit.vue';
-import OperationWenkuUpload from './components/OperationWenkuUpload.vue';
-
 const type = ref<OperationType>('web-edit');
 const typeOptions = [
   { value: 'web-edit', label: '网络编辑' },

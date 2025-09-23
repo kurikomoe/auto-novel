@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { NCollapse, NCollapseItem, NVirtualList } from 'naive-ui';
-import ChapterTocItem from '@/components/ChapterTocItem.vue';
 import type { ReadableTocItem } from '@/pages/novel/components/common';
-import { computed, onMounted, nextTick, watch } from 'vue';
 
 interface TocSection {
   separator: ReadableTocItem | null;
@@ -104,7 +102,7 @@ const noSeparatorClass = computed(() => {
   >
     <template #default="{ item: chapter }">
       <div :key="chapter.chapterId">
-        <chapter-toc-item
+        <ChapterTocItem
           :provider-id="providerId"
           :novel-id="novelId"
           :toc-item="chapter"
@@ -128,7 +126,7 @@ const noSeparatorClass = computed(() => {
         display-directive="show"
       >
         <template #header>
-          <chapter-toc-item
+          <ChapterTocItem
             :provider-id="providerId"
             :novel-id="novelId"
             :toc-item="section.separator"
@@ -145,7 +143,7 @@ const noSeparatorClass = computed(() => {
         >
           <template #default="{ item: chapter }">
             <div :key="`ch-${chapter.chapterId}`">
-              <chapter-toc-item
+              <ChapterTocItem
                 :provider-id="providerId"
                 :novel-id="novelId"
                 :toc-item="chapter"
@@ -166,7 +164,7 @@ const noSeparatorClass = computed(() => {
       >
         <template #default="{ item: chapter }">
           <div :key="`ch-${chapter.chapterId}`">
-            <chapter-toc-item
+            <ChapterTocItem
               :provider-id="providerId"
               :novel-id="novelId"
               :toc-item="chapter"

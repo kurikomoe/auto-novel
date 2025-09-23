@@ -1,8 +1,6 @@
 <script lang="ts" setup>
-import { NText, NButton, NIcon, NTime, useThemeVars } from 'naive-ui';
-import { KeyboardArrowUpRound, KeyboardArrowDownRound } from '@vicons/material';
 import CA from '@/components/CA.vue';
-import { computed } from 'vue';
+import { NText, NTime, useThemeVars } from 'naive-ui';
 
 import { ReadableTocItem } from '@/pages/novel/components/common';
 

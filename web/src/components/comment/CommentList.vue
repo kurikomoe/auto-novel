@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { CommentOutlined } from '@vicons/material';
 
-import SectionHeader from '@/components/SectionHeader.vue';
 import { CommentRepo } from '@/repos';
 import { useDraftStore } from '@/stores';
 
@@ -36,7 +35,7 @@ const showInput = ref(false);
 
 <template>
   <div ref="anchor" />
-  <section-header
+  <SectionHeader
     title="评论"
     ref="commentSectionRef"
     style="margin-bottom: 32px"
@@ -48,7 +47,7 @@ const showInput = ref(false);
       require-login
       @action="showInput = !showInput"
     />
-  </section-header>
+  </SectionHeader>
 
   <n-p v-if="locked">评论区已锁定，不能再回复。</n-p>
 

@@ -1,4 +1,3 @@
-import { ref, computed, watch, type Ref, type ComputedRef } from 'vue';
 import type { ReadableTocItem } from '@/pages/novel/components/common';
 import { checkIsMobile } from '@/pages/util';
 
