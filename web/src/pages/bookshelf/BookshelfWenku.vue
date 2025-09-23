@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import { ChecklistOutlined } from '@vicons/material';
 
-import { WenkuNovelRepo } from '@/repos';
 import { useIsWideScreen } from '@/pages/util';
+import { WenkuNovelRepo } from '@/repos';
 import { useSettingStore } from '@/stores';
-import NovelListWenku from '../list/components/NovelListWenku.vue';
 import { onUpdateListValue, onUpdatePage } from '../list/option';
 import {
   getWenkuFavoredListOptions,
@@ -44,7 +43,7 @@ const { data: novelPage, error } = WenkuNovelRepo.useWenkuNovelFavoredList(
 
 const showControlPanel = ref(false);
 
-const novelListRef = ref<InstanceType<typeof NovelListWenku>>();
+const novelListRef = useTemplateRef('novelList');
 </script>
 
 <template>
@@ -84,7 +83,7 @@ const novelListRef = ref<InstanceType<typeof NovelListWenku>>();
       <template v-if="novelPage">
         <n-divider />
         <NovelListWenku
-          ref="novelListRef"
+          ref="novelList"
           :items="novelPage.items"
           :selectable="showControlPanel"
           simple

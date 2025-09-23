@@ -35,7 +35,7 @@ const whoamiStore = useWhoamiStore();
 const { whoami } = storeToRefs(whoamiStore);
 
 const allowSubmit = ref(novelId === undefined);
-const formRef = ref<FormInst>();
+const formRef = useTemplateRef<FormInst>('form');
 const formValue = ref({
   title: '',
   titleZh: '',
@@ -416,7 +416,7 @@ const levelOptions = [
     </n-flex>
 
     <n-form
-      ref="formRef"
+      ref="form"
       :model="formValue"
       :rules="formRules"
       :label-placement="isWideScreen ? 'left' : 'top'"

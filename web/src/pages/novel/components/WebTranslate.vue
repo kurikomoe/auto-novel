@@ -2,7 +2,6 @@
 import { useKeyModifier } from '@vueuse/core';
 import ky from 'ky';
 
-import TranslateTask from '@/components/TranslateTask.vue';
 import { WebNovelApi } from '@/api';
 import { GenericNovelId } from '@/model/Common';
 import { TranslateTaskDescriptor } from '@/model/Translator';
@@ -12,7 +11,6 @@ import {
   useWhoamiStore,
   useWorkspaceStore,
 } from '@/stores';
-import TranslateOptions from './TranslateOptions.vue';
 
 const props = defineProps<{
   providerId: string;
@@ -45,8 +43,8 @@ const { whoami } = storeToRefs(whoamiStore);
 const settingStore = useSettingStore();
 const { setting } = storeToRefs(settingStore);
 
-const translateOptions = ref<InstanceType<typeof TranslateOptions>>();
-const translateTask = ref<InstanceType<typeof TranslateTask>>();
+const translateOptions = useTemplateRef('translateOptions');
+const translateTask = useTemplateRef('translateTask');
 const startTranslateTask = (translatorId: 'baidu' | 'youdao') =>
   translateTask?.value?.startTask(
     { type: 'web', providerId, novelId },
@@ -161,7 +159,7 @@ const submitJob = (id: 'gpt' | 'sakura') => {
   <n-text v-else-if="setting.enabledTranslator.length === 0">
     没有翻译器启用。
   </n-text>
-  <translate-options
+  <TranslateOptions
     v-else
     ref="translateOptions"
     :gnid="GenericNovelId.web(providerId, novelId)"

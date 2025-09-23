@@ -10,7 +10,6 @@ import {
   StopOutlined,
 } from '@vicons/material';
 
-import TranslateTask from '@/components/TranslateTask.vue';
 import { Translator, TranslatorConfig } from '@/domain/translate';
 import {
   GptWorker,
@@ -75,7 +74,7 @@ const endpointPrefix = computed(() => {
 
 const enableAutoMode = ref(true);
 
-const translateTask = ref<InstanceType<typeof TranslateTask>>();
+const translateTask = useTemplateRef('translateTask');
 const currentJob = ref<{
   task: string;
   description: string;
@@ -250,7 +249,7 @@ const showEditWorkerModal = ref(false);
     </template>
   </n-thing>
 
-  <translate-task ref="translateTask" style="margin-top: 20px" />
+  <TranslateTask ref="translateTask" style="margin-top: 20px" />
 
   <sakura-worker-modal
     v-if="worker.translatorId === 'sakura'"

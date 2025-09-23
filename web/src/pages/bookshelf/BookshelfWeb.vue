@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import { ChecklistOutlined } from '@vicons/material';
 
-import { WebNovelRepo } from '@/repos';
 import { useIsWideScreen } from '@/pages/util';
+import { WebNovelRepo } from '@/repos';
 import { useSettingStore, useWhoamiStore } from '@/stores';
-import NovelListWeb from '../list/components/NovelListWeb.vue';
 import {
   onUpdateListValue,
   onUpdatePage,
@@ -63,7 +62,7 @@ const { data: novelPage, error } = WebNovelRepo.useWebNovelFavoredList(
 
 const showControlPanel = ref(false);
 
-const novelListRef = ref<InstanceType<typeof NovelListWeb>>();
+const novelListRef = useTemplateRef('novelList');
 </script>
 
 <template>
@@ -103,7 +102,7 @@ const novelListRef = ref<InstanceType<typeof NovelListWeb>>();
       <template v-if="novelPage">
         <n-divider />
         <NovelListWeb
-          ref="novelListRef"
+          ref="novelList"
           :items="novelPage.items"
           :selectable="showControlPanel"
           :simple="!setting.showTagInWebFavored"

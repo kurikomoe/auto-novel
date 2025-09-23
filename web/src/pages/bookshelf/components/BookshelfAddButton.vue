@@ -9,7 +9,7 @@ const message = useMessage();
 
 const showAddModal = ref(false);
 
-const formRef = ref<FormInst>();
+const formRef = useTemplateRef<FormInst>('form');
 const formValue = ref<{
   title: string;
   type: 'web' | 'wenku' | 'local';
@@ -55,7 +55,7 @@ const addFavorite = async () => {
 
   <c-modal title="新建收藏夹" v-model:show="showAddModal">
     <n-form
-      ref="formRef"
+      ref="form"
       :model="formValue"
       :rules="formRules"
       label-placement="left"

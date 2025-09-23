@@ -2,7 +2,6 @@
 import { FileDownloadOutlined } from '@vicons/material';
 import { useKeyModifier } from '@vueuse/core';
 
-import TranslateTask from '@/components/TranslateTask.vue';
 import { WenkuNovelApi } from '@/api';
 import {
   TranslateTaskDescriptor,
@@ -29,7 +28,7 @@ const { setting } = storeToRefs(settingStore);
 const whoamiStore = useWhoamiStore();
 const { whoami } = storeToRefs(whoamiStore);
 
-const translateTask = ref<InstanceType<typeof TranslateTask>>();
+const translateTask = useTemplateRef('translateTask');
 const startTranslateTask = (translatorId: 'baidu' | 'youdao') => {
   return translateTask?.value?.startTask(
     { type: 'wenku', novelId, volumeId: volume.volumeId },

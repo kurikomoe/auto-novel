@@ -5,12 +5,11 @@ import { useKeyModifier } from '@vueuse/core';
 import { GenericNovelId } from '@/model/Common';
 import { LocalVolumeMetadata } from '@/model/LocalVolume';
 import { useBookshelfLocalStore } from '@/pages/bookshelf/BookshelfLocalStore';
-import TranslateOptions from '@/pages/novel/components/TranslateOptions.vue';
 import { doAction } from '@/pages/util';
 import { Setting, useLocalVolumeStore, useSettingStore } from '@/stores';
 import { downloadFile } from '@/util';
 
-const translateOptions = ref<InstanceType<typeof TranslateOptions>>();
+const translateOptions = useTemplateRef('translateOptions');
 
 const props = defineProps<{
   type: 'gpt' | 'sakura';
@@ -126,7 +125,7 @@ const progressFilterFunc = computed(() => {
     @volume-add="queueVolume($event.name)"
   >
     <template #extra>
-      <translate-options
+      <TranslateOptions
         ref="translateOptions"
         :gnid="GenericNovelId.local('')"
         :glossary="{}"

@@ -2,7 +2,6 @@
 import { ChecklistOutlined } from '@vicons/material';
 
 import { useIsWideScreen } from '@/pages/util';
-import BookshelfList from './components/BookshelfList.vue';
 
 defineProps<{
   favoredId: string;
@@ -12,7 +11,7 @@ const isWideScreen = useIsWideScreen();
 
 const showControlPanel = ref(false);
 
-const bookshelfListRef = ref<InstanceType<typeof BookshelfList>>();
+const bookshelfListRef = useTemplateRef('bookshelfList');
 </script>
 
 <template>
@@ -42,7 +41,7 @@ const bookshelfListRef = ref<InstanceType<typeof BookshelfList>>();
     </n-collapse-transition>
 
     <bookshelf-local-list
-      ref="bookshelfListRef"
+      ref="bookshelfList"
       :favored-id="favoredId"
       :selectable="showControlPanel"
     />

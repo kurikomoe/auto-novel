@@ -80,7 +80,6 @@ const submit = async () => {
     <n-h1>编辑网络小说</n-h1>
 
     <n-form
-      ref="formRef"
       :model="formValue"
       :label-placement="isWideScreen ? 'left' : 'top'"
       label-width="auto"

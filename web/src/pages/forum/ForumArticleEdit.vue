@@ -34,7 +34,7 @@ const articleCategoryOptions = whoami.value.asAdmin
     ];
 
 const allowSubmit = ref(articleId === undefined);
-const formRef = ref<FormInst>();
+const formRef = useTemplateRef<FormInst>('form');
 const formValue = ref({
   title: '',
   content: '',
@@ -132,7 +132,7 @@ const submit = async () => {
   <div class="layout-content">
     <n-h1>{{ articleId === undefined ? '发布' : '编辑' }}文章</n-h1>
     <n-form
-      ref="formRef"
+      ref="form"
       :model="formValue"
       :rules="formRules"
       :label-placement="isWideScreen ? 'left' : 'top'"

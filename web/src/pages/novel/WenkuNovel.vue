@@ -7,7 +7,6 @@ import coverPlaceholder from '@/image/cover_placeholder.png';
 import { GenericNovelId } from '@/model/Common';
 import { doAction, useIsWideScreen } from '@/pages/util';
 import { useSettingStore, useWhoamiStore } from '@/stores';
-import TranslateOptions from './components/TranslateOptions.vue';
 
 const { novelId } = defineProps<{ novelId: string }>();
 
@@ -34,7 +33,7 @@ watch(novel, (novel) => {
   }
 });
 
-const translateOptions = ref<InstanceType<typeof TranslateOptions>>();
+const translateOptions = useTemplateRef('translateOptions');
 
 const deleteVolume = (volumeId: string) =>
   doAction(WenkuNovelRepo.deleteVolume(novelId, volumeId), '删除', message);
@@ -193,7 +192,7 @@ const showWebNovelsModal = ref(false);
       <template v-if="whoami.isSignedIn">
         <upload-button :allow-zh="whoami.isAdmin" :novel-id="novelId" />
 
-        <translate-options
+        <TranslateOptions
           ref="translateOptions"
           :gnid="GenericNovelId.wenku(novelId)"
           :glossary="novel.glossary"

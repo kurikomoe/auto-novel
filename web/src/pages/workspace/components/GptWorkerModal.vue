@@ -39,7 +39,7 @@ const initFormValue = (): {
   }
 };
 
-const formRef = ref<FormInst>();
+const formRef = useTemplateRef<FormInst>('form');
 const formValue = ref(initFormValue());
 
 const emptyCheck = (name: string) => ({
@@ -129,7 +129,7 @@ const verb = computed(() => (props.worker === undefined ? '添加' : '更新'));
     :title="verb + 'GPT翻译器'"
   >
     <n-form
-      ref="formRef"
+      ref="form"
       :model="formValue"
       :rules="formRules"
       label-placement="left"

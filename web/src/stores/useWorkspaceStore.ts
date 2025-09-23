@@ -40,9 +40,6 @@ const createWorkspaceStore = <W extends GptWorker | SakuraWorker>(
   const addJob = (job: TranslateJob) => {
     const conflictJob = ref.value.jobs.find((it) => it.task === job.task);
     if (conflictJob !== undefined) {
-      // probe
-      console.log(conflictJob);
-      console.log(ref.value);
       return false;
     } else {
       ref.value.jobs.push(job);

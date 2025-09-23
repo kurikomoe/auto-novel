@@ -40,7 +40,7 @@ const onSelect = (key: string) => {
 };
 
 const showEditModal = ref(false);
-const formRef = ref<FormInst | null>(null);
+const formRef = useTemplateRef<FormInst>('form');
 const formValue = ref({ title });
 const formRules: FormRules = {
   title: [
@@ -115,7 +115,7 @@ const deleteFavored = () =>
 
   <c-modal v-model:show="showEditModal" title="编辑收藏夹">
     <n-form
-      ref="formRef"
+      ref="form"
       :model="formValue"
       :rules="formRules"
       label-placement="left"

@@ -105,7 +105,7 @@ const haveReadRule = computed(() => {
   const durationSinceLastRead = Date.now() - noticed.value.wenkuUploadRule;
   return durationSinceLastRead < 24 * 3600 * 1000;
 });
-const uploadRef = ref<UploadInst>();
+const uploadRef = useTemplateRef<UploadInst>('upload');
 const uploadVolumes = () => {
   showRuleModal.value = true;
   noticed.value.wenkuUploadRule = Date.now();
@@ -120,7 +120,7 @@ const uploadVolumes = () => {
     @action="uploadVolumes"
   />
   <n-upload
-    ref="uploadRef"
+    ref="upload"
     accept=".txt,.epub"
     multiple
     :custom-request="customRequest"

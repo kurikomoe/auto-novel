@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import TranslateTask from '@/components/TranslateTask.vue';
 import { GenericNovelId } from '@/model/Common';
 import { LocalVolumeMetadata } from '@/model/LocalVolume';
 import { TranslatorId } from '@/model/Translator';
@@ -20,7 +19,7 @@ const youdao = ref(calculateFinished('youdao'));
 const gpt = ref(calculateFinished('gpt'));
 const sakura = ref(calculateFinished('sakura'));
 
-const translateTask = ref<InstanceType<typeof TranslateTask>>();
+const translateTask = useTemplateRef('translateTask');
 const startTranslateTask = (translatorId: 'baidu' | 'youdao') =>
   translateTask?.value?.startTask(
     { type: 'local', volumeId: props.volume.id },
