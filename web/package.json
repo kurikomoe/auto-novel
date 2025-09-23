@@ -18,7 +18,7 @@
     "lint:dist": "eslint dist",
     "preview": "vite preview",
     "test": "vitest run",
-    "prepare": "cd .. && husky web/.husky"
+    "prepare": "cd .. && husky web/.husky || true"
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
@@ -49,6 +49,7 @@
     "@types/uuid": "^10.0.0",
     "@vicons/material": "^0.12.0",
     "@vitejs/plugin-vue": "^5.2.4",
+    "@vue/tsconfig": "^0.8.1",
     "@vueuse/core": "^10.11.1",
     "@zip.js/zip.js": "^2.7.73",
     "crypto-es": "^2.1.0",

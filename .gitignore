@@ -11,14 +11,6 @@ server/.kotlin
 server/build/
 server/data/
 
-# Web
-web/dist/
-web/node_modules/
-web/src/auto-imports.d.ts
-web/src/components.d.ts
-web/vite.config.ts.timestamp*
-web/sonda-report.html
-
 # Web extension
 web-extension/src/_metadata/
 

@@ -1,9 +1,12 @@
-FROM node:21-slim AS builder
-COPY . /web
+FROM node:21-alpine AS builder
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 WORKDIR /web
-RUN npm i -g pnpm; \
-    pnpm install --frozen-lockfile --prod; \
-    pnpm run build
+COPY package.json pnpm-lock.yaml .
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
+COPY . .
+RUN pnpm run build
 
 FROM caddy:2.7.4
 COPY Caddyfile /etc/caddy/Caddyfile
