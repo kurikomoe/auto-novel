@@ -2,7 +2,7 @@
 import { StarFilled } from '@vicons/material';
 import { createReusableTemplate } from '@vueuse/core';
 
-import { WebNovelOutlineDto } from '@/model/WebNovel';
+import type { WebNovelOutlineDto } from '@/model/WebNovel';
 import { FavoredRepo } from '@/stores';
 import { WebUtil } from '@/util/web';
 

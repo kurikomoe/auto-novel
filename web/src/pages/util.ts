@@ -2,7 +2,7 @@ import {
   useBreakpoints as useBreakpointsInner,
   useWindowSize,
 } from '@vueuse/core';
-import { MessageApi } from 'naive-ui';
+import type { MessageApi } from 'naive-ui';
 
 import { formatError } from '@/api';
 

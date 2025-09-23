@@ -43,6 +43,7 @@ export default defineConfigWithVueTs(
       '@typescript-eslint/no-namespace': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/no-empty-object-type': 'off',
+      '@typescript-eslint/consistent-type-imports': 'error',
     },
   },
 );

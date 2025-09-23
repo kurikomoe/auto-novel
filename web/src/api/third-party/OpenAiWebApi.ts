@@ -1,4 +1,5 @@
-import ky, { KyInstance, Options } from 'ky';
+import type { Options } from 'ky';
+import ky, { KyInstance } from 'ky';
 
 import { parseEventStream } from '@/util';
 

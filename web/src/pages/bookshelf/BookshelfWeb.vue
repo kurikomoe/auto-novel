@@ -9,11 +9,8 @@ import {
   onUpdatePage,
   parseWebListValueProvider,
 } from '../list/option';
-import {
-  getWebFavoredListOptions,
-  parseFavoredListValueSort,
-  WebFavoredListValue,
-} from './option';
+import type { WebFavoredListValue } from './option';
+import { getWebFavoredListOptions, parseFavoredListValueSort } from './option';
 
 const props = defineProps<{
   page: number;

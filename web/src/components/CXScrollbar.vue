@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ScrollbarInst } from 'naive-ui';
+import type { ScrollbarInst } from 'naive-ui';
 
 const scrollRef = ref<ScrollbarInst>();
 const point = { x: 0, isDrag: false };

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { isEqual } from 'lodash-es';
 
-import { OperationWenkuEdit } from '@/model/Operation';
+import type { OperationWenkuEdit } from '@/model/Operation';
 
 defineProps<{ op: OperationWenkuEdit }>();
 </script>

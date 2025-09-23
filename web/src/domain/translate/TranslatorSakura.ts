@@ -1,12 +1,8 @@
 import { createOpenAiApi } from '@/api';
-import { Glossary } from '@/model/Glossary';
+import type { Glossary } from '@/model/Glossary';
 
-import {
-  createLengthSegmentor,
-  Logger,
-  SegmentContext,
-  SegmentTranslator,
-} from './Common';
+import type { Logger, SegmentContext, SegmentTranslator } from './Common';
+import { createLengthSegmentor } from './Common';
 
 export class SakuraTranslator implements SegmentTranslator {
   id = <const>'sakura';

@@ -1,8 +1,8 @@
 import { useQuery } from '@pinia/colada';
 
 import { CommentApi } from '@/api';
-import { Comment1 } from '@/model/Comment';
-import { Page } from '@/model/Page';
+import type { Comment1 } from '@/model/Comment';
+import type { Page } from '@/model/Page';
 import { cache, withOnSuccess } from './cache';
 
 const ListKey = 'comment-list';

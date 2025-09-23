@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { OperationWenkuUpload } from '@/model/Operation';
+import type { OperationWenkuUpload } from '@/model/Operation';
 
 defineProps<{ op: OperationWenkuUpload }>();
 </script>

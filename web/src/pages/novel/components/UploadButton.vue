@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { PlusOutlined } from '@vicons/material';
-import {
+import type {
   UploadCustomRequestOptions,
   UploadFileInfo,
   UploadInst,

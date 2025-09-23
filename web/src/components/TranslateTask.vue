@@ -1,6 +1,10 @@
 <script lang="ts" setup>
-import { TranslatorConfig, translate } from '@/domain/translate';
-import { TranslateTaskDesc, TranslateTaskParams } from '@/model/Translator';
+import type { TranslatorConfig } from '@/domain/translate';
+import { translate } from '@/domain/translate';
+import type {
+  TranslateTaskDesc,
+  TranslateTaskParams,
+} from '@/model/Translator';
 import { releaseKeepAlive, requestKeepAlive } from '@/util';
 
 import CTaskCard from './CTaskCard.vue';

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { GenericNovelId } from '@/model/Common';
-import { LocalVolumeMetadata } from '@/model/LocalVolume';
-import { TranslatorId } from '@/model/Translator';
+import type { LocalVolumeMetadata } from '@/model/LocalVolume';
+import type { TranslatorId } from '@/model/Translator';
 import { useSettingStore } from '@/stores';
 
 const props = defineProps<{

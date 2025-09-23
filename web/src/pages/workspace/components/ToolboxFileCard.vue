@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { DeleteOutlineOutlined, RemoveRedEyeOutlined } from '@vicons/material';
 
-import { ParsedFile } from '@/util/file';
+import type { ParsedFile } from '@/util/file';
 
 defineProps<{
   file: ParsedFile;

@@ -1,6 +1,5 @@
-import { Comment1 } from '@/model/Comment';
-import { Page } from '@/model/Page';
-
+import type { Comment1 } from '@/model/Comment';
+import type { Page } from '@/model/Page';
 import { client } from './client';
 
 const listComment = (params: {

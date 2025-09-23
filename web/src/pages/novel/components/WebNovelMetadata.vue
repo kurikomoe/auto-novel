@@ -2,7 +2,7 @@
 import { BookOutlined, EditNoteOutlined } from '@vicons/material';
 import { NA, NText } from 'naive-ui';
 
-import { WebNovelDto } from '@/model/WebNovel';
+import type { WebNovelDto } from '@/model/WebNovel';
 import { useWhoamiStore } from '@/stores';
 import { WebUtil } from '@/util/web';
 

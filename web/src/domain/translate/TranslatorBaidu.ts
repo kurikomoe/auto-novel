@@ -1,12 +1,7 @@
 import { BaiduApi } from '@/api';
 import { RegexUtil } from '@/util';
-import {
-  Logger,
-  SegmentContext,
-  SegmentTranslator,
-  createGlossaryWrapper,
-  createLengthSegmentor,
-} from './Common';
+import type { Logger, SegmentContext, SegmentTranslator } from './Common';
+import { createGlossaryWrapper, createLengthSegmentor } from './Common';
 
 export class BaiduTranslator implements SegmentTranslator {
   id = <const>'baidu';

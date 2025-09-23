@@ -1,4 +1,4 @@
-import { Glossary } from './Glossary';
+import type { Glossary } from './Glossary';
 
 export type TranslatorId = 'sakura' | 'baidu' | 'youdao' | 'gpt';
 

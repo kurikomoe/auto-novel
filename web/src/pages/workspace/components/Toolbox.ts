@@ -1,5 +1,5 @@
 import { downloadFile } from '@/util';
-import { ParsedFile } from '@/util/file';
+import type { ParsedFile } from '@/util/file';
 
 export namespace Toolbox {
   const downloadFiles = async (files: ParsedFile[]) => {

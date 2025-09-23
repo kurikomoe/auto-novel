@@ -1,10 +1,9 @@
-import {
+import type {
   MergeHistoryDto,
   OperationHistory,
   OperationType,
 } from '@/model/Operation';
-import { Page } from '@/model/Page';
-
+import type { Page } from '@/model/Page';
 import { client } from './client';
 
 const listOperationHistory = (params: {

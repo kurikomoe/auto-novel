@@ -1,7 +1,7 @@
 import { parseFile } from '@/util/file';
 
 import { EpubParserV1 } from './EpubParser';
-import { LocalVolumeDao } from './LocalVolumeDao';
+import type { LocalVolumeDao } from './LocalVolumeDao';
 
 export const getTranslationFile = async (
   dao: LocalVolumeDao,

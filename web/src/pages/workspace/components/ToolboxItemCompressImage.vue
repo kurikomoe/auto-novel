@@ -2,7 +2,7 @@
 import { ImgComparisonSlider } from '@img-comparison-slider/vue';
 
 import { Humanize } from '@/util';
-import { Epub, ParsedFile } from '@/util/file';
+import type { Epub, ParsedFile } from '@/util/file';
 
 import { Toolbox } from './Toolbox';
 

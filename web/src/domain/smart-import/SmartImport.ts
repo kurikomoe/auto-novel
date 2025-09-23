@@ -1,4 +1,4 @@
-import { AmazonNovel, WenkuVolumeDto } from '@/model/WenkuNovel';
+import type { AmazonNovel, WenkuVolumeDto } from '@/model/WenkuNovel';
 import { parallelExec } from '@/util';
 
 import { getProduct } from './ApiGetProduct';

@@ -1,5 +1,5 @@
 import { WebNovelApi, formatError } from '@/api';
-import {
+import type {
   TranslateTaskCallback,
   TranslateTaskParams,
   WebTranslateTask,
@@ -7,7 +7,7 @@ import {
 } from '@/model/Translator';
 import { delay } from '@/util';
 
-import { Translator } from './Translator';
+import type { Translator } from './Translator';
 
 export const translateWeb = async (
   { providerId, novelId }: WebTranslateTaskDesc,

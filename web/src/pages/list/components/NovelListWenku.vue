@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { StarFilled } from '@vicons/material';
 
-import { WenkuNovelOutlineDto } from '@/model/WenkuNovel';
+import type { WenkuNovelOutlineDto } from '@/model/WenkuNovel';
 
 const props = defineProps<{
   items: WenkuNovelOutlineDto[];

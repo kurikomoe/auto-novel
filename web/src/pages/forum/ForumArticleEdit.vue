@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { UploadOutlined } from '@vicons/material';
-import { FormInst, FormItemRule, FormRules } from 'naive-ui';
+import type { FormInst, FormItemRule, FormRules } from 'naive-ui';
 
 import { ArticleRepo } from '@/repos';
-import { ArticleCategory } from '@/model/Article';
+import type { ArticleCategory } from '@/model/Article';
 import { doAction, useIsWideScreen } from '@/pages/util';
 import { useDraftStore, useWhoamiStore } from '@/stores';
 

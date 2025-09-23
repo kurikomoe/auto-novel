@@ -1,6 +1,10 @@
-import { DBSchema, openDB } from 'idb';
+import type { DBSchema } from 'idb';
+import { openDB } from 'idb';
 
-import { LocalVolumeChapter, LocalVolumeMetadata } from '@/model/LocalVolume';
+import type {
+  LocalVolumeChapter,
+  LocalVolumeMetadata,
+} from '@/model/LocalVolume';
 
 type Mutator<T> = (value: T) => T;
 

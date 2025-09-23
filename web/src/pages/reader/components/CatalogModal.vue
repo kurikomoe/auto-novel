@@ -5,13 +5,14 @@ import {
   SortOutlined,
 } from '@vicons/material';
 
-import { GenericNovelId } from '@/model/Common';
-import { ReadableTocItem } from '@/pages/novel/components/common';
+import type { GenericNovelId } from '@/model/Common';
+import type { ReadableTocItem } from '@/pages/novel/components/common';
 import { useTocExpansion } from '@/pages/novel/components/UseTocExpansion';
 import { useIsWideScreen } from '@/pages/util';
 import { WebNovelRepo } from '@/repos';
 import { useLocalVolumeStore, useSettingStore } from '@/stores';
-import { Err, Ok, Result, runCatching } from '@/util/result';
+import type { Result } from '@/util/result';
+import { Err, Ok, runCatching } from '@/util/result';
 
 const props = defineProps<{
   show: boolean;

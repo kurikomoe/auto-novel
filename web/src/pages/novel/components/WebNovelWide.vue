@@ -6,7 +6,7 @@ import {
 } from '@vicons/material';
 import { NScrollbar } from 'naive-ui';
 
-import { WebNovelDto, WebNovelTocItemDto } from '@/model/WebNovel';
+import type { WebNovelDto, WebNovelTocItemDto } from '@/model/WebNovel';
 import { useSettingStore } from '@/stores';
 import { useTocExpansion } from './UseTocExpansion';
 import { useLastReadChapter, useToc } from './UseWebNovel';

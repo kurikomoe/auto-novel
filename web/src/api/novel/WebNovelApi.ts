@@ -1,15 +1,14 @@
-import { Page } from '@/model/Page';
-import {
+import type { Page } from '@/model/Page';
+import type {
   TranslatorId,
   WebChapterTranslateTask,
   WebTranslateTask,
 } from '@/model/Translator';
-import {
+import type {
   WebNovelChapterDto,
   WebNovelDto,
   WebNovelOutlineDto,
 } from '@/model/WebNovel';
-
 import { client } from './client';
 
 const listNovel = ({

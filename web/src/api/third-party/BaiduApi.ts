@@ -1,4 +1,5 @@
-import ky, { Options } from 'ky';
+import type { Options } from 'ky';
+import ky from 'ky';
 
 import { parseEventStream } from '@/util';
 

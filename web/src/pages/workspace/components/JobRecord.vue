@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { DeleteOutlineOutlined, RefreshOutlined } from '@vicons/material';
 
-import { TranslateJob, TranslateJobRecord } from '@/model/Translator';
+import type { TranslateJobRecord } from '@/model/Translator';
+import { TranslateJob } from '@/model/Translator';
 
 const props = defineProps<{
   job: TranslateJobRecord;

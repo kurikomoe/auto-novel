@@ -7,7 +7,7 @@ import {
 import { VueDraggable } from 'vue-draggable-plus';
 
 import { TranslationCacheRepo } from '@/repos';
-import { TranslateJob } from '@/model/Translator';
+import type { TranslateJob } from '@/model/Translator';
 import { doAction } from '@/pages/util';
 import { useGptWorkspaceStore } from '@/stores';
 

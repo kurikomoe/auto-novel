@@ -1,9 +1,9 @@
-import {
+import type {
   GptWorker,
   SakuraWorker,
-  TranslateJob,
   TranslateJobRecord,
 } from '@/model/Translator';
+import { TranslateJob } from '@/model/Translator';
 import { lazy, useLocalStorage } from '@/util';
 
 import { LSKey } from './key';

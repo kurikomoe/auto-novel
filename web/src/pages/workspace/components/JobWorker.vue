@@ -10,12 +10,10 @@ import {
   StopOutlined,
 } from '@vicons/material';
 
-import { Translator, TranslatorConfig } from '@/domain/translate';
-import {
-  GptWorker,
-  SakuraWorker,
-  TranslateTaskDescriptor,
-} from '@/model/Translator';
+import type { TranslatorConfig } from '@/domain/translate';
+import { Translator } from '@/domain/translate';
+import type { GptWorker, SakuraWorker } from '@/model/Translator';
+import { TranslateTaskDescriptor } from '@/model/Translator';
 import { useWorkspaceStore } from '@/stores';
 
 const props = defineProps<{

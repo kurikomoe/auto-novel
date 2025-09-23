@@ -1,6 +1,9 @@
-import { Article, ArticleCategory, ArticleSimplified } from '@/model/Article';
-import { Page } from '@/model/Page';
-
+import type {
+  Article,
+  ArticleCategory,
+  ArticleSimplified,
+} from '@/model/Article';
+import type { Page } from '@/model/Page';
 import { client } from './client';
 
 const listArticle = (params: {

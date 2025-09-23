@@ -2,7 +2,7 @@
 import CA from '@/components/CA.vue';
 import { NText, NTime, useThemeVars } from 'naive-ui';
 
-import { ReadableTocItem } from '@/pages/novel/components/common';
+import type { ReadableTocItem } from '@/pages/novel/components/common';
 
 const props = defineProps<{
   providerId: string;

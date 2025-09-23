@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { Epub, ParsedFile, StandardNovel } from '@/util/file';
+import type { Epub, ParsedFile } from '@/util/file';
+import { StandardNovel } from '@/util/file';
 import { Toolbox } from './Toolbox';
 
 const props = defineProps<{

@@ -7,7 +7,7 @@ import {
   TuneOutlined,
 } from '@vicons/material';
 
-import { WebNovelChapterDto } from '@/model/WebNovel';
+import type { WebNovelChapterDto } from '@/model/WebNovel';
 import { useReaderSettingStore } from '@/stores';
 
 defineProps<{

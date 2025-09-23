@@ -5,19 +5,15 @@ import {
   KeyboardDoubleArrowUpOutlined,
   UploadOutlined,
 } from '@vicons/material';
-import { FormInst, FormItemRule, FormRules } from 'naive-ui';
+import type { FormInst, FormItemRule, FormRules } from 'naive-ui';
 import { VueDraggable } from 'vue-draggable-plus';
 
 import { WenkuNovelApi } from '@/api';
 import { prettyCover, smartImport } from '@/domain/smart-import';
 import { WenkuNovelRepo } from '@/repos';
 import coverPlaceholder from '@/image/cover_placeholder.png';
-import {
-  WenkuNovelOutlineDto,
-  WenkuVolumeDto,
-  presetKeywordsNonR18,
-  presetKeywordsR18,
-} from '@/model/WenkuNovel';
+import type { WenkuNovelOutlineDto, WenkuVolumeDto } from '@/model/WenkuNovel';
+import { presetKeywordsNonR18, presetKeywordsR18 } from '@/model/WenkuNovel';
 import { doAction, useIsWideScreen } from '@/pages/util';
 import { useWhoamiStore } from '@/stores';
 import { RegexUtil, delay } from '@/util';

@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { Translator, TranslatorConfig } from '@/domain/translate';
-import { Glossary } from '@/model/Glossary';
-import { GptWorker, SakuraWorker, TranslatorId } from '@/model/Translator';
+import type { TranslatorConfig } from '@/domain/translate';
+import { Translator } from '@/domain/translate';
+import type { Glossary } from '@/model/Glossary';
+import type { GptWorker, SakuraWorker, TranslatorId } from '@/model/Translator';
 import { useGptWorkspaceStore, useSakuraWorkspaceStore } from '@/stores';
 
 const message = useMessage();

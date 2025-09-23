@@ -1,4 +1,4 @@
-import { TranslatorId } from '@/model/Translator';
+import type { TranslatorId } from '@/model/Translator';
 import { defaultConverter, useLocalStorage, useOpenCC } from '@/util';
 import { LSKey } from './key';
 

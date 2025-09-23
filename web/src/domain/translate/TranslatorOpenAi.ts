@@ -1,15 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 
 import { createOpenAiApi, createOpenAiWebApi, OpenAiError } from '@/api';
-import { Glossary } from '@/model/Glossary';
+import type { Glossary } from '@/model/Glossary';
 import { delay, RegexUtil } from '@/util';
 
-import {
-  createLengthSegmentor,
-  Logger,
-  SegmentContext,
-  SegmentTranslator,
-} from './Common';
+import type { Logger, SegmentContext, SegmentTranslator } from './Common';
+import { createLengthSegmentor } from './Common';
 
 type OpenAi = ReturnType<typeof createOpenAiApi>;
 type OpenAiWeb = ReturnType<typeof createOpenAiWebApi>;

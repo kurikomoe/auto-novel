@@ -1,5 +1,5 @@
-import { PageX } from '@/model/Page';
-import { UserRole } from '@/model/User';
+import type { PageX } from '@/model/Page';
+import type { UserRole } from '@/model/User';
 import { client } from '../novel/client';
 
 export const AuthUrl = window.location.hostname.includes('fishhawk.top')

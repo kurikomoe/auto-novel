@@ -1,12 +1,12 @@
 import { WenkuNovelApi, formatError } from '@/api';
-import {
+import type {
   TranslateTaskCallback,
   TranslateTaskParams,
   WenkuTranslateTask,
   WenkuTranslateTaskDesc,
 } from '@/model/Translator';
 
-import { Translator } from './Translator';
+import type { Translator } from './Translator';
 
 export const translateWenku = async (
   { novelId, volumeId }: WenkuTranslateTaskDesc,

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { SyncAltOutlined } from '@vicons/material';
-import { ListSelectOption } from './types';
+import type { ListSelectOption } from './types';
 
 const value = defineModel<number>('value', { required: true });
 

@@ -1,12 +1,7 @@
 import { YoudaoApi } from '@/api';
 import { RegexUtil, safeJson } from '@/util';
-import {
-  Logger,
-  SegmentContext,
-  SegmentTranslator,
-  createGlossaryWrapper,
-  createLengthSegmentor,
-} from './Common';
+import type { Logger, SegmentContext, SegmentTranslator } from './Common';
+import { createGlossaryWrapper, createLengthSegmentor } from './Common';
 
 export class YoudaoTranslator implements SegmentTranslator {
   id = <const>'youdao';

@@ -1,4 +1,4 @@
-import { Epub } from './epub';
+import type { Epub } from './epub';
 import { Txt } from './txt';
 
 namespace NovelMark {

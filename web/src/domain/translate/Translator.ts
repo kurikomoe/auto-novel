@@ -1,18 +1,14 @@
 import { isEqual } from 'lodash-es';
 
-import { Glossary } from '@/model/Glossary';
-import { TranslatorId } from '@/model/Translator';
+import type { Glossary } from '@/model/Glossary';
+import type { TranslatorId } from '@/model/Translator';
 
 import { BaiduTranslator } from './TranslatorBaidu';
 import { OpenAiTranslator } from './TranslatorOpenAi';
 import { SakuraTranslator } from './TranslatorSakura';
 import { YoudaoTranslator } from './TranslatorYoudao';
-import {
-  Logger,
-  SegmentCache,
-  SegmentTranslator,
-  createSegIndexedDbCache,
-} from './Common';
+import type { Logger, SegmentCache, SegmentTranslator } from './Common';
+import { createSegIndexedDbCache } from './Common';
 import { RegexUtil } from '@/util';
 
 export type TranslatorConfig =

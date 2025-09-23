@@ -8,7 +8,7 @@ import { VueDraggable } from 'vue-draggable-plus';
 
 import { SakuraTranslator } from '@/domain/translate';
 import { TranslationCacheRepo } from '@/repos';
-import { TranslateJob } from '@/model/Translator';
+import type { TranslateJob } from '@/model/Translator';
 import { doAction } from '@/pages/util';
 import SoundAllTaskCompleted from '@/sound/all_task_completed.mp3';
 import { useSakuraWorkspaceStore, useSettingStore } from '@/stores';

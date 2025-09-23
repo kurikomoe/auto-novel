@@ -2,7 +2,7 @@
 import { useKeyModifier } from '@vueuse/core';
 
 import { TranslateTaskDescriptor } from '@/model/Translator';
-import { WebNovelOutlineDto } from '@/model/WebNovel';
+import type { WebNovelOutlineDto } from '@/model/WebNovel';
 import { FavoredRepo, useSettingStore, useWorkspaceStore } from '@/stores';
 
 const props = defineProps<{

@@ -1,5 +1,6 @@
 // Copyright 2023 OpenAI
-import ky, { HTTPError, Options } from 'ky';
+import type { Options } from 'ky';
+import ky, { HTTPError } from 'ky';
 
 import { parseEventStream, safeJson } from '@/util';
 

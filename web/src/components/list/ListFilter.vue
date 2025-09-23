@@ -1,5 +1,5 @@
 <script lang="ts" setup generic="ListOptionSpec extends ListOptions">
-import { ListOptions, ListValue } from './types';
+import type { ListOptions, ListValue } from './types';
 
 const props = defineProps<{
   value: ListValue<ListOptionSpec>;

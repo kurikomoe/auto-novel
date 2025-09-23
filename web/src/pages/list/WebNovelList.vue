@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { WebNovelRepo } from '@/repos';
 import { FavoredRepo, useWhoamiStore } from '@/stores';
+import type { WebListValue } from './option';
 import {
   getWebListOptions,
   onUpdateListValue,
   onUpdatePage,
   parseWebListValueProvider,
-  WebListValue,
 } from './option';
 
 const props = defineProps<{

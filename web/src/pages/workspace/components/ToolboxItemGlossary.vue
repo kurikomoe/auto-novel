@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { ParsedFile } from '@/util/file';
+import type { ParsedFile } from '@/util/file';
 import { DeleteOutlineOutlined } from '@vicons/material';
 
-import { Translator, TranslatorConfig } from '@/domain/translate';
+import type { TranslatorConfig } from '@/domain/translate';
+import { Translator } from '@/domain/translate';
 import { Glossary } from '@/model/Glossary';
 import { useSakuraWorkspaceStore } from '@/stores';
 

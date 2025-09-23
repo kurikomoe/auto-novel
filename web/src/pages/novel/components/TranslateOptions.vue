@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { InfoOutlined } from '@vicons/material';
 
-import { GenericNovelId } from '@/model/Common';
-import { Glossary } from '@/model/Glossary';
-import { TranslateTaskParams } from '@/model/Translator';
+import type { GenericNovelId } from '@/model/Common';
+import type { Glossary } from '@/model/Glossary';
+import type { TranslateTaskParams } from '@/model/Translator';
 import { useIsWideScreen } from '@/pages/util';
 import { Setting, useSettingStore } from '@/stores';
 

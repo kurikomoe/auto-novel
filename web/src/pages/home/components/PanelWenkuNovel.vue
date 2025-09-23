@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { WenkuNovelOutlineDto } from '@/model/WenkuNovel';
+import type { WenkuNovelOutlineDto } from '@/model/WenkuNovel';
 
 defineProps<{
   novels: WenkuNovelOutlineDto[] | undefined;

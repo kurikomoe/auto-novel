@@ -2,8 +2,8 @@
 import { useScroll } from '@vueuse/core';
 import { useOsTheme } from 'naive-ui';
 
-import { GenericNovelId } from '@/model/Common';
-import { WebNovelChapterDto } from '@/model/WebNovel';
+import type { GenericNovelId } from '@/model/Common';
+import type { WebNovelChapterDto } from '@/model/WebNovel';
 import { useReaderSettingStore } from '@/stores';
 import { buildParagraphs } from './BuildParagraphs';
 import { ReadPositionRepo } from '@/repos';

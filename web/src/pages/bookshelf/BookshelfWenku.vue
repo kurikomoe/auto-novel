@@ -5,10 +5,10 @@ import { useIsWideScreen } from '@/pages/util';
 import { WenkuNovelRepo } from '@/repos';
 import { useSettingStore } from '@/stores';
 import { onUpdateListValue, onUpdatePage } from '../list/option';
+import type { WenkuFavoredListValue } from './option';
 import {
   getWenkuFavoredListOptions,
   parseFavoredListValueSort,
-  WenkuFavoredListValue,
 } from './option';
 
 const props = defineProps<{

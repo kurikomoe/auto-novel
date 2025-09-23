@@ -1,7 +1,8 @@
 import { useQuery } from '@pinia/colada';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Favored, FavoredApi } from '@/api';
+import type { Favored } from '@/api';
+import { FavoredApi } from '@/api';
 import { useLocalStorage } from '@/util';
 import { LSKey } from './key';
 import { useWhoamiStore } from './useWhoamiStore';

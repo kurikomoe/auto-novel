@@ -1,7 +1,7 @@
-import { GenericNovelId } from '@/model/Common';
-import { TranslatorId } from '@/model/Translator';
+import type { GenericNovelId } from '@/model/Common';
+import type { TranslatorId } from '@/model/Translator';
 import { useReaderSettingStore, useSettingStore } from '@/stores';
-import { ReaderChapter } from '../ReaderStore';
+import type { ReaderChapter } from '../ReaderStore';
 
 export type ReaderParagraph =
   | {

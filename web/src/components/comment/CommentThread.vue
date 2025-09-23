@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { CommentRepo } from '@/repos';
-import { Comment1 } from '@/model/Comment';
+import type { Comment1 } from '@/model/Comment';
 import { useDraftStore } from '@/stores';
 
 const props = defineProps<{

@@ -3,11 +3,9 @@ import { FileDownloadOutlined } from '@vicons/material';
 import { useKeyModifier } from '@vueuse/core';
 
 import { WenkuNovelApi } from '@/api';
-import {
-  TranslateTaskDescriptor,
-  TranslateTaskParams,
-} from '@/model/Translator';
-import { VolumeJpDto } from '@/model/WenkuNovel';
+import type { TranslateTaskParams } from '@/model/Translator';
+import { TranslateTaskDescriptor } from '@/model/Translator';
+import type { VolumeJpDto } from '@/model/WenkuNovel';
 import { useSettingStore, useWhoamiStore, useWorkspaceStore } from '@/stores';
 
 const { novelId, volume, getParams } = defineProps<{

@@ -5,7 +5,7 @@ import {
   MoreVertOutlined,
 } from '@vicons/material';
 
-import { Comment1 } from '@/model/Comment';
+import type { Comment1 } from '@/model/Comment';
 import { useBlacklistStore, useWhoamiStore } from '@/stores';
 import { CommentRepo } from '@/repos';
 import { copyToClipBoard, doAction } from '@/pages/util';

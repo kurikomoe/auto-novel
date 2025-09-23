@@ -3,12 +3,8 @@ import { PlusOutlined } from '@vicons/material';
 
 import { WenkuNovelRepo } from '@/repos';
 import { FavoredRepo, useWhoamiStore } from '@/stores';
-import {
-  getWenkuListOptions,
-  onUpdateListValue,
-  onUpdatePage,
-  WenkuListValue,
-} from './option';
+import type { WenkuListValue } from './option';
+import { getWenkuListOptions, onUpdateListValue, onUpdatePage } from './option';
 
 const props = defineProps<{
   page: number;

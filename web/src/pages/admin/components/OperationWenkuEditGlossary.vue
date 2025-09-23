@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { OperationWenkuEditGlossary } from '@/model/Operation';
+import type { OperationWenkuEditGlossary } from '@/model/Operation';
 
 defineProps<{ op: OperationWenkuEditGlossary }>();
 </script>

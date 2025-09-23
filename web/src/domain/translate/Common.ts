@@ -2,8 +2,8 @@ import { MD5 } from 'crypto-es/lib/md5';
 import { customAlphabet } from 'nanoid';
 
 import { TranslationCacheRepo } from '@/repos';
-import { Glossary } from '@/model/Glossary';
-import { TranslatorId } from '@/model/Translator';
+import type { Glossary } from '@/model/Glossary';
+import type { TranslatorId } from '@/model/Translator';
 
 export type Segmentor = (
   textJp: string[],

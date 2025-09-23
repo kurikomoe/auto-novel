@@ -1,4 +1,4 @@
-import { UserReference } from './User';
+import type { UserReference } from './User';
 
 export type ArticleCategory = 'Guide' | 'General' | 'Support';
 

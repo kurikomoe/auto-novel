@@ -1,16 +1,17 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { Glossary } from '@/model/Glossary';
-import {
+import type { Glossary } from '@/model/Glossary';
+import type {
   ChapterTranslation,
   LocalVolumeChapter,
   LocalVolumeMetadata,
 } from '@/model/LocalVolume';
-import { TranslatorId } from '@/model/Translator';
+import type { TranslatorId } from '@/model/Translator';
 
 import { createVolume } from './CreateVolume';
 import { getTranslationFile } from './GetTranslationFile';
-import { LocalVolumeDao, createLocalVolumeDao } from './LocalVolumeDao';
+import type { LocalVolumeDao } from './LocalVolumeDao';
+import { createLocalVolumeDao } from './LocalVolumeDao';
 
 export const createLocalVolumeStore = async () => {
   const dao = await createLocalVolumeDao();

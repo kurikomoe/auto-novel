@@ -1,7 +1,7 @@
 import { useQuery } from '@pinia/colada';
 
 import { ArticleApi } from '@/api';
-import { ArticleCategory } from '@/model/Article';
+import type { ArticleCategory } from '@/model/Article';
 import { cache, withOnSuccess } from './cache';
 
 const ItemKey = 'article';

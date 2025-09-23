@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { parseFile, Srt } from '@/util/file';
 
 import { EpubParserV1 } from './EpubParser';
-import { LocalVolumeDao } from './LocalVolumeDao';
+import type { LocalVolumeDao } from './LocalVolumeDao';
 
 export const createVolume = async (
   dao: LocalVolumeDao,

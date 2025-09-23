@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ListOptions, ListValue } from '@/components/list/types';
+import type { ListOptions, ListValue } from '@/components/list/types';
 import { WebNovelRepo } from '@/repos';
 import {
   getWebRankListOptions,

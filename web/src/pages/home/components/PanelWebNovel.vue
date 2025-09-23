@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { WebNovelOutlineDto } from '@/model/WebNovel';
+import type { WebNovelOutlineDto } from '@/model/WebNovel';
 
 defineProps<{
   novels: WebNovelOutlineDto[] | undefined;

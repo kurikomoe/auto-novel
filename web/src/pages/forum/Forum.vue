@@ -2,7 +2,7 @@
 import { LockOutlined, PlusOutlined, PushPinOutlined } from '@vicons/material';
 
 import { ArticleRepo } from '@/repos';
-import { ArticleCategory, ArticleSimplified } from '@/model/Article';
+import type { ArticleCategory, ArticleSimplified } from '@/model/Article';
 import { doAction } from '@/pages/util';
 import { useBlacklistStore, useWhoamiStore } from '@/stores';
 

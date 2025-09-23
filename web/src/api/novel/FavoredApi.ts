@@ -1,6 +1,6 @@
-import { Page } from '@/model/Page';
-import { WebNovelOutlineDto } from '@/model/WebNovel';
-import { WenkuNovelOutlineDto } from '@/model/WenkuNovel';
+import type { Page } from '@/model/Page';
+import type { WebNovelOutlineDto } from '@/model/WebNovel';
+import type { WenkuNovelOutlineDto } from '@/model/WenkuNovel';
 import { client } from './client';
 
 export interface Favored {

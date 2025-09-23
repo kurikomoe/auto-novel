@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { OperationApi } from '@/api';
-import { Result, runCatching } from '@/util/result';
-import { OperationHistory, OperationType } from '@/model/Operation';
-import { Page } from '@/model/Page';
+import type { Result } from '@/util/result';
+import { runCatching } from '@/util/result';
+import type { OperationHistory, OperationType } from '@/model/Operation';
+import type { Page } from '@/model/Page';
 import { doAction } from '@/pages/util';
 
 const type = ref<OperationType>('web-edit');

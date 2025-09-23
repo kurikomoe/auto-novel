@@ -6,7 +6,7 @@ import {
   KeyboardDoubleArrowUpOutlined,
 } from '@vicons/material';
 
-import { TranslateJob } from '@/model/Translator';
+import type { TranslateJob } from '@/model/Translator';
 
 const props = defineProps<{
   job: TranslateJob;

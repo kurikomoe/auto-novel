@@ -1,4 +1,5 @@
-import { LocationQuery, createRouter, createWebHistory } from 'vue-router';
+import type { LocationQuery } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 
 const parseSelected = (q: LocationQuery) => {
   const selected = <number[]>[];

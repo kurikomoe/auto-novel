@@ -1,4 +1,4 @@
-import { LocalVolumeMetadata } from '@/model/LocalVolume';
+import type { LocalVolumeMetadata } from '@/model/LocalVolume';
 import { TranslateTaskDescriptor } from '@/model/Translator';
 import {
   useLocalVolumeStore,

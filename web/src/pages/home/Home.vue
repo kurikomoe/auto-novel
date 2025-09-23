@@ -10,7 +10,7 @@ import {
 import { FavoredApi } from '@/api';
 import { WebNovelRepo, WenkuNovelRepo } from '@/repos';
 import bannerUrl from '@/image/banner.webp';
-import { WebNovelOutlineDto } from '@/model/WebNovel';
+import type { WebNovelOutlineDto } from '@/model/WebNovel';
 import { useBreakPoints } from '@/pages/util';
 import { useWhoamiStore } from '@/stores';
 import { WebUtil } from '@/util/web';

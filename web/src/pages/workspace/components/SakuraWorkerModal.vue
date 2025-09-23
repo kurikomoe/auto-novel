@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { FormInst, FormItemRule, FormRules } from 'naive-ui';
+import type { FormInst, FormItemRule, FormRules } from 'naive-ui';
 
-import { SakuraWorker } from '@/model/Translator';
+import type { SakuraWorker } from '@/model/Translator';
 import { useSakuraWorkspaceStore } from '@/stores';
 
 const props = defineProps<{

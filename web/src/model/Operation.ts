@@ -1,5 +1,5 @@
-import { Glossary } from './Glossary';
-import { UserReference } from './User';
+import type { Glossary } from './Glossary';
+import type { UserReference } from './User';
 
 export type OperationType =
   | 'web-edit'

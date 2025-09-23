@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { FormInst, FormItemRule, FormRules } from 'naive-ui';
+import type { FormInst, FormItemRule, FormRules } from 'naive-ui';
 
-import { GptWorker } from '@/model/Translator';
+import type { GptWorker } from '@/model/Translator';
 import { useGptWorkspaceStore } from '@/stores';
 
 const props = defineProps<{

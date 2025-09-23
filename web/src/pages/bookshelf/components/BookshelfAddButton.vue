@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { PlusOutlined } from '@vicons/material';
-import { FormInst, FormItemRule, FormRules } from 'naive-ui';
+import type { FormInst, FormItemRule, FormRules } from 'naive-ui';
 
 import { doAction } from '@/pages/util';
 import { FavoredRepo } from '@/stores';

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { PlusOutlined } from '@vicons/material';
-import { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui';
+import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui';
 
 import { useBookshelfLocalStore } from '../BookshelfLocalStore';
 

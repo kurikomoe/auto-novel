@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { AdminRepo } from '@/repos';
 import { UserRole } from '@/model/User';
-import { getUserListOptions, UserListValue } from './option';
+import type { UserListValue } from './option';
+import { getUserListOptions } from './option';
 import { onUpdateListValue, onUpdatePage } from './option';
 
 const props = defineProps<{

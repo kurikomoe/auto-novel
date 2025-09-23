@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { SearchOutlined } from '@vicons/material';
-import { DropdownOption } from 'naive-ui';
+import type { DropdownOption } from 'naive-ui';
 
 import {
   useSettingStore,
@@ -10,7 +10,7 @@ import {
 import { RegexUtil } from '@/util';
 import CActionWrapper from '../CActionWrapper.vue';
 import SearchHistoryFooter from './SearchHistoryFooter.vue';
-import { ListTextOption } from './types';
+import type { ListTextOption } from './types';
 
 const value = defineModel<string>('value', { required: true });
 

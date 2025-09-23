@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { DeleteOutlineOutlined, PlusOutlined } from '@vicons/material';
-import { UploadCustomRequestOptions } from 'naive-ui';
+import type { UploadCustomRequestOptions } from 'naive-ui';
 
 import { useLocalVolumeStore } from '@/stores';
-import { ParsedFile, parseFile } from '@/util/file';
+import type { ParsedFile } from '@/util/file';
+import { parseFile } from '@/util/file';
 
 const message = useMessage();
 

@@ -1,7 +1,8 @@
 import { WebNovelApi } from '@/api';
 import { GenericNovelId } from '@/model/Common';
 import { useLocalVolumeStore } from '@/stores';
-import { Ok, Result, runCatching } from '@/util/result';
+import type { Result } from '@/util/result';
+import { Ok, runCatching } from '@/util/result';
 
 export interface ReaderChapter {
   titleJp: string;

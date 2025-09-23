@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { FileDownloadOutlined, MoreVertOutlined } from '@vicons/material';
 
-import { LocalVolumeMetadata } from '@/model/LocalVolume';
+import type { LocalVolumeMetadata } from '@/model/LocalVolume';
 import {
   BookshelfLocalUtil,
   useBookshelfLocalStore,

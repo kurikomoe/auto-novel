@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { TranslatorId } from '@/model/Translator';
+import type { TranslatorId } from '@/model/Translator';
 
 const props = defineProps<{
   value: TranslatorId[];

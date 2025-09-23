@@ -3,16 +3,17 @@ import { createReusableTemplate, onKeyDown } from '@vueuse/core';
 
 import { ReadHistoryApi } from '@/api';
 import { GenericNovelId } from '@/model/Common';
-import { TranslatorId } from '@/model/Translator';
+import type { TranslatorId } from '@/model/Translator';
 import { checkIsMobile, useIsWideScreen } from '@/pages/util';
 import {
   useLocalVolumeStore,
   useReaderSettingStore,
   useWhoamiStore,
 } from '@/stores';
-import { Result } from '@/util/result';
+import type { Result } from '@/util/result';
 import { WebUtil } from '@/util/web';
-import { ReaderChapter, useReaderStore } from './ReaderStore';
+import type { ReaderChapter } from './ReaderStore';
+import { useReaderStore } from './ReaderStore';
 
 const [DefineChapterLink, ReuseChapterLink] = createReusableTemplate<{
   label: string;

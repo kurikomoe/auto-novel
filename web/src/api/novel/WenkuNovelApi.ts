@@ -1,15 +1,14 @@
-import { Page } from '@/model/Page';
-import {
+import type { Page } from '@/model/Page';
+import type {
   TranslatorId,
   WenkuChapterTranslateTask,
   WenkuTranslateTask,
 } from '@/model/Translator';
-import {
+import type {
   WenkuNovelDto,
   WenkuNovelOutlineDto,
   WenkuVolumeDto,
 } from '@/model/WenkuNovel';
-
 import { client, uploadFile } from './client';
 
 const listNovel = ({

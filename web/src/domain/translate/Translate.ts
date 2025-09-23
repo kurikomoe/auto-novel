@@ -1,4 +1,4 @@
-import {
+import type {
   TranslateTaskCallback,
   TranslateTaskDesc,
   TranslateTaskParams,
@@ -7,7 +7,8 @@ import {
 import { translateLocal } from './TranslateLocal';
 import { translateWeb } from './TranslateWeb';
 import { translateWenku } from './TranslateWenku';
-import { Translator, TranslatorConfig } from './Translator';
+import type { TranslatorConfig } from './Translator';
+import { Translator } from './Translator';
 
 export const translate = async (
   taskDesc: TranslateTaskDesc,

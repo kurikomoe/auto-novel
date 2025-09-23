@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ScrollbarInst } from 'naive-ui';
+import type { ScrollbarInst } from 'naive-ui';
 
 const props = defineProps<{
   title: string;
