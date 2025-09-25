@@ -1,8 +1,8 @@
 # 轻小说机翻机器人
 
 [![GPL-3.0](https://img.shields.io/github/license/auto-novel/auto-novel)](https://github.com/auto-novel/auto-novel#license)
-[![CI-Server](https://github.com/auto-novel/auto-novel/workflows/CI-Server/badge.svg)](https://github.com/auto-novel/auto-novel/actions/workflows/CI-Server.yml)
-[![CI-Web](https://github.com/auto-novel/auto-novel/workflows/CI-Web/badge.svg)](https://github.com/auto-novel/auto-novel/actions/workflows/CI-Web.yml)
+[![cd-web](https://github.com/auto-novel/auto-novel/actions/workflows/cd-web.yml/badge.svg)](https://github.com/auto-novel/auto-novel/actions/workflows/cd-web.yml)
+[![cd-api](https://github.com/auto-novel/auto-novel/actions/workflows/cd-api.yml/badge.svg)](https://github.com/auto-novel/auto-novel/actions/workflows/cd-api.yml)
 
 > 重建巴别塔！！
 
