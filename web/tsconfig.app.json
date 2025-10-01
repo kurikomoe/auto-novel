@@ -3,7 +3,11 @@
     "target": "ES2015",
     "useDefineForClassFields": true,
     "module": "ES2020",
+<<<<<<< HEAD
     "moduleResolution": "Bundler",
+=======
+    "moduleResolution": "bundler",
+>>>>>>> 360d8c28 (WIP: auto-import via new_addon)
     "strict": true,
     "jsx": "preserve",
     "sourceMap": true,
@@ -15,7 +19,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "types": ["chrome"]
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
 }
