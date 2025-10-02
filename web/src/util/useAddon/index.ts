@@ -133,7 +133,7 @@ export interface Options {
 }
 
 export class AddonClient {
-  static addonID = 'nanejbmiefglbjfibnabpedojhhajdck';
+  static addonID = 'kenigjdcpndlkomhegjcepokcgikpdki';
   private comm: AddonCommunication;
 
   constructor() {
