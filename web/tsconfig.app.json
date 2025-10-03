@@ -10,7 +10,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,
-    "lib": ["DOM", "ES2021"],
+    "lib": ["DOM", "ES2021", "DOM.Iterable"],
     "skipLibCheck": true,
     "paths": {
       "@/*": ["./src/*"]
