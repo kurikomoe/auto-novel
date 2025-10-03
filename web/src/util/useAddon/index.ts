@@ -41,8 +41,8 @@ class AddonCommunication {
   }
 
   public async sendMessage<T>(msg: Message): Promise<T> {
-    console.log(msg);
     return new Promise((resolve, reject) => {
+      console.log(msg);
       chrome.runtime.sendMessage(
         this.addonID,
         msg,
@@ -61,10 +61,33 @@ class AddonCommunication {
     });
   }
 
-  public async http_raw_fetch(
+  public async job_new(url: string) {
+    const cmd = 'job.new';
+    type ParamType = Parameters<ClientMethods[typeof cmd]>[0];
+    const msg = this.buildCrawlerMessage<ParamType>(cmd, { url }, url);
+    return await this.sendMessage(msg);
+  }
+
+  public async job_quit() {
+    const cmd = 'job.quit';
+    type ParamType = Parameters<ClientMethods[typeof cmd]>[0];
+    const msg = this.buildCrawlerMessage<ParamType>(cmd, undefined, undefined);
+    return await this.sendMessage(msg);
+  }
+
+  public async dom_querySelectorAll(
+    selector: string,
+    url: string,
+  ): Promise<string> {
+    const cmd = 'dom.querySelectorAll';
+    type ParamType = Parameters<ClientMethods[typeof cmd]>[0];
+    const msg = this.buildCrawlerMessage<ParamType>(cmd, { selector }, url);
+    return await this.sendMessage(msg);
+  }
+
+  private rebuild_serializable_request(
     input: RequestInfo | URL,
-    requestInit?: RequestInit,
-  ): Promise<Response> {
+  ): [string, Request | string] {
     let url: string;
     if (input instanceof URL) {
       input = input.toString();
@@ -76,12 +99,41 @@ class AddonCommunication {
     } else {
       url = input.url;
     }
-    type ParamType = Parameters<ClientMethods['http.raw']>[0];
-    const serInput = await serializeRequest(input);
+    return [url, input];
+  }
+
+  public async http_fetch(
+    input: RequestInfo | URL,
+    requestInit?: RequestInit,
+  ): Promise<Response> {
+    const [url, _input] = this.rebuild_serializable_request(input);
+    const cmd = 'http.fetch';
+    type ParamType = Parameters<ClientMethods[typeof cmd]>[0];
+    const serInput =
+      typeof _input === 'string' ? _input : await serializeRequest(_input);
     const msg = this.buildCrawlerMessage<ParamType>(
-      'http.raw',
+      cmd,
       { input: serInput, requestInit },
       url,
+    );
+    const resp: SerializableResponse = await this.sendMessage(msg);
+    return this.wrapResponse(resp);
+  }
+
+  public async tab_http_fetch(
+    base_url: string,
+    input: RequestInfo | URL,
+    requestInit?: RequestInit,
+  ): Promise<Response> {
+    const [url, _input] = this.rebuild_serializable_request(input);
+    const cmd = 'tab.http.fetch';
+    type ParamType = Parameters<ClientMethods[typeof cmd]>[0];
+    const serInput =
+      typeof _input === 'string' ? _input : await serializeRequest(_input);
+    const msg = this.buildCrawlerMessage<ParamType>(
+      cmd,
+      { input: serInput, requestInit },
+      base_url,
     );
     const resp: SerializableResponse = await this.sendMessage(msg);
     return this.wrapResponse(resp);
@@ -92,14 +144,15 @@ class AddonCommunication {
     searchParams = {},
     headers = [],
   ): Promise<Response> {
-    type ParamType = Parameters<ClientMethods['http.get']>[0];
+    const cmd = 'http.get';
+    type ParamType = Parameters<ClientMethods[typeof cmd]>[0];
     const params: ParamType = {
       url,
       params: searchParams,
       headers,
     };
 
-    const msg = this.buildCrawlerMessage('http.get', params, url);
+    const msg = this.buildCrawlerMessage(cmd, params, url);
     const resp: SerializableResponse = await this.sendMessage(msg);
     return this.wrapResponse(resp);
   }
@@ -109,13 +162,10 @@ class AddonCommunication {
     data = {},
     headers = [],
   ): Promise<Response> {
-    type ParamType = Parameters<ClientMethods['http.postJson']>[0];
-    const params: ParamType = {
-      url,
-      data,
-      headers,
-    };
-    const msg = this.buildCrawlerMessage('http.postJson', params, url);
+    const cmd = 'http.postJson';
+    type ParamType = Parameters<ClientMethods[typeof cmd]>[0];
+    const params: ParamType = { url, data, headers };
+    const msg = this.buildCrawlerMessage(cmd, params, url);
     const resp: SerializableResponse = await this.sendMessage(msg);
     return this.wrapResponse(resp);
   }
@@ -133,6 +183,8 @@ export interface Options {
 }
 
 export class AddonClient {
+  // This is generated from manifest.json/key (aka public key)
+  // Please get the `private.pem` file from the AutoNovel group members
   static addonID = 'kenigjdcpndlkomhegjcepokcgikpdki';
   private comm: AddonCommunication;
 
@@ -141,9 +193,25 @@ export class AddonClient {
   }
 
   async fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
-    return await this.comm.http_raw_fetch(input, init);
+    return await this.comm.http_fetch(input, init);
   }
+
+  async tab_fetch(
+    base_url: string,
+    input: RequestInfo | URL,
+    init?: RequestInit,
+  ): Promise<Response> {
+    return await this.comm.tab_http_fetch(base_url, input, init);
+  }
+
+  async dom_querySelectorAll(selector: string, base_url: string) {}
 }
 
 export const addon = new AddonClient();
 export const ky = ky_orig.create({ fetch: addon.fetch.bind(addon) });
+export const ky_factory = (url: string) => {
+  const addon = new AddonClient();
+  return ky_orig.create({
+    fetch: (a, b) => addon.tab_fetch.bind(addon)(url, a, b),
+  });
+};
