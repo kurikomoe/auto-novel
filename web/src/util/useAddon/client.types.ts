@@ -37,12 +37,12 @@ export async function serializeRequest(
     method: request.method,
     headers,
     body: request.body ? await request.text() : undefined,
-    // mode: request.mode,
+    mode: request.mode,
     credentials: request.credentials,
     cache: request.cache,
-    // redirect: request.redirect,
-    referrer: request.url,
-    // integrity: request.integrity
+    redirect: request.redirect,
+    referrer: request.referrer,
+    integrity: request.integrity,
   };
   return req;
 }
@@ -60,7 +60,7 @@ export function deserializeRequest(req: SerializableRequest): RequestInfo {
     credentials: req.credentials,
     cache: req.cache,
     redirect: req.redirect,
-    referrer: req.url,
+    referrer: req.referrer,
     integrity: req.integrity,
   };
 
