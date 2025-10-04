@@ -78,12 +78,17 @@ class AddonCommunication {
     });
   }
 
-  public async bypass_toggle(enable: boolean, url: string) {
+  public async bypass_toggle(
+    enable: boolean,
+    url: string,
+    origin?: string,
+    referer?: string,
+  ) {
     const cmd = enable ? 'local.bypass.enable' : 'local.bypass.disable';
     type ParamType = Parameters<ClientMethods[typeof cmd]>[0];
     const msg = this.buildCrawlerMessage<ParamType>(
       cmd,
-      { url },
+      { url, origin, referer },
       'local',
       false,
     );
@@ -228,8 +233,8 @@ export class AddonClient {
     this.comm = new AddonCommunication(AddonClient.addonID);
   }
 
-  async bypass_enable(url: string) {
-    await this.comm.bypass_toggle(true, url);
+  async bypass_enable(url: string, origin: string, referer: string) {
+    await this.comm.bypass_toggle(true, url, origin, referer);
   }
 
   async bypass_disable(url: string) {
@@ -262,22 +267,24 @@ export const ky_tab_factory = (url: string) => {
   });
 };
 
-export const ky_spoof = ky_orig.create({
-  fetch: async (input, requestInit) => {
-    const { job_id } = await addon.comm.job_new('local');
-    let url;
-    if (typeof input === 'string') {
-      url = input;
-    } else if (input instanceof URL) {
-      url = input.toString();
-    } else {
-      url = input.url;
-    }
-    addon.comm.set_job_id(job_id);
-    await addon.bypass_enable(url);
-    const ret = await fetch(input, requestInit);
-    await addon.bypass_disable(url);
-    await addon.comm.job_quit();
-    return ret;
-  },
-});
+export const ky_spoof_factory = (base_url: string) =>
+  ky_orig.create({
+    fetch: async (input, requestInit) => {
+      const { job_id } = await addon.comm.job_new('local');
+      let url;
+      if (typeof input === 'string') {
+        url = input;
+      } else if (input instanceof URL) {
+        url = input.toString();
+      } else {
+        url = input.url;
+      }
+      addon.comm.set_job_id(job_id);
+      const origin = new URL(base_url).origin;
+      await addon.bypass_enable(url, origin, origin + '/');
+      const ret = await fetch(input, requestInit);
+      await addon.bypass_disable(url);
+      await addon.comm.job_quit();
+      return ret;
+    },
+  });

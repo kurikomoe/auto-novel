@@ -137,10 +137,19 @@ export type JobQuitResult = {
 // };
 // export type CtrlQuitResult = void;
 
+export type BypassEnableParams = {
+  url: string;
+  origin?: string;
+  referer?: string;
+};
+export type BypassEnableResult = void;
+
 export type ClientMethods = {
   'base.ping'(): Promise<string>;
 
-  'local.bypass.enable'(params: { url: string }): Promise<void>;
+  'local.bypass.enable'(
+    params: BypassEnableParams,
+  ): Promise<BypassEnableResult>;
   'local.bypass.disable'(params: { url: string }): Promise<void>;
 
   'http.fetch'(params: HttpFetchParams): Promise<HttpFetchResult>;

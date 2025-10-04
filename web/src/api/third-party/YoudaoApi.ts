@@ -3,7 +3,10 @@ import { Utf8 } from 'crypto-es/lib/core';
 import { MD5 } from 'crypto-es/lib/md5';
 import type { Options } from 'ky';
 // import ky from 'ky';
-import { ky_spoof as ky } from '@/util/useAddon';
+import { ky_tab_factory, ky_spoof_factory } from '@/util/useAddon';
+
+const ky = ky_spoof_factory('https://dict.youdao.com/');
+// const ky = ky_tab_factory('https://dict.youdao.com/');
 
 const getBaseBody = (key: string) => {
   const c = 'fanyideskweb';
