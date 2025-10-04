@@ -3,7 +3,7 @@ import { Utf8 } from 'crypto-es/lib/core';
 import { MD5 } from 'crypto-es/lib/md5';
 import type { Options } from 'ky';
 // import ky from 'ky';
-import { ky_factory } from '@/util/useAddon';
+import { ky as ky_fetch, ky_factory } from '@/util/useAddon';
 
 const ky = ky_factory('https://dict.youdao.com');
 
