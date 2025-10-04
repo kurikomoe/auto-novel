@@ -1,15 +1,19 @@
 import ky_orig from 'ky';
 import {
+  type JobNewResult,
   serializeRequest,
   type ClientMethods,
   type SerializableResponse,
 } from './client.types';
 import type { Message, MSG_CRAWLER, MSG_RESPONSE } from './msg';
 import { MSG_TYPE } from './msg';
+import { Result } from '../result';
 
 class AddonCommunication {
   idx: number;
   addonID: string;
+
+  job_id?: string;
 
   constructor(addonID: string) {
     this.addonID = addonID;
@@ -26,6 +30,13 @@ class AddonCommunication {
     return realResp;
   }
 
+  public set_job_id(job_id: string) {
+    this.job_id = job_id;
+  }
+  public clear_job_id() {
+    this.job_id = undefined;
+  }
+
   buildCrawlerMessage<P>(
     cmd: string,
     params: P,
@@ -35,7 +46,13 @@ class AddonCommunication {
     const msg: MSG_CRAWLER = {
       type: MSG_TYPE.CRAWLER_REQ,
       id: (this.idx++).toString(),
-      payload: { base_url, single, cmd, params },
+      payload: {
+        job_id: this.job_id ?? undefined,
+        base_url,
+        single,
+        cmd,
+        params,
+      },
     };
     return msg;
   }
@@ -61,18 +78,37 @@ class AddonCommunication {
     });
   }
 
-  public async job_new(url: string) {
+  public async bypass_toggle(enable: boolean, url: string) {
+    const cmd = enable ? 'local.bypass.enable' : 'local.bypass.disable';
+    type ParamType = Parameters<ClientMethods[typeof cmd]>[0];
+    const msg = this.buildCrawlerMessage<ParamType>(
+      cmd,
+      { url },
+      'local',
+      false,
+    );
+    return await this.sendMessage(msg);
+  }
+
+  public async job_new(url: string): Promise<JobNewResult> {
     const cmd = 'job.new';
     type ParamType = Parameters<ClientMethods[typeof cmd]>[0];
-    const msg = this.buildCrawlerMessage<ParamType>(cmd, { url }, url);
+    const msg = this.buildCrawlerMessage<ParamType>(cmd, undefined, url);
     return await this.sendMessage(msg);
   }
 
   public async job_quit() {
     const cmd = 'job.quit';
     type ParamType = Parameters<ClientMethods[typeof cmd]>[0];
-    const msg = this.buildCrawlerMessage<ParamType>(cmd, undefined, undefined);
-    return await this.sendMessage(msg);
+    const msg = this.buildCrawlerMessage<ParamType>(
+      cmd,
+      undefined,
+      undefined,
+      true,
+    );
+    const ret = await this.sendMessage(msg);
+    this.clear_job_id();
+    return ret;
   }
 
   public async dom_querySelectorAll(
@@ -186,10 +222,18 @@ export class AddonClient {
   // This is generated from manifest.json/key (aka public key)
   // Please get the `private.pem` file from the AutoNovel group members
   static addonID = 'kenigjdcpndlkomhegjcepokcgikpdki';
-  private comm: AddonCommunication;
+  public comm: AddonCommunication;
 
   constructor() {
     this.comm = new AddonCommunication(AddonClient.addonID);
+  }
+
+  async bypass_enable(url: string) {
+    await this.comm.bypass_toggle(true, url);
+  }
+
+  async bypass_disable(url: string) {
+    await this.comm.bypass_toggle(false, url);
   }
 
   async fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
@@ -208,10 +252,32 @@ export class AddonClient {
 }
 
 export const addon = new AddonClient();
+
 export const ky = ky_orig.create({ fetch: addon.fetch.bind(addon) });
-export const ky_factory = (url: string) => {
+
+export const ky_tab_factory = (url: string) => {
   const addon = new AddonClient();
   return ky_orig.create({
-    fetch: (a, b) => addon.tab_fetch.bind(addon)(url, a, b),
+    fetch: (...args) => addon.tab_fetch.bind(addon)(url, ...args),
   });
 };
+
+export const ky_spoof = ky_orig.create({
+  fetch: async (input, requestInit) => {
+    const { job_id } = await addon.comm.job_new('local');
+    let url;
+    if (typeof input === 'string') {
+      url = input;
+    } else if (input instanceof URL) {
+      url = input.toString();
+    } else {
+      url = input.url;
+    }
+    addon.comm.set_job_id(job_id);
+    await addon.bypass_enable(url);
+    const ret = await fetch(input, requestInit);
+    await addon.bypass_disable(url);
+    await addon.comm.job_quit();
+    return ret;
+  },
+});
