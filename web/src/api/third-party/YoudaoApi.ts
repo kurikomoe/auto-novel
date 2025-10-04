@@ -5,8 +5,8 @@ import type { Options } from 'ky';
 // import ky from 'ky';
 import { ky_tab_factory, ky_spoof_factory } from '@/util/useAddon';
 
-const ky = ky_spoof_factory('https://dict.youdao.com/');
-// const ky = ky_tab_factory('https://dict.youdao.com/');
+// const ky = ky_spoof_factory('https://dict.youdao.com/');
+const ky = ky_tab_factory('https://dict.youdao.com/');
 
 const getBaseBody = (key: string) => {
   const c = 'fanyideskweb';
