@@ -4,10 +4,10 @@ import {
   serializeRequest,
   type ClientMethods,
   type SerializableResponse,
+  Response2SerResp,
 } from './client.types';
 import type { Message, MSG_CRAWLER, MSG_RESPONSE } from './msg';
 import { MSG_TYPE } from './msg';
-import { Result } from '../result';
 
 class AddonCommunication {
   idx: number;
@@ -41,8 +41,11 @@ class AddonCommunication {
     cmd: string,
     params: P,
     base_url = '',
-    single = true,
+    single = true, // NOTE(kuriko): 调试时可以设置为 false 保留 tab 现场
   ): MSG_CRAWLER {
+    if (this.job_id) {
+      single = false;
+    }
     const msg: MSG_CRAWLER = {
       type: MSG_TYPE.CRAWLER_REQ,
       id: (this.idx++).toString(),
@@ -76,6 +79,31 @@ class AddonCommunication {
         },
       );
     });
+  }
+
+  public async cookies_get(url: string) {
+    const cmd = 'cookies.get';
+    type ParamType = Parameters<ClientMethods[typeof cmd]>[0];
+    const msg = this.buildCrawlerMessage<ParamType>(
+      cmd,
+      { url },
+      'local',
+      false,
+    );
+    return await this.sendMessage(msg);
+  }
+
+  public async cookies_refresh(response: Response) {
+    const serResp = await Response2SerResp(response);
+    const cmd = 'local.cookies.setFromResponse';
+    type ParamType = Parameters<ClientMethods[typeof cmd]>[0];
+    const msg = this.buildCrawlerMessage<ParamType>(
+      cmd,
+      { response: serResp },
+      'local',
+      false,
+    );
+    return await this.sendMessage(msg);
   }
 
   public async bypass_toggle(
@@ -282,9 +310,23 @@ export const ky_spoof_factory = (base_url: string) =>
       addon.comm.set_job_id(job_id);
       const origin = new URL(base_url).origin;
       await addon.bypass_enable(url, origin, origin + '/');
-      const ret = await fetch(input, requestInit);
+
+      // const cookies = await addon.comm.cookies_get(url) as chrome.cookies.Cookie[];
+      // const cookieStr = cookies.map((c) => `${c.name}=${c.value}`).join('; ');
+      // console.log(cookieStr);
+      // const headers = new Headers(requestInit?.headers || {});
+      // headers.set("Cookie", cookieStr);
+      // requestInit = {
+      //   ...requestInit,
+      //   headers: Object.fromEntries(headers.entries()),
+      // };
+      // console.log(input, requestInit)
+
+      const resp = await fetch(input, requestInit);
+      // await addon.comm.cookies_refresh(resp);
+
       await addon.bypass_disable(url);
       await addon.comm.job_quit();
-      return ret;
+      return resp;
     },
   });
