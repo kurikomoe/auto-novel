@@ -5,6 +5,7 @@ import {
   type ClientMethods,
   type SerializableResponse,
   Response2SerResp,
+  InfoResult,
 } from './client.types';
 import type { Message, MSG_CRAWLER, MSG_RESPONSE } from './msg';
 import { MSG_TYPE } from './msg';
@@ -238,6 +239,18 @@ class AddonCommunication {
     const resp: SerializableResponse = await this.sendMessage(msg);
     return this.wrapResponse(resp);
   }
+
+  public async ping(): Promise<string> {
+    const cmd = 'base.ping';
+    const msg = this.buildCrawlerMessage(cmd, undefined, 'local');
+    return await this.sendMessage(msg);
+  }
+
+  public async info(): Promise<InfoResult> {
+    const cmd = 'base.info';
+    const msg = this.buildCrawlerMessage(cmd, undefined, 'local');
+    return await this.sendMessage(msg);
+  }
 }
 
 export interface Options {
@@ -259,6 +272,14 @@ export class AddonClient {
 
   constructor() {
     this.comm = new AddonCommunication(AddonClient.addonID);
+  }
+
+  async ping(): Promise<string> {
+    return await this.comm.ping();
+  }
+
+  async info(): Promise<InfoResult> {
+    return await this.comm.info();
   }
 
   async bypass_enable(url: string, origin: string, referer: string) {
@@ -298,6 +319,7 @@ export const ky_tab_factory = (url: string) => {
 export const ky_spoof_factory = (base_url: string) =>
   ky_orig.create({
     fetch: async (input, requestInit) => {
+      console.log(await addon.info());
       const { job_id } = await addon.comm.job_new('local');
       let url;
       if (typeof input === 'string') {

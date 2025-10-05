@@ -1,5 +1,3 @@
-type Tab = chrome.tabs.Tab;
-
 export type SerializableResponse = {
   body: string;
   status: number;
@@ -88,6 +86,10 @@ export function deserializeRequest(req: SerializableRequest): RequestInfo {
   return new Request(req.url, init);
 }
 
+export type InfoResult = {
+  version: string;
+};
+
 export type HttpFetchParams = {
   input: SerializableRequest | string;
   requestInit?: RequestInit;
@@ -165,6 +167,7 @@ export type BypassEnableResult = void;
 
 export type ClientMethods = {
   'base.ping'(): Promise<string>;
+  'base.info'(): Promise<InfoResult>;
 
   'local.cookies.setFromResponse'(params: {
     response: SerializableResponse;
