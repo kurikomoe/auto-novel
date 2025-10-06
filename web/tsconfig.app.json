@@ -3,7 +3,7 @@
     "target": "ES2015",
     "useDefineForClassFields": true,
     "module": "ES2020",
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "strict": true,
     "jsx": "preserve",
     "sourceMap": true,
