@@ -7,6 +7,9 @@ settings:
 importers:
   .:
     dependencies:
+      '@braintree/browser-detection':
+        specifier: ^2.1.0
+        version: 2.1.0
       '@img-comparison-slider/vue':
         specifier: ^8.0.0
         version: 8.0.0
@@ -131,6 +134,9 @@ importers:
       '@types/chrome':
         specifier: ^0.1.16
         version: 0.1.16
+      '@types/firefox-webext-browser':
+        specifier: ^120.0.5
+        version: 120.0.5
       '@types/node':
         specifier: ^20.19.13
         version: 20.19.13
@@ -213,6 +219,12 @@ packages:
         integrity: sha512-bkFqkLhh3pMBUQQkpVgWDWq/lqzc2678eUyDlTBhRqhCHFguYYGM0Efga7tYk4TogG/3x0EEl66/OQ+WGbWB/Q==,
       }
     engines: { node: '>=6.9.0' }
+
+  '@braintree/browser-detection@2.1.0':
+    resolution:
+      {
+        integrity: sha512-TbWESQre3wXBC3uag8X8xdr0zfD+FuhgUiuRxp2nkJagHB+NgA40zDOI8McGKijYFG7HeeAzNHW1MhFdEE1Blg==,
+      }
 
   '@css-render/plugin-bem@0.15.14':
     resolution:
@@ -1191,6 +1203,12 @@ packages:
     resolution:
       {
         integrity: sha512-xFU8ZXTw4gd358lb2jw25nxY9QAgqn2+bKKjKOYfNCzN4DKCFetK7sPtrlpg66Ywe3vWY9FNxprZawAh9wfJ3g==,
+      }
+
+  '@types/firefox-webext-browser@120.0.5':
+    resolution:
+      {
+        integrity: sha512-imn8ecga0HQWcOSvxy9i0lD+7vpHgkj1NVLvXS1lNHqHt03Z4QwazeEdoWe+C9JXpmVyKiRanb+z9D/w001tRg==,
       }
 
   '@types/har-format@1.2.16':
@@ -2172,6 +2190,12 @@ packages:
         integrity: sha512-3UDv+G9CsCKO1WKMGw9fwq/SWJYbI0c5Y7LU1AXYoDdbhE2AHQ6N6Nb34sG8Fj7T5APy8qXDCKuuIHd1BR0tVA==,
       }
     engines: { node: '>=8' }
+
+  detectincognitojs@1.6.0:
+    resolution:
+      {
+        integrity: sha512-aOmVmzcPdm1Vovuc0ZHr5Vk86ZSMBUXyvTD2S4JRFZZzg0/gbW8FmM+jDFxKSaDwvlpgH3B103rnxJfAX2ZGqA==,
+      }
 
   diff@5.2.0:
     resolution:
@@ -4210,6 +4234,10 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.27.1
 
+  '@braintree/browser-detection@2.1.0':
+    dependencies:
+      detectincognitojs: 1.6.0
+
   '@css-render/plugin-bem@0.15.14(css-render@0.15.14)':
     dependencies:
       css-render: 0.15.14
@@ -4637,6 +4665,8 @@ snapshots:
       '@types/filewriter': 0.0.33
 
   '@types/filewriter@0.0.33': {}
+
+  '@types/firefox-webext-browser@120.0.5': {}
 
   '@types/har-format@1.2.16': {}
 
@@ -5274,6 +5304,8 @@ snapshots:
   destr@2.0.5: {}
 
   detect-libc@2.0.4: {}
+
+  detectincognitojs@1.6.0: {}
 
   diff@5.2.0: {}
 

@@ -21,6 +21,7 @@
   "devDependencies": {
     "@eslint/js": "^9.35.0",
     "@types/chrome": "^0.1.16",
+    "@types/firefox-webext-browser": "^120.0.5",
     "@types/node": "^20.19.13",
     "@vue/eslint-config-typescript": "^14.6.0",
     "eslint": "^9.35.0",
@@ -36,6 +37,7 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
+    "@braintree/browser-detection": "^2.1.0",
     "@img-comparison-slider/vue": "^8.0.0",
     "@mdit/plugin-container": "^0.16.0",
     "@mdit/plugin-spoiler": "^0.16.0",
