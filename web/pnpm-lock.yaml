@@ -62,8 +62,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       ky:
-        specifier: 1.7.5
-        version: 1.7.5
+        specifier: ^1.11.0
+        version: 1.11.0
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
@@ -2844,10 +2844,10 @@ packages:
         integrity: sha512-xYSH7AvuQ6nXkq42x0v5S8/Iry+cfulBz/DJQzhIyESdLD7425jXsPy4vn5cCXU+HhRN2kVw51Vd1K6/By4BQg==,
       }
 
-  ky@1.7.5:
+  ky@1.11.0:
     resolution:
       {
-        integrity: sha512-HzhziW6sc5m0pwi5M196+7cEBtbt0lCYi67wNsiwMUmz833wloE0gbzJPWKs1gliFKQb34huItDQX97LyOdPdA==,
+        integrity: sha512-NEyo0ICpS0cqSuyoJFMCnHOZJILqXsKhIZlHJGDYaH8OB5IFrGzuBpEwyoMZG6gUKMPrazH30Ax5XKaujvD8ag==,
       }
     engines: { node: '>=18' }
 
@@ -5597,7 +5597,7 @@ snapshots:
 
   knitwork@1.2.0: {}
 
-  ky@1.7.5: {}
+  ky@1.11.0: {}
 
   levn@0.4.1:
     dependencies:
