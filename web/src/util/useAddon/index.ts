@@ -43,7 +43,7 @@ class AddonCommunication {
     cmd: string,
     params: P,
     base_url = '',
-    single = true, // NOTE(kuriko): 调试时可以设置为 false 保留 tab 现场
+    single = false, // NOTE(kuriko): 调试时可以设置为 false 保留 tab 现场
   ): MSG_CRAWLER {
     if (this.job_id) {
       single = false;
