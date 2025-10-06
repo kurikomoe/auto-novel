@@ -29,7 +29,7 @@ const listOptions = getWenkuFavoredListOptions(
 const listValue = computed(
   () =>
     <WenkuFavoredListValue>{
-      排序: props.selected[4] ?? 0,
+      排序: props.selected[0] ?? 0,
     },
 );
 
