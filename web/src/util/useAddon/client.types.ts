@@ -163,7 +163,7 @@ export type BypassEnableParams = {
   origin?: string;
   referer?: string;
 };
-export type BypassEnableResult = void;
+export type BypassEnableResult = string;
 
 export type ClientMethods = {
   'base.ping'(): Promise<string>;
@@ -172,10 +172,11 @@ export type ClientMethods = {
   'local.cookies.setFromResponse'(params: {
     response: SerializableResponse;
   }): Promise<void>;
+
   'local.bypass.enable'(
     params: BypassEnableParams,
   ): Promise<BypassEnableResult>;
-  'local.bypass.disable'(params: { url: string }): Promise<void>;
+  'local.bypass.disable'(params: { id: string; url: string }): Promise<void>;
 
   'http.fetch'(params: HttpFetchParams): Promise<HttpFetchResult>;
   'http.get'(params: HttpGetParams): Promise<HttpGetResult>;
