@@ -23,7 +23,7 @@ export interface UserResponse {
 const listUser = (params: {
   page: number;
   pageSize: number;
-  username?: string;
+  q?: string;
   role?: UserRole;
   create_after?: number;
   create_before?: number;

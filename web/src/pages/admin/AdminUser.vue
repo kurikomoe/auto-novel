@@ -38,8 +38,10 @@ const { data: userPage, error } = AdminRepo.useUserList(
   pageSize,
   () => props.page,
   () => ({
-    username: listValue.value.搜索,
-    role: numberToRole(listValue.value.角色),
+    q: listValue.value.搜索,
+    ...(numberToRole(listValue.value.角色) !== undefined && {
+      role: numberToRole(listValue.value.角色),
+    }),
   }),
 );
 </script>
