@@ -138,6 +138,9 @@ onKeyDown(['ArrowLeft'], (e) => {
   if (e.altKey || e.ctrlKey || e.shiftKey || e.metaKey) {
     return;
   }
+  if (showSettingModal.value || showCatalogModal.value) {
+    return;
+  }
   if (chapterResult.value?.ok && chapterResult.value.value.prevId) {
     navToChapter(chapterResult.value.value.prevId);
     e.preventDefault();
@@ -145,6 +148,9 @@ onKeyDown(['ArrowLeft'], (e) => {
 });
 onKeyDown(['ArrowRight'], (e) => {
   if (e.altKey || e.ctrlKey || e.shiftKey || e.metaKey) {
+    return;
+  }
+  if (showSettingModal.value || showCatalogModal.value) {
     return;
   }
   if (chapterResult.value?.ok && chapterResult.value.value.nextId) {
@@ -155,6 +161,9 @@ onKeyDown(['ArrowRight'], (e) => {
 
 onKeyDown(['1', '2', '3', '4'], (e) => {
   if (e.altKey || e.ctrlKey || e.shiftKey || e.metaKey) {
+    return;
+  }
+  if (showSettingModal.value || showCatalogModal.value) {
     return;
   }
   const setting = readerSetting.value;
