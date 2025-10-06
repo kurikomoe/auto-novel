@@ -43,7 +43,7 @@ class AddonCommunication {
     cmd: string,
     params: P,
     base_url = '',
-    single = false, // NOTE(kuriko): 调试时可以设置为 false 保留 tab 现场
+    single = true, // NOTE(kuriko): 调试时可以设置为 false 保留 tab 现场
   ): MSG_CRAWLER {
     if (this.job_id) {
       single = false;
@@ -114,8 +114,8 @@ class AddonCommunication {
     });
   }
 
-  public async cookies_get(url: string) {
-    const cmd = 'cookies.get';
+  public async cookies_getStr(url: string): Promise<string> {
+    const cmd = 'cookies.getStr';
     type ParamType = Parameters<ClientMethods[typeof cmd]>[0];
     const msg = this.buildCrawlerMessage<ParamType>(
       cmd,
@@ -391,6 +391,12 @@ export const ky_spoof_factory = (base_url: string) =>
       const origin = new URL(base_url).origin;
       const id = await addon.bypass_enable(url, origin, origin + '/');
 
+      const headers = new Headers(requestInit?.headers || {});
+      // headers.set("credentials", "include");
+      requestInit = {
+        ...requestInit,
+        headers,
+      };
       const resp = await fetch(input, requestInit);
 
       await addon.bypass_disable(id, url);
