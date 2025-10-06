@@ -5,10 +5,11 @@ import {
   type ClientMethods,
   type SerializableResponse,
   Response2SerResp,
-  InfoResult,
+  type InfoResult,
 } from './client.types';
 import type { Message, MSG_CRAWLER, MSG_RESPONSE } from './msg';
 import { MSG_TYPE } from './msg';
+import * as browserDetection from '@braintree/browser-detection';
 
 class AddonCommunication {
   idx: number;
@@ -61,24 +62,55 @@ class AddonCommunication {
     return msg;
   }
 
+  public async sendMessageFirefox<T>(msg: Message): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      const listener = (event: MessageEvent) => {
+        if (event.source !== window) {
+          return;
+        }
+
+        if (event.data?.type !== MSG_TYPE.RESPONSE) return;
+
+        const resp: MSG_RESPONSE = event.data;
+        if (resp.id != msg.id) return;
+
+        window.removeEventListener('message', listener);
+        if (resp.payload.success) {
+          return resolve(resp.payload.result);
+        } else {
+          console.error('Error from addon:', resp.payload);
+          return reject(resp.payload.error);
+        }
+      };
+      window.postMessage(msg, '*');
+      window.addEventListener('message', listener);
+    });
+  }
+
   public async sendMessage<T>(msg: Message): Promise<T> {
-    return new Promise((resolve, reject) => {
-      console.log(msg);
-      chrome.runtime.sendMessage(
-        this.addonID,
-        msg,
-        (response: MSG_RESPONSE) => {
-          if (chrome.runtime.lastError) {
-            console.error(
-              'Error sending message to addon:',
-              chrome.runtime.lastError,
-            );
-            reject(chrome.runtime.lastError);
-          }
-          console.log(response);
-          resolve(response.payload.result);
-        },
-      );
+    return new Promise(async (resolve, reject) => {
+      console.log(this.addonID, msg);
+      if (browserDetection.isChrome()) {
+        chrome.runtime.sendMessage(
+          this.addonID,
+          msg,
+          (response: MSG_RESPONSE) => {
+            if (chrome.runtime.lastError) {
+              console.error(
+                'Error sending message to addon:',
+                chrome.runtime.lastError,
+              );
+              reject(chrome.runtime.lastError);
+            }
+            console.log(response);
+            resolve(response.payload.result);
+          },
+        );
+      } else {
+        return await this.sendMessageFirefox<T>(msg)
+          .then((resp) => resolve(resp))
+          .catch((err) => reject(err));
+      }
     });
   }
 
@@ -265,9 +297,21 @@ export interface Options {
 }
 
 export class AddonClient {
-  // This is generated from manifest.json/key (aka public key)
-  // Please get the `private.pem` file from the AutoNovel group members
-  static addonID = 'kenigjdcpndlkomhegjcepokcgikpdki';
+  static addonID = (() => {
+    // FIXME(kuriko): Please test in other browsers, especially mobile browsers
+    if (browserDetection.isChrome() || browserDetection.isEdge()) {
+      // This is generated from manifest.json/key (aka public key)
+      // Please get the `private.pem` file from the AutoNovel group members
+      console.log('Detected Chrome, using Chrome addon ID');
+      return 'kenigjdcpndlkomhegjcepokcgikpdki';
+    } else if (browserDetection.isFirefox()) {
+      console.log('Detected Firefox, using Firefox addon ID');
+      return 'addon@n.novelia.cc';
+    } else {
+      return '';
+    }
+  })();
+
   public comm: AddonCommunication;
 
   constructor() {
@@ -302,7 +346,9 @@ export class AddonClient {
     return await this.comm.tab_http_fetch(base_url, input, init);
   }
 
-  async dom_querySelectorAll(selector: string, base_url: string) {}
+  async dom_querySelectorAll(selector: string, base_url: string) {
+    return await this.comm.dom_querySelectorAll(selector, base_url);
+  }
 }
 
 export const addon = new AddonClient();
