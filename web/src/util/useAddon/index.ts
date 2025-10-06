@@ -141,15 +141,19 @@ class AddonCommunication {
 
   public async bypass_toggle(
     enable: boolean,
-    url: string,
-    origin?: string,
-    referer?: string,
-  ) {
+    params: {
+      id?: string;
+      url: string;
+      origin?: string;
+      referer?: string;
+    },
+  ): Promise<string | null> {
+    const { id, url, origin, referer } = params;
     const cmd = enable ? 'local.bypass.enable' : 'local.bypass.disable';
     type ParamType = Parameters<ClientMethods[typeof cmd]>[0];
     const msg = this.buildCrawlerMessage<ParamType>(
       cmd,
-      { url, origin, referer },
+      { id, url, origin, referer },
       'local',
       false,
     );
@@ -326,12 +330,20 @@ export class AddonClient {
     return await this.comm.info();
   }
 
-  async bypass_enable(url: string, origin: string, referer: string) {
-    await this.comm.bypass_toggle(true, url, origin, referer);
+  async bypass_enable(
+    url: string,
+    origin: string,
+    referer: string,
+  ): Promise<string> {
+    const id = await this.comm.bypass_toggle(true, { url, origin, referer });
+    if (!id) {
+      console.error('Bypass enabled without id');
+    }
+    return id ?? '';
   }
 
-  async bypass_disable(url: string) {
-    await this.comm.bypass_toggle(false, url);
+  async bypass_disable(id: string, url: string) {
+    await this.comm.bypass_toggle(false, { id, url });
   }
 
   async fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
@@ -377,23 +389,11 @@ export const ky_spoof_factory = (base_url: string) =>
       }
       addon.comm.set_job_id(job_id);
       const origin = new URL(base_url).origin;
-      await addon.bypass_enable(url, origin, origin + '/');
-
-      // const cookies = await addon.comm.cookies_get(url) as chrome.cookies.Cookie[];
-      // const cookieStr = cookies.map((c) => `${c.name}=${c.value}`).join('; ');
-      // console.log(cookieStr);
-      // const headers = new Headers(requestInit?.headers || {});
-      // headers.set("Cookie", cookieStr);
-      // requestInit = {
-      //   ...requestInit,
-      //   headers: Object.fromEntries(headers.entries()),
-      // };
-      // console.log(input, requestInit)
+      const id = await addon.bypass_enable(url, origin, origin + '/');
 
       const resp = await fetch(input, requestInit);
-      // await addon.comm.cookies_refresh(resp);
 
-      await addon.bypass_disable(url);
+      await addon.bypass_disable(id, url);
       await addon.comm.job_quit();
       return resp;
     },
