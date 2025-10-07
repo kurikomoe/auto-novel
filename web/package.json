@@ -37,7 +37,6 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
-    "@braintree/browser-detection": "^2.1.0",
     "@img-comparison-slider/vue": "^8.0.0",
     "@mdit/plugin-container": "^0.16.0",
     "@mdit/plugin-spoiler": "^0.16.0",
@@ -52,6 +51,7 @@
     "@vue/tsconfig": "^0.8.1",
     "@vueuse/core": "^10.11.1",
     "@zip.js/zip.js": "^2.7.73",
+    "bowser": "^2.12.1",
     "crypto-es": "^2.1.0",
     "diff": "^5.2.0",
     "idb": "^8.0.3",

@@ -7,9 +7,6 @@ settings:
 importers:
   .:
     dependencies:
-      '@braintree/browser-detection':
-        specifier: ^2.1.0
-        version: 2.1.0
       '@img-comparison-slider/vue':
         specifier: ^8.0.0
         version: 8.0.0
@@ -52,6 +49,9 @@ importers:
       '@zip.js/zip.js':
         specifier: ^2.7.73
         version: 2.7.73
+      bowser:
+        specifier: ^2.12.1
+        version: 2.12.1
       crypto-es:
         specifier: ^2.1.0
         version: 2.1.0
@@ -219,12 +219,6 @@ packages:
         integrity: sha512-bkFqkLhh3pMBUQQkpVgWDWq/lqzc2678eUyDlTBhRqhCHFguYYGM0Efga7tYk4TogG/3x0EEl66/OQ+WGbWB/Q==,
       }
     engines: { node: '>=6.9.0' }
-
-  '@braintree/browser-detection@2.1.0':
-    resolution:
-      {
-        integrity: sha512-TbWESQre3wXBC3uag8X8xdr0zfD+FuhgUiuRxp2nkJagHB+NgA40zDOI8McGKijYFG7HeeAzNHW1MhFdEE1Blg==,
-      }
 
   '@css-render/plugin-bem@0.15.14':
     resolution:
@@ -1765,6 +1759,12 @@ packages:
         integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==,
       }
 
+  bowser@2.12.1:
+    resolution:
+      {
+        integrity: sha512-z4rE2Gxh7tvshQ4hluIT7XcFrgLIQaw9X3A+kTTRdovCz5PMukm/0QC/BKSYPj3omF5Qfypn9O/c5kgpmvYUCw==,
+      }
+
   brace-expansion@1.1.12:
     resolution:
       {
@@ -2190,12 +2190,6 @@ packages:
         integrity: sha512-3UDv+G9CsCKO1WKMGw9fwq/SWJYbI0c5Y7LU1AXYoDdbhE2AHQ6N6Nb34sG8Fj7T5APy8qXDCKuuIHd1BR0tVA==,
       }
     engines: { node: '>=8' }
-
-  detectincognitojs@1.6.0:
-    resolution:
-      {
-        integrity: sha512-aOmVmzcPdm1Vovuc0ZHr5Vk86ZSMBUXyvTD2S4JRFZZzg0/gbW8FmM+jDFxKSaDwvlpgH3B103rnxJfAX2ZGqA==,
-      }
 
   diff@5.2.0:
     resolution:
@@ -4234,10 +4228,6 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.27.1
 
-  '@braintree/browser-detection@2.1.0':
-    dependencies:
-      detectincognitojs: 1.6.0
-
   '@css-render/plugin-bem@0.15.14(css-render@0.15.14)':
     dependencies:
       css-render: 0.15.14
@@ -5073,6 +5063,8 @@ snapshots:
 
   boolbase@1.0.0: {}
 
+  bowser@2.12.1: {}
+
   brace-expansion@1.1.12:
     dependencies:
       balanced-match: 1.0.2
@@ -5304,8 +5296,6 @@ snapshots:
   destr@2.0.5: {}
 
   detect-libc@2.0.4: {}
-
-  detectincognitojs@1.6.0: {}
 
   diff@5.2.0: {}
 
