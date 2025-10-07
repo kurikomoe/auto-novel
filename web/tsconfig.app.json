@@ -3,18 +3,14 @@
     "target": "ES2015",
     "useDefineForClassFields": true,
     "module": "ES2020",
-<<<<<<< HEAD
     "moduleResolution": "Bundler",
-=======
-    "moduleResolution": "bundler",
->>>>>>> 360d8c28 (WIP: auto-import via new_addon)
     "strict": true,
     "jsx": "preserve",
     "sourceMap": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,
-    "lib": ["DOM", "ES2021", "DOM.Iterable"],
+    "lib": ["DOM", "ES2021"],
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
