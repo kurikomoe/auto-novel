@@ -1,13 +1,12 @@
 import Bowser from 'bowser';
 
-import {
-  Response2SerResp,
-  serializeRequest,
-  type ClientMethods,
-  type InfoResult,
-  type JobNewResult,
-  type SerializableResponse,
-} from './client.types';
+import type {
+  SerializableRequest,
+  ClientMethods,
+  InfoResult,
+  JobNewResult,
+  SerializableResponse,
+} from './types';
 import type { Message, MSG_CRAWLER, MSG_RESPONSE } from './msg';
 import { MSG_TYPE } from './msg';
 
@@ -73,6 +72,71 @@ function createAddon() {
 let msgId = 1;
 
 const addon = createAddon();
+
+async function Response2SerResp(
+  response: Response,
+): Promise<SerializableResponse> {
+  const headers: [string, string][] = Array.from(response.headers.entries());
+  const bodyText = await response.text();
+
+  const serializableResponse = {
+    body: bodyText,
+    status: response.status,
+    statusText: response.statusText,
+    ok: response.ok,
+    headers: headers,
+    redirected: response.redirected,
+    url: response.url,
+    type: response.type,
+  };
+  return serializableResponse;
+}
+
+export async function serializeRequest(
+  request: RequestInfo,
+): Promise<SerializableRequest | string> {
+  if (typeof request === 'string') {
+    return request;
+  }
+
+  const headers: [string, string][] = Array.from(request.headers.entries());
+  console.log('serializeRequest: ', headers);
+
+  const req: SerializableRequest = {
+    url: request.url,
+    method: request.method,
+    headers,
+    body: request.body ? await request.text() : undefined,
+    mode: request.mode,
+    credentials: request.credentials,
+    cache: request.cache,
+    redirect: request.redirect,
+    referrer: request.referrer,
+    integrity: request.integrity,
+  };
+  return req;
+}
+
+export function deserializeRequest(req: SerializableRequest): RequestInfo {
+  if (typeof req === 'string') {
+    return req;
+  }
+
+  console.log('deserializeRequest: ', req);
+  const init: RequestInit = {
+    method: req.method,
+    headers: new Headers(req.headers),
+    body: req.body,
+    mode: req.mode,
+    credentials: req.credentials,
+    cache: req.cache,
+    redirect: req.redirect,
+    referrer: req.referrer,
+    integrity: req.integrity,
+  };
+
+  return new Request(req.url, init);
+}
 
 export class AddonClient {
   jobId: string | undefined;
