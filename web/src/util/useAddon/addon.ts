@@ -1,19 +1,19 @@
 import Bowser from 'bowser';
 
+import type { Message, MessageRequest, MessageResponse } from './msg';
+import { MessageRequestType, MessageResponseType } from './msg';
 import type {
-  SerializableRequest,
   ClientMethods,
   InfoResult,
   JobNewResult,
+  SerializableRequest,
   SerializableResponse,
 } from './types';
-import type { Message, MSG_CRAWLER, MSG_RESPONSE } from './msg';
-import { MSG_TYPE } from './msg';
 
 async function sendMessageChrome<T>(msg: Message): Promise<T> {
   const addonId = 'kenigjdcpndlkomhegjcepokcgikpdki';
   return new Promise(async (resolve, reject) => {
-    chrome.runtime.sendMessage(addonId, msg, (response: MSG_RESPONSE) => {
+    chrome.runtime.sendMessage(addonId, msg, (response: MessageResponse) => {
       if (chrome.runtime.lastError) {
         console.error(
           'Error sending message to addon:',
@@ -35,9 +35,9 @@ async function sendMessageFirefox<T>(msg: Message): Promise<T> {
         return;
       }
 
-      if (event.data?.type !== MSG_TYPE.RESPONSE) return;
+      if (event.data?.type !== MessageResponseType) return;
 
-      const resp: MSG_RESPONSE = event.data;
+      const resp: MessageResponse = event.data;
       if (resp.id != msg.id) return;
 
       window.removeEventListener('message', listener);
@@ -163,12 +163,12 @@ export class AddonClient {
     params: P,
     base_url = '',
     single = true, // NOTE(kuriko): 调试时可以设置为 false 保留 tab 现场
-  ): MSG_CRAWLER {
+  ): MessageRequest {
     if (this.jobId) {
       single = false;
     }
-    const msg: MSG_CRAWLER = {
-      type: MSG_TYPE.CRAWLER_REQ,
+    const msg: MessageRequest = {
+      type: MessageRequestType,
       id: (msgId++).toString(),
       payload: {
         job_id: this.jobId,

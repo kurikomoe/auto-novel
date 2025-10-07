@@ -1,27 +1,29 @@
-import type { ClientMethods } from '@rpc/client/client.types';
+export const MessagePingType = 'AUTO_NOVEL_CRAWLER_PING';
+export const MessageRequestType = 'AUTO_NOVEL_CRAWLER_REQUEST';
+export const MessageResponseType = 'AUTO_NOVEL_CRAWLER_RESPONSE';
 
-export enum MSG_TYPE {
-  CRAWLER_REQ = 'AUTO_NOVEL_CRAWLER_REQUEST',
-  RESPONSE = 'AUTO_NOVEL_CRAWLER_RESPONSE',
-  PING = 'AUTO_NOVEL_CRAWLER_PING',
-}
-
-interface BaseMessage {
-  type: MSG_TYPE;
+export interface MessagePing {
+  type: typeof MessagePingType;
   id?: string;
 }
 
-export interface MSG_PING extends BaseMessage {
-  type: MSG_TYPE.PING;
+export type RequestPayload = {
+  base_url: string;
+  single?: boolean; // auto call close() after command
+  job_id?: string;
+  cmd: string;
+  params?: any;
+};
+
+export interface MessageRequest {
+  type: typeof MessageRequestType;
+  id?: string;
+  payload: RequestPayload;
 }
 
-export interface MSG_CRAWLER extends BaseMessage {
-  type: MSG_TYPE.CRAWLER_REQ;
-  payload: AutoNovelCrawlerCommand;
-}
-
-export interface MSG_RESPONSE extends BaseMessage {
-  type: MSG_TYPE.RESPONSE;
+export interface MessageResponse {
+  type: typeof MessageResponseType;
+  id?: string;
   payload: ResponsePayload;
 }
 
@@ -31,12 +33,4 @@ export type ResponsePayload = {
   error?: string;
 };
 
-export type Message = MSG_PING | MSG_CRAWLER | MSG_RESPONSE;
-
-export type AutoNovelCrawlerCommand = {
-  base_url: string;
-  single?: boolean; // auto call close() after command
-  job_id?: string;
-  cmd: keyof ClientMethods;
-  params?: any;
-};
+export type Message = MessagePing | MessageRequest | MessageResponse;
