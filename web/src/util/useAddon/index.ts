@@ -1,54 +1,48 @@
-import ky_orig from 'ky';
 import { AddonClient } from './addon';
 
-export interface Options {
-  prefixUrl: string;
-  headers: {
-    Accept: string;
-    Authorization: string;
-    'Content-Type': string;
-  };
-  timeout: number;
-  retry: number;
-}
+export const Addon = {
+  fetch(input: string | URL | Request, init?: RequestInit): Promise<Response> {
+    const addon = new AddonClient();
+    return addon.http_fetch(input, init);
+  },
 
-export const addon = new AddonClient();
+  tabFetch(
+    tabUrl: string,
+    input: string | URL | Request,
+    init?: RequestInit,
+  ): Promise<Response> {
+    const addon = new AddonClient();
+    return addon.tab_http_fetch(tabUrl, input, init);
+  },
 
-export const ky = ky_orig.create({ fetch: addon.http_fetch.bind(addon) });
+  async spoofFetch(
+    baseUrl: string,
+    input: string | URL | Request,
+    init?: RequestInit,
+  ): Promise<Response> {
+    const addon = await AddonClient.createWithJobId();
+    console.log(await addon.info());
+    let url;
+    if (typeof input === 'string') {
+      url = input;
+    } else if (input instanceof URL) {
+      url = input.toString();
+    } else {
+      url = input.url;
+    }
+    const origin = new URL(baseUrl).origin;
+    const id = await addon.bypass_enable(url, origin, origin + '/');
 
-export const ky_tab_factory = (url: string) => {
-  const addon = new AddonClient();
-  return ky_orig.create({
-    fetch: (...args) => addon.tab_http_fetch.bind(addon)(url, ...args),
-  });
+    const headers = new Headers(init?.headers || {});
+    // headers.set("credentials", "include");
+    init = {
+      ...init,
+      headers,
+    };
+    const resp = await fetch(input, init);
+
+    await addon.bypass_disable(id, url);
+    await addon.job_quit();
+    return resp;
+  },
 };
-
-export const ky_spoof_factory = (base_url: string) =>
-  ky_orig.create({
-    fetch: async (input, requestInit) => {
-      const addon = await AddonClient.createWithJobId();
-      console.log(await addon.info());
-      let url;
-      if (typeof input === 'string') {
-        url = input;
-      } else if (input instanceof URL) {
-        url = input.toString();
-      } else {
-        url = input.url;
-      }
-      const origin = new URL(base_url).origin;
-      const id = await addon.bypass_enable(url, origin, origin + '/');
-
-      const headers = new Headers(requestInit?.headers || {});
-      // headers.set("credentials", "include");
-      requestInit = {
-        ...requestInit,
-        headers,
-      };
-      const resp = await fetch(input, requestInit);
-
-      await addon.bypass_disable(id, url);
-      await addon.job_quit();
-      return resp;
-    },
-  });

@@ -1,11 +1,7 @@
+import ky from 'ky';
 import type { Options } from 'ky';
-// import ky from 'ky';
-// import { ky } from '@/util/useAddon';
-import { ky as ky2, ky_tab_factory, ky_spoof_factory } from '@/util/useAddon';
 
-const ky = ky2;
-// const ky = ky_tab_factory('https://www.amazon.co.jp/');
-// const ky = ky_spoof_factory('https://www.amazon.co.jp/');
+import { Addon } from '@/util/useAddon';
 
 const getHtml = async (url: string, options?: Options) => {
   const response = await ky.get(url, {
@@ -13,6 +9,9 @@ const getHtml = async (url: string, options?: Options) => {
     redirect: 'manual',
     credentials: 'include',
     retry: 0,
+    fetch: Addon.fetch,
+    // fetch: Addon.tabFetch.bind(Addon, 'https://www.amazon.co.jp/'),
+    // fetch: Addon.spoofFetch.bind(Addon, 'https://www.amazon.co.jp/'),
     ...options,
   });
 

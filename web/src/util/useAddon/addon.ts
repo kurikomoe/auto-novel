@@ -53,7 +53,7 @@ async function sendMessageFirefox<T>(msg: Message): Promise<T> {
   });
 }
 
-function createAddon() {
+function createAddonApi() {
   const bowser = Bowser.getParser(window.navigator.userAgent);
   const browser = bowser.getBrowserName(true);
 
@@ -71,7 +71,7 @@ function createAddon() {
 
 let msgId = 1;
 
-const addon = createAddon();
+const api = createAddonApi();
 
 async function Response2SerResp(
   response: Response,
@@ -190,7 +190,7 @@ export class AddonClient {
       'local',
       false,
     );
-    return await addon.sendMessage(msg);
+    return await api.sendMessage(msg);
   }
 
   async cookies_refresh(response: Response) {
@@ -203,7 +203,7 @@ export class AddonClient {
       'local',
       false,
     );
-    return await addon.sendMessage(msg);
+    return await api.sendMessage(msg);
   }
 
   async bypass_toggle(
@@ -224,14 +224,14 @@ export class AddonClient {
       'local',
       false,
     );
-    return await addon.sendMessage(msg);
+    return await api.sendMessage(msg);
   }
 
   async job_new(url: string): Promise<JobNewResult> {
     const cmd = 'job.new';
     type ParamType = Parameters<ClientMethods[typeof cmd]>[0];
     const msg = this.buildCrawlerMessage<ParamType>(cmd, undefined, url);
-    return await addon.sendMessage(msg);
+    return await api.sendMessage(msg);
   }
 
   async job_quit() {
@@ -243,7 +243,7 @@ export class AddonClient {
       undefined,
       true,
     );
-    const ret = await addon.sendMessage(msg);
+    const ret = await api.sendMessage(msg);
     this.jobId = undefined;
     return ret;
   }
@@ -252,7 +252,7 @@ export class AddonClient {
     const cmd = 'dom.querySelectorAll';
     type ParamType = Parameters<ClientMethods[typeof cmd]>[0];
     const msg = this.buildCrawlerMessage<ParamType>(cmd, { selector }, url);
-    return await addon.sendMessage(msg);
+    return await api.sendMessage(msg);
   }
 
   private rebuild_serializable_request(
@@ -286,7 +286,7 @@ export class AddonClient {
       { input: serInput, requestInit },
       url,
     );
-    const resp: SerializableResponse = await addon.sendMessage(msg);
+    const resp: SerializableResponse = await api.sendMessage(msg);
     return this.wrapResponse(resp);
   }
 
@@ -305,7 +305,7 @@ export class AddonClient {
       { input: serInput, requestInit },
       base_url,
     );
-    const resp: SerializableResponse = await addon.sendMessage(msg);
+    const resp: SerializableResponse = await api.sendMessage(msg);
     return this.wrapResponse(resp);
   }
 
@@ -323,7 +323,7 @@ export class AddonClient {
     };
 
     const msg = this.buildCrawlerMessage(cmd, params, url);
-    const resp: SerializableResponse = await addon.sendMessage(msg);
+    const resp: SerializableResponse = await api.sendMessage(msg);
     return this.wrapResponse(resp);
   }
 
@@ -332,20 +332,20 @@ export class AddonClient {
     type ParamType = Parameters<ClientMethods[typeof cmd]>[0];
     const params: ParamType = { url, data, headers };
     const msg = this.buildCrawlerMessage(cmd, params, url);
-    const resp: SerializableResponse = await addon.sendMessage(msg);
+    const resp: SerializableResponse = await api.sendMessage(msg);
     return this.wrapResponse(resp);
   }
 
   async ping(): Promise<string> {
     const cmd = 'base.ping';
     const msg = this.buildCrawlerMessage(cmd, undefined, 'local');
-    return await addon.sendMessage(msg);
+    return await api.sendMessage(msg);
   }
 
   async info(): Promise<InfoResult> {
     const cmd = 'base.info';
     const msg = this.buildCrawlerMessage(cmd, undefined, 'local');
-    return await addon.sendMessage(msg);
+    return await api.sendMessage(msg);
   }
 
   async bypass_enable(
