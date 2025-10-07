@@ -2,12 +2,14 @@ import { AES } from 'crypto-es/lib/aes';
 import { Utf8 } from 'crypto-es/lib/core';
 import { MD5 } from 'crypto-es/lib/md5';
 import type { Options } from 'ky';
-// import ky from 'ky';
-import { ky as ky2, ky_tab_factory, ky_spoof_factory } from '@/util/useAddon';
+import ky from 'ky';
 
-// const ky = ky2;
-// const ky = ky_spoof_factory('https://dict.youdao.com/');
-const ky = ky_tab_factory('https://dict.youdao.com/');
+import { Addon } from '@/util/useAddon';
+
+const client = ky.create({
+  fetch: Addon.tabFetch.bind(Addon, 'https://dict.youdao.com/'),
+  // fetch: Addon.spoofFetch.bind(Addon, 'https://dict.youdao.com/'),
+});
 
 const getBaseBody = (key: string) => {
   const c = 'fanyideskweb';
@@ -47,7 +49,7 @@ const decode = (src: string) => {
 let key = 'fsdsogkndfokasodnaso';
 
 const rlog = () =>
-  ky.get('https://rlogs.youdao.com/rlog.php', {
+  client.get('https://rlogs.youdao.com/rlog.php', {
     searchParams: {
       _npid: 'fanyiweb',
       _ncat: 'pageview',
@@ -61,7 +63,7 @@ const rlog = () =>
   });
 
 const refreshKey = () =>
-  ky
+  client
     .get('https://dict.youdao.com/webtranslate/key', {
       searchParams: {
         keyid: 'webfanyi-key-getter',
@@ -75,7 +77,7 @@ const refreshKey = () =>
     .then((json: any) => (key = json['data']['secretKey']));
 
 const webtranslate = (query: string, from: string, options?: Options) =>
-  ky
+  client
     .post('https://dict.youdao.com/webtranslate', {
       body: new URLSearchParams({
         i: query,
