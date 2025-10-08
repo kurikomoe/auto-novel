@@ -199,3 +199,5 @@ export type ClientMethods = {
   'job.new'(params: JobNewParams): Promise<JobNewResult>;
   'job.quit'(params: JobQuitParams): Promise<JobQuitResult>;
 };
+
+export type ClientCmd = keyof ClientMethods;

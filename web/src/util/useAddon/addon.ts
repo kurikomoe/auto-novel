@@ -2,14 +2,14 @@ import Bowser from 'bowser';
 
 import type { Message, MessageRequest, MessageResponse } from './msg';
 import { MessageRequestType, MessageResponseType } from './msg';
-import {
-  serializeResponse,
-  serializeRequest,
-  type ClientMethods,
-  type InfoResult,
-  type JobNewResult,
-  type SerializableResponse,
+import type {
+  ClientCmd,
+  ClientMethods,
+  InfoResult,
+  JobNewResult,
+  SerializableResponse,
 } from './types';
+import { serializeRequest, serializeResponse } from './types';
 
 async function sendMessageChrome<T>(msg: Message): Promise<T> {
   const addonId = 'kenigjdcpndlkomhegjcepokcgikpdki';
@@ -95,7 +95,7 @@ export class AddonClient {
   }
 
   buildCrawlerMessage<P>(
-    cmd: string,
+    cmd: ClientCmd,
     params: P,
     base_url = '',
     single = true, // NOTE(kuriko): 调试时可以设置为 false 保留 tab 现场
