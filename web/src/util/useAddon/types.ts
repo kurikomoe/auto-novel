@@ -23,7 +23,7 @@ export interface SerializableRequest {
   integrity?: string;
 }
 
-export async function Response2SerResp(
+export async function serializeResponse(
   response: Response,
 ): Promise<SerializableResponse> {
   const headers: [string, string][] = Array.from(response.headers.entries());

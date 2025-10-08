@@ -3,7 +3,7 @@ import Bowser from 'bowser';
 import type { Message, MessageRequest, MessageResponse } from './msg';
 import { MessageRequestType, MessageResponseType } from './msg';
 import {
-  Response2SerResp,
+  serializeResponse,
   serializeRequest,
   type ClientMethods,
   type InfoResult,
@@ -130,7 +130,7 @@ export class AddonClient {
   }
 
   async cookies_refresh(response: Response) {
-    const serResp = await Response2SerResp(response);
+    const serResp = await serializeResponse(response);
     const cmd = 'local.cookies.setFromResponse';
     type ParamType = Parameters<ClientMethods[typeof cmd]>[0];
     const msg = this.buildCrawlerMessage<ParamType>(
