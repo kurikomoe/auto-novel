@@ -1,3 +1,5 @@
+import type { ClientCmd } from './types';
+
 export const MessagePingType = 'AUTO_NOVEL_CRAWLER_PING';
 export const MessageRequestType = 'AUTO_NOVEL_CRAWLER_REQUEST';
 export const MessageResponseType = 'AUTO_NOVEL_CRAWLER_RESPONSE';
@@ -11,7 +13,7 @@ export type RequestPayload = {
   base_url: string;
   single?: boolean; // auto call close() after command
   job_id?: string;
-  cmd: string;
+  cmd: ClientCmd;
   params?: any;
 };
 
