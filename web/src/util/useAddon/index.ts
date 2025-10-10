@@ -20,7 +20,7 @@ export const Addon = {
     input: string | URL | Request,
     init?: RequestInit,
   ): Promise<Response> {
-    const addon = await AddonClient.createWithJobId();
+    const addon = new AddonClient();
     console.log(await addon.info());
     let url;
     if (typeof input === 'string') {
@@ -31,7 +31,11 @@ export const Addon = {
       url = input.url;
     }
     const origin = new URL(baseUrl).origin;
-    const id = await addon.bypass_enable(url, origin, origin + '/');
+    await addon.bypass_enable({
+      requestUrl: url,
+      origin,
+      referer: origin + '/',
+    });
 
     const headers = new Headers(init?.headers || {});
     // headers.set("credentials", "include");
@@ -41,8 +45,11 @@ export const Addon = {
     };
     const resp = await fetch(input, init);
 
-    await addon.bypass_disable(id, url);
-    await addon.job_quit();
+    await addon.bypass_disable({
+      requestUrl: url,
+      origin,
+      referer: origin + '/',
+    });
     return resp;
   },
 };
