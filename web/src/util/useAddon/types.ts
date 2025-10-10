@@ -1,3 +1,12 @@
+// ======================== types =================================
+export type EnvType = {
+  sender: {
+    tabId: number;
+    origin?: string;
+    url: string;
+  };
+};
+
 export type SerializableResponse = {
   body: string;
   status: number;
@@ -8,20 +17,6 @@ export type SerializableResponse = {
   url: string;
   type: ResponseType;
 };
-
-export interface SerializableRequest {
-  url: string;
-  // RequestInit 的所有可序列化属性
-  method: string;
-  headers?: [string, string][];
-  body?: string; // base64 encoded body
-  mode?: RequestMode;
-  credentials: RequestCredentials;
-  cache: RequestCache;
-  redirect?: RequestRedirect;
-  referrer?: string;
-  integrity?: string;
-}
 
 export async function serializeResponse(
   response: Response,
@@ -42,8 +37,55 @@ export async function serializeResponse(
   return serializableResponse;
 }
 
+export function deserializeResponse(serResp: SerializableResponse): Response {
+  const init: ResponseInit = {
+    status: serResp.status,
+    statusText: serResp.statusText,
+    headers: serResp.headers,
+  };
+  const realResp = new Response(serResp.body, init);
+  return realResp;
+}
+
+export interface SerializableRequest {
+  url: string;
+  // RequestInit 的所有可序列化属性
+  method: string;
+  headers?: [string, string][];
+  body?: string; // base64 encoded body
+  mode?: RequestMode;
+  credentials: RequestCredentials;
+  cache: RequestCache;
+  redirect?: RequestRedirect;
+  referrer?: string;
+  integrity?: string;
+}
+
+export function deserializeRequest(
+  req: SerializableRequest | string,
+): Request | string {
+  if (typeof req === 'string') {
+    return req;
+  }
+
+  console.debug('deserializeRequest: ', req);
+  const init: RequestInit = {
+    method: req.method,
+    headers: new Headers(req.headers),
+    body: req.body,
+    mode: req.mode,
+    credentials: req.credentials,
+    cache: req.cache,
+    redirect: req.redirect,
+    referrer: req.referrer,
+    integrity: req.integrity,
+  };
+
+  return new Request(req.url, init);
+}
+
 export async function serializeRequest(
-  request: RequestInfo,
+  request: string | Request,
 ): Promise<SerializableRequest | string> {
   if (typeof request === 'string') {
     return request;
@@ -67,137 +109,101 @@ export async function serializeRequest(
   return req;
 }
 
-export function deserializeRequest(req: SerializableRequest): RequestInfo {
-  if (typeof req === 'string') {
-    return req;
-  }
-
-  console.log('deserializeRequest: ', req);
-  const init: RequestInit = {
-    method: req.method,
-    headers: new Headers(req.headers),
-    body: req.body,
-    mode: req.mode,
-    credentials: req.credentials,
-    cache: req.cache,
-    redirect: req.redirect,
-    referrer: req.referrer,
-    integrity: req.integrity,
-  };
-
-  return new Request(req.url, init);
-}
-
 export type InfoResult = {
-  version: string;
+  version: string; // extension version
+  homepage_url: string;
 };
 
-export type HttpFetchParams = {
-  input: SerializableRequest | string;
-  requestInit?: RequestInit;
-};
-export type HttpFetchResult = SerializableResponse;
-
-export type HttpGetParams = {
-  url: string;
-  params?: Record<string, string>;
-  headers?: [string, string][];
-};
-export type HttpGetResult = SerializableResponse;
-
-export type HttpPostJsonParams = {
-  url: string;
-  data?: Record<string, string>;
-  headers?: [string, string][];
-};
-export type HttpPostJsonResult = SerializableResponse;
-
-export type TabSwitchToParams = {
-  url: string;
-};
-export type TabSwitchToResult = void;
-
-export type TabHttpFetchParams = {
-  input: SerializableRequest | string;
-  requestInit?: RequestInit;
-};
-export type TabHttpFetchResult = SerializableResponse;
-
-export type TabHttpGetParams = {
-  url: string;
-  params?: Record<string, string>;
-};
-export type TabHttpGetResult = SerializableResponse;
-
-export type TabHttpPostJsonParams = {
-  url: string;
-  data?: Record<string, string>;
-  headers?: [string, string][];
-};
-export type TabHttpPostJsonResult = SerializableResponse;
-
-export type CookiesGetParams = {
-  url: string;
-};
-export type CookiesGetResult = chrome.cookies.Cookie[];
-
-export type DomQuerySelectorAllParams = {
-  selector: string;
-};
-export type DomQuerySelectorAllResult = string[];
-
-export type JobNewParams = void;
-export type JobNewResult = { job_id: string };
-
-export type JobQuitParams = void;
-export type JobQuitResult = {
-  status: 'completed' | 'failed' | 'canceled' | 'ignored';
-  reason?: string;
-};
-
-export type BypassEnableParams = {
-  url: string;
-  origin?: string;
-  referer?: string;
-};
-export type BypassEnableResult = string;
-
-export type ClientMethods = {
+export type ClientCmd = {
   'base.ping'(): Promise<string>;
   'base.info'(): Promise<InfoResult>;
 
-  'local.cookies.setFromResponse'(params: {
-    response: SerializableResponse;
-  }): Promise<void>;
-
   'local.bypass.enable'(
-    params: BypassEnableParams,
-  ): Promise<BypassEnableResult>;
-  'local.bypass.disable'(params: { id: string; url: string }): Promise<void>;
+    params: {
+      requestUrl: string;
+      origin?: string;
+      referer?: string;
+    },
+    env: EnvType,
+  ): Promise<void>;
 
-  'http.fetch'(params: HttpFetchParams): Promise<HttpFetchResult>;
-  'http.get'(params: HttpGetParams): Promise<HttpGetResult>;
-  'http.postJson'(params: HttpPostJsonParams): Promise<HttpPostJsonResult>;
+  'local.bypass.disable'(
+    params: {
+      requestUrl: string;
+      origin?: string;
+      referer?: string;
+    },
+    env: EnvType,
+  ): Promise<void>;
 
-  'tab.switchTo'(params: TabSwitchToParams): Promise<TabSwitchToResult>;
-  'tab.http.fetch'(params: TabHttpFetchParams): Promise<TabHttpFetchResult>;
-  'tab.http.get'(params: TabHttpGetParams): Promise<TabHttpGetResult>;
-  'tab.http.postJson'(
-    params: TabHttpPostJsonParams,
-  ): Promise<TabHttpPostJsonResult>;
+  'http.fetch'(
+    params: {
+      input: SerializableRequest | string;
+      requestInit?: RequestInit;
+    },
+    env: EnvType,
+  ): Promise<SerializableResponse>;
+
+  'tab.http.fetch'(
+    params: {
+      tabUrl: string;
+      input: SerializableRequest | string;
+      requestInit?: RequestInit;
+    },
+    env: EnvType,
+  ): Promise<SerializableResponse>;
+
   'tab.dom.querySelectorAll'(
-    params: DomQuerySelectorAllParams,
-  ): Promise<DomQuerySelectorAllResult>;
+    params: {
+      url: string;
+      selector: string;
+    },
+    env: EnvType,
+  ): Promise<string[]>;
 
-  'cookies.get'(params: CookiesGetParams): Promise<CookiesGetResult>;
-  'cookies.getStr'(params: { url: string }): Promise<string>;
+  'cookies.get'(params: { url: string }, env: EnvType): Promise<any[]>;
 
-  'dom.querySelectorAll'(
-    params: DomQuerySelectorAllParams,
-  ): Promise<DomQuerySelectorAllResult>;
+  'cookies.getStr'(params: { url: string }, env: EnvType): Promise<string>;
 
-  'job.new'(params: JobNewParams): Promise<JobNewResult>;
-  'job.quit'(params: JobQuitParams): Promise<JobQuitResult>;
+  'cookies.setFromResponse'(
+    params: { response: SerializableResponse },
+    env: EnvType,
+  ): Promise<void>;
 };
 
-export type ClientCmd = keyof ClientMethods;
+// ================================== msg types ===============================
+export enum MessageType {
+  Ping = 'AUTO_NOVEL_CRAWLER_PING',
+  Request = 'AUTO_NOVEL_CRAWLER_REQUEST',
+  Response = 'AUTO_NOVEL_CRAWLER_RESPONSE',
+}
+
+export interface MessagePing {
+  type: typeof MessageType.Ping;
+  id?: string;
+}
+
+export type RequestPayload = {
+  cmd: keyof ClientCmd;
+  params?: any;
+};
+
+export interface MessageRequest {
+  type: typeof MessageType.Request;
+  id?: string;
+  payload: RequestPayload;
+}
+
+export interface MessageResponse {
+  type: typeof MessageType.Response;
+  id?: string;
+  payload: ResponsePayload;
+}
+
+export type ResponsePayload = {
+  success: boolean;
+  result?: any;
+  error?: string;
+};
+
+export type Message = MessagePing | MessageRequest | MessageResponse;
