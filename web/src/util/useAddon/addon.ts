@@ -16,7 +16,7 @@ async function sendMessageChrome<T>(msg: Message): Promise<T> {
         );
         reject(chrome.runtime.lastError);
       }
-      console.log(response);
+      console.debug(response);
       resolve(response.payload.result);
     });
   });
