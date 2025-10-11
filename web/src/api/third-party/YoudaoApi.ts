@@ -7,7 +7,7 @@ import ky from 'ky';
 import { Addon } from '@/util/useAddon';
 
 const client = ky.create({
-  fetch: Addon.tabFetch.bind(Addon, 'https://dict.youdao.com/'),
+  fetch: Addon.tabFetch.bind(window.Addon, 'https://dict.youdao.com/'),
   // fetch: Addon.spoofFetch.bind(Addon, 'https://dict.youdao.com/'),
 });
 
