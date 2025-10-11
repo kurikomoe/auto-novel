@@ -1,55 +1,38 @@
-import { AddonClient } from './addon';
-
-export const Addon = {
-  fetch(input: string | URL | Request, init?: RequestInit): Promise<Response> {
-    const addon = new AddonClient();
-    return addon.http_fetch(input, init);
-  },
-
+export interface AddonApi {
+  fetch(input: string | URL | Request, init?: RequestInit): Promise<Response>;
   tabFetch(
     tabUrl: string,
     input: string | URL | Request,
     init?: RequestInit,
-  ): Promise<Response> {
-    const addon = new AddonClient();
-    return addon.tab_http_fetch(tabUrl, input, init);
-  },
-
-  async spoofFetch(
+  ): Promise<Response>;
+  spoofFetch(
     baseUrl: string,
     input: string | URL | Request,
     init?: RequestInit,
-  ): Promise<Response> {
-    const addon = new AddonClient();
-    console.log(await addon.info());
-    let url;
-    if (typeof input === 'string') {
-      url = input;
-    } else if (input instanceof URL) {
-      url = input.toString();
-    } else {
-      url = input.url;
+  ): Promise<Response>;
+}
+declare global {
+  interface Window {
+    Addon?: AddonApi;
+  }
+}
+
+// Delay the access to window.Addon until it's actually used
+export const Addon: AddonApi = {
+  fetch: (...args: Parameters<AddonApi['fetch']>) => {
+    if (window.Addon?.fetch) return window.Addon.fetch(...args);
+    return window.fetch(...args);
+  },
+  tabFetch(...args: Parameters<AddonApi['tabFetch']>) {
+    if (window.Addon?.tabFetch) {
+      return window.Addon.tabFetch(...args);
     }
-    const origin = new URL(baseUrl).origin;
-    await addon.bypass_enable({
-      requestUrl: url,
-      origin,
-      referer: origin + '/',
-    });
-
-    const headers = new Headers(init?.headers || {});
-    // headers.set("credentials", "include");
-    init = {
-      ...init,
-      headers,
-    };
-    const resp = await fetch(input, init);
-
-    await addon.bypass_disable({
-      requestUrl: url,
-      origin,
-      referer: origin + '/',
-    });
-    return resp;
+    return window.fetch(args[1], args[2]);
+  },
+  spoofFetch(...args: Parameters<AddonApi['spoofFetch']>) {
+    if (window.Addon?.spoofFetch) {
+      return window.Addon.spoofFetch(...args);
+    }
+    return window.fetch(args[1], args[2]);
   },
 };
