@@ -1,4 +1,10 @@
+type Cookie = browser.cookies.Cookie[];
 export interface AddonApi {
+  makeCookiesPublic(cookies: Cookie[]): Cookie[];
+
+  cookiesGet(url: string): Promise<Cookie[]>;
+  cookiesSet(cookies: Cookie[]): Promise<void>;
+
   fetch(input: string | URL | Request, init?: RequestInit): Promise<Response>;
   tabFetch(
     tabUrl: string,
@@ -17,22 +23,31 @@ declare global {
   }
 }
 
+function buildApiEndpoint<K extends keyof AddonApi>(name: K) {
+  const apiFunc = (
+    ...args: Parameters<AddonApi[K]>
+  ): ReturnType<AddonApi[K]> => {
+    const addonImplementation = window.Addon?.[name];
+    if (typeof addonImplementation === 'function') {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+      return (addonImplementation as Function)(...(args as unknown[]));
+    }
+    throw new Error('addon is not available');
+  };
+  return apiFunc;
+}
+
 // Delay the access to window.Addon until it's actually used
 export const Addon: AddonApi = {
+  makeCookiesPublic: buildApiEndpoint('makeCookiesPublic'),
+  cookiesGet: buildApiEndpoint('cookiesGet'),
+  cookiesSet: buildApiEndpoint('cookiesSet'),
+
   fetch: (...args: Parameters<AddonApi['fetch']>) => {
     if (window.Addon?.fetch) return window.Addon.fetch(...args);
-    return window.fetch(...args);
+    return fetch(...args);
   },
-  tabFetch(...args: Parameters<AddonApi['tabFetch']>) {
-    if (window.Addon?.tabFetch) {
-      return window.Addon.tabFetch(...args);
-    }
-    return window.fetch(args[1], args[2]);
-  },
-  spoofFetch(...args: Parameters<AddonApi['spoofFetch']>) {
-    if (window.Addon?.spoofFetch) {
-      return window.Addon.spoofFetch(...args);
-    }
-    return window.fetch(args[1], args[2]);
-  },
+
+  tabFetch: buildApiEndpoint('tabFetch'),
+  spoofFetch: buildApiEndpoint('spoofFetch'),
 };

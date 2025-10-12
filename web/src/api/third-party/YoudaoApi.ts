@@ -6,9 +6,13 @@ import ky from 'ky';
 
 import { Addon } from '@/util/useAddon';
 
+const testTab = 0;
+
 const client = ky.create({
-  fetch: Addon.tabFetch.bind(window.Addon, 'https://dict.youdao.com/'),
-  // fetch: Addon.spoofFetch.bind(Addon, 'https://dict.youdao.com/'),
+  // fetch:
+  fetch: testTab
+    ? Addon.tabFetch.bind(window.Addon, 'https://dict.youdao.com/')
+    : Addon.spoofFetch.bind(window.Addon, 'https://dict.youdao.com/'),
 });
 
 const getBaseBody = (key: string) => {
@@ -48,8 +52,22 @@ const decode = (src: string) => {
 
 let key = 'fsdsogkndfokasodnaso';
 
-const rlog = () =>
-  client.get('https://rlogs.youdao.com/rlog.php', {
+const rlog = async () => {
+  if (!testTab) {
+    let cookies = await Addon.cookiesGet('.youdao.com');
+    while (cookies.length === 0) {
+      await Addon.tabFetch(
+        'https://dict.youdao.com/',
+        'https://dict.youdao.com/',
+      );
+      cookies = await Addon.cookiesGet('.youdao.com');
+    }
+    cookies = Addon.makeCookiesPublic(cookies);
+    console.log(cookies);
+    await Addon.cookiesSet(cookies);
+  }
+
+  return client.get('https://rlogs.youdao.com/rlog.php', {
     searchParams: {
       _npid: 'fanyiweb',
       _ncat: 'pageview',
@@ -61,6 +79,7 @@ const rlog = () =>
     credentials: 'include',
     retry: 0,
   });
+};
 
 const refreshKey = () =>
   client
