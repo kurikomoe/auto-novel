@@ -7,7 +7,7 @@ export interface AddonApi {
 
   fetch(input: string | URL | Request, init?: RequestInit): Promise<Response>;
   tabFetch(
-    tabUrl: string,
+    options: { tabUrl: string; forceNewTab?: boolean },
     input: string | URL | Request,
     init?: RequestInit,
   ): Promise<Response>;

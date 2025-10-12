@@ -11,7 +11,7 @@ const testTab = 0;
 const client = ky.create({
   // fetch:
   fetch: testTab
-    ? Addon.tabFetch.bind(window.Addon, 'https://dict.youdao.com/')
+    ? Addon.tabFetch.bind(window.Addon, { tabUrl: 'https://dict.youdao.com/' })
     : Addon.spoofFetch.bind(window.Addon, 'https://dict.youdao.com/'),
 });
 
@@ -55,9 +55,12 @@ let key = 'fsdsogkndfokasodnaso';
 const rlog = async () => {
   if (!testTab) {
     let cookies = await Addon.cookiesGet('.youdao.com');
-    while (cookies.length === 0) {
+    if (cookies.length === 0) {
       await Addon.tabFetch(
-        'https://dict.youdao.com/',
+        {
+          tabUrl: 'https://dict.youdao.com/',
+          forceNewTab: true,
+        },
         'https://dict.youdao.com/',
       );
       cookies = await Addon.cookiesGet('.youdao.com');
