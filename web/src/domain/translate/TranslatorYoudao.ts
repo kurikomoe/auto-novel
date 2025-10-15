@@ -43,15 +43,12 @@ export class YoudaoTranslator implements SegmentTranslator {
       from = 'en';
     }
 
-    console.log('Youdao translate:', { seg });
     const decoded = await YoudaoApi.webtranslate(seg.join('\n'), from, {
       signal,
     });
     const decodedJson = safeJson<{ translateResult: { tgt: string }[][] }>(
       decoded,
     );
-
-    console.log(decodedJson);
 
     if (decodedJson === undefined) {
       this.log(`　错误：${decoded}`);

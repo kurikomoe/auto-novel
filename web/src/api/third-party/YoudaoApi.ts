@@ -4,15 +4,36 @@ import { MD5 } from 'crypto-es/lib/md5';
 import type { Options } from 'ky';
 import ky from 'ky';
 
-import { Addon } from '@/util/useAddon';
+import { lazy } from '@/util';
 
-const testTab = 0;
+const getClient = lazy(async () => {
+  const Addon = window.Addon;
+  if (!Addon) return ky;
 
-const client = ky.create({
-  // fetch:
-  fetch: testTab
-    ? Addon.tabFetch.bind(window.Addon, { tabUrl: 'https://dict.youdao.com/' })
-    : Addon.spoofFetch.bind(window.Addon, 'https://dict.youdao.com/'),
+  const url = 'https://dict.youdao.com/';
+  const domain = '.youdao.com';
+  const cookie = 'OUTFOX_SEARCH_USER_ID';
+
+  let status = await Addon.cookiesStatus({ url, domain, keys: [cookie] });
+  console.log('Youdao cookie status', status);
+
+  if (!status[cookie]) {
+    await Addon.tabFetch({ tabUrl: url, forceNewTab: true }, url);
+    status = await Addon.cookiesStatus({ url, domain, keys: [cookie] });
+  }
+
+  if (!status[cookie]) {
+    throw new Error(`Cookie ${cookie} is not available`);
+  }
+
+  Object.entries(status).forEach(([key, val]) => {
+    val.sameSite = 'no_restriction';
+    val.secure = true;
+    Addon.cookiesPatch({ url, patches: { [key]: val } });
+  });
+  return ky.create({
+    fetch: Addon.spoofFetch.bind(window.Addon, url),
+  });
 });
 
 const getBaseBody = (key: string) => {
@@ -52,42 +73,9 @@ const decode = (src: string) => {
 
 let key = 'fsdsogkndfokasodnaso';
 
-const rlog = async () => {
-  if (!testTab) {
-    const url = 'https://dict.youdao.com';
-    // const keys = "*";
-    const keys = [
-      'OUTFOX_SEARCH_USER_ID_NCOO',
-      'OUTFOX_SEARCH_USER_ID',
-      '__yadk_uid',
-      'i18n_redirected',
-      '___rl__test__cookies',
-      'rollNum',
-    ];
-    let status = await Addon.cookiesStatus({ url, keys });
-    console.log(status);
-
-    if (Object.keys(status).length === 0) {
-      await Addon.tabFetch(
-        {
-          tabUrl: 'https://dict.youdao.com/',
-          forceNewTab: true,
-        },
-        'https://dict.youdao.com/',
-      );
-      status = await Addon.cookiesStatus({ url, keys });
-    }
-    const patches = Object.fromEntries(
-      Object.entries(status).map(([key, val]) => {
-        val = Addon.makeCookiesPublic([val])[0];
-        return [key, val];
-      }),
-    );
-    console.log(status);
-    await Addon.cookiesPatch({ url, patches });
-  }
-
-  return client.get('https://rlogs.youdao.com/rlog.php', {
+async function rlog() {
+  const client = await getClient();
+  client.get('https://rlogs.youdao.com/rlog.php', {
     searchParams: {
       _npid: 'fanyiweb',
       _ncat: 'pageview',
@@ -99,10 +87,11 @@ const rlog = async () => {
     credentials: 'include',
     retry: 0,
   });
-};
+}
 
-const refreshKey = () =>
-  client
+async function refreshKey() {
+  const client = await getClient();
+  const resp: any = await client
     .get('https://dict.youdao.com/webtranslate/key', {
       searchParams: {
         keyid: 'webfanyi-key-getter',
@@ -111,12 +100,13 @@ const refreshKey = () =>
       credentials: 'include',
       retry: 0,
     })
-    .json()
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .then((json: any) => (key = json['data']['secretKey']));
+    .json();
+  key = resp['data']['secretKey'];
+}
 
-const webtranslate = (query: string, from: string, options?: Options) =>
-  client
+async function webtranslate(query: string, from: string, options?: Options) {
+  const client = await getClient();
+  const resp = await client
     .post('https://dict.youdao.com/webtranslate', {
       body: new URLSearchParams({
         i: query,
@@ -133,8 +123,9 @@ const webtranslate = (query: string, from: string, options?: Options) =>
       retry: 0,
       ...options,
     })
-    .text()
-    .then(decode);
+    .text();
+  return decode(resp);
+}
 
 export const YoudaoApi = {
   rlog,
