@@ -1,5 +1,7 @@
 type Cookie = browser.cookies.Cookie[];
-type CookieStatus = Omit<browser.cookies.Cookie, 'value'>;
+type CookieStatus = Partial<Omit<browser.cookies.Cookie, 'value'>> & {
+  name: string;
+};
 
 export interface AddonApi {
   makeCookiesPublic<T extends Cookie | CookieStatus>(cookies: T[]): T[];
