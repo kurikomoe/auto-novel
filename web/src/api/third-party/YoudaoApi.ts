@@ -54,8 +54,20 @@ let key = 'fsdsogkndfokasodnaso';
 
 const rlog = async () => {
   if (!testTab) {
-    let cookies = await Addon.cookiesGet('.youdao.com');
-    if (cookies.length === 0) {
+    const url = 'https://dict.youdao.com';
+    // const keys = "*";
+    const keys = [
+      'OUTFOX_SEARCH_USER_ID_NCOO',
+      'OUTFOX_SEARCH_USER_ID',
+      '__yadk_uid',
+      'i18n_redirected',
+      '___rl__test__cookies',
+      'rollNum',
+    ];
+    let status = await Addon.cookiesStatus({ url, keys });
+    console.log(status);
+
+    if (Object.keys(status).length === 0) {
       await Addon.tabFetch(
         {
           tabUrl: 'https://dict.youdao.com/',
@@ -63,11 +75,16 @@ const rlog = async () => {
         },
         'https://dict.youdao.com/',
       );
-      cookies = await Addon.cookiesGet('.youdao.com');
+      status = await Addon.cookiesStatus({ url, keys });
     }
-    cookies = Addon.makeCookiesPublic(cookies);
-    console.log(cookies);
-    await Addon.cookiesSet(cookies);
+    const patches = Object.fromEntries(
+      Object.entries(status).map(([key, val]) => {
+        val = Addon.makeCookiesPublic([val])[0];
+        return [key, val];
+      }),
+    );
+    console.log(status);
+    await Addon.cookiesPatch({ url, patches });
   }
 
   return client.get('https://rlogs.youdao.com/rlog.php', {

@@ -1,9 +1,19 @@
 type Cookie = browser.cookies.Cookie[];
-export interface AddonApi {
-  makeCookiesPublic(cookies: Cookie[]): Cookie[];
+type CookieStatus = Omit<browser.cookies.Cookie, 'value'>;
 
-  cookiesGet(url: string): Promise<Cookie[]>;
-  cookiesSet(cookies: Cookie[]): Promise<void>;
+export interface AddonApi {
+  makeCookiesPublic<T extends Cookie | CookieStatus>(cookies: T[]): T[];
+
+  cookiesStatus(params: {
+    url?: string;
+    domain?: string;
+    keys: string[] | '*';
+  }): Promise<Record<string, CookieStatus>>;
+
+  cookiesPatch(params: {
+    url: string;
+    patches: Record<string, CookieStatus>;
+  }): Promise<void>;
 
   fetch(input: string | URL | Request, init?: RequestInit): Promise<Response>;
   tabFetch(
@@ -39,9 +49,15 @@ function buildApiEndpoint<K extends keyof AddonApi>(name: K) {
 
 // Delay the access to window.Addon until it's actually used
 export const Addon: AddonApi = {
-  makeCookiesPublic: buildApiEndpoint('makeCookiesPublic'),
-  cookiesGet: buildApiEndpoint('cookiesGet'),
-  cookiesSet: buildApiEndpoint('cookiesSet'),
+  // Can not bypass type check here, manually implement it.
+  makeCookiesPublic<T extends Cookie | CookieStatus>(cookies: T[]): T[] {
+    if (window.Addon?.makeCookiesPublic)
+      return window.Addon.makeCookiesPublic(cookies);
+    throw new Error('addon is not available');
+  },
+
+  cookiesStatus: buildApiEndpoint('cookiesStatus'),
+  cookiesPatch: buildApiEndpoint('cookiesPatch'),
 
   fetch: (...args: Parameters<AddonApi['fetch']>) => {
     if (window.Addon?.fetch) return window.Addon.fetch(...args);
