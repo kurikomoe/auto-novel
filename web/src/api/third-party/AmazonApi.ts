@@ -7,6 +7,7 @@ const getHtml = async (url: string, options?: Options) => {
     redirect: 'manual',
     credentials: 'include',
     retry: 0,
+    fetch: window.Addon?.fetch,
     ...options,
   });
 
