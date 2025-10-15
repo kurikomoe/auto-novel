@@ -3,36 +3,32 @@ import { Utf8 } from 'crypto-es/lib/core';
 import { MD5 } from 'crypto-es/lib/md5';
 import type { Options } from 'ky';
 import ky from 'ky';
+import { mapValues } from 'lodash-es';
 
 import { lazy } from '@/util';
+import { ensureCookie } from './util';
 
 const getClient = lazy(async () => {
-  const Addon = window.Addon;
-  if (!Addon) return ky;
+  const addon = window.Addon;
+  if (!addon) return ky;
 
   const url = 'https://dict.youdao.com/';
   const domain = '.youdao.com';
-  const cookie = 'OUTFOX_SEARCH_USER_ID';
+  const keys = ['OUTFOX_SEARCH_USER_ID'];
 
-  let status = await Addon.cookiesStatus({ url, domain, keys: [cookie] });
-  console.log('Youdao cookie status', status);
+  const cookies = await ensureCookie(addon, url, domain, keys);
 
-  if (!status[cookie]) {
-    await Addon.tabFetch({ tabUrl: url, forceNewTab: true }, url);
-    status = await Addon.cookiesStatus({ url, domain, keys: [cookie] });
-  }
-
-  if (!status[cookie]) {
-    throw new Error(`Cookie ${cookie} is not available`);
-  }
-
-  Object.entries(status).forEach(([key, val]) => {
-    val.sameSite = 'no_restriction';
-    val.secure = true;
-    Addon.cookiesPatch({ url, patches: { [key]: val } });
+  await addon.cookiesPatch({
+    url,
+    patches: mapValues(cookies, (cookie) => {
+      cookie.sameSite = 'no_restriction';
+      cookie.secure = true;
+      return cookie;
+    }),
   });
+
   return ky.create({
-    fetch: Addon.spoofFetch.bind(window.Addon, url),
+    fetch: addon.spoofFetch.bind(window.Addon, url),
   });
 });
 
