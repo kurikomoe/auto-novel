@@ -100,9 +100,7 @@ const formRules: FormRules = {
   ],
 };
 
-const amazonUrl = ref(
-  'https://www.amazon.co.jp/%E7%95%B0%E4%B8%96%E7%95%8C%E8%BB%A2%E7%94%9F%E3%81%97%E3%81%A6%E9%AD%94%E5%A5%B3%E3%81%AB%E3%81%AA%E3%81%A3%E3%81%9F%E3%81%AE%E3%81%A7%E3%82%B9%E3%83%AD%E3%83%BC%E3%83%A9%E3%82%A4%E3%83%95%E3%82%92%E9%80%81%E3%82%8A%E3%81%9F%E3%81%84%E3%81%AE%E3%81%AB%E9%AD%94%E7%8E%8B%E3%81%8C%E9%80%83%E3%81%97%E3%81%A6%E3%81%8F%E3%82%8C%E3%81%BE%E3%81%9B%E3%82%93-1-%E8%A3%8F%E5%B0%91%E5%B9%B4%E3%82%B5%E3%83%B3%E3%83%87%E3%83%BC%E3%82%B3%E3%83%9F%E3%83%83%E3%82%AF%E3%82%B9-%E3%83%9E%E3%83%81%E3%83%90%E3%83%AA/dp/4098505789',
-);
+const amazonUrl = ref('');
 
 if (novelId !== undefined) {
   WenkuNovelRepo.useWenkuNovel(novelId, false)
