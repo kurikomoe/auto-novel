@@ -12,12 +12,12 @@ export async function ensureCookie(
   domain: string | undefined,
   keys: string[],
 ) {
-  const status = await addon.cookiesStatus({ url, domain, keys });
+  const status = await addon.cookiesStatus({ domain, keys });
   if (allCookiesAvailable(status)) return status;
 
   await addon.tabFetch({ tabUrl: url, forceNewTab: true }, url);
 
-  const newStatus = await addon.cookiesStatus({ url, domain, keys });
+  const newStatus = await addon.cookiesStatus({ domain, keys });
   if (allCookiesAvailable(newStatus)) return newStatus;
 
   throw new Error('Cookie is not available');
