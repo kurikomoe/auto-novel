@@ -6,9 +6,11 @@ interface WebNovelProvider {
 }
 */
 export interface WebNovelProvider {
-  getRank(options: Record<string, string>): Promise<Page<RemoteNovelListItem>>;
-  getMetadata(novelId: string): Promise<RemoteNovelMetadata>;
-  getChapter(novelId: string, chapterId: string): Promise<RemoteChapter>;
+  getRank(
+    options: Record<string, string>,
+  ): Promise<Page<RemoteNovelListItem> | null>;
+  getMetadata(novelId: string): Promise<RemoteNovelMetadata | null>;
+  getChapter(novelId: string, chapterId: string): Promise<RemoteChapter | null>;
 }
 
 export type Page<T> = {

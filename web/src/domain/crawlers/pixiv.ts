@@ -16,15 +16,6 @@ export class Pixiv implements WebNovelProvider {
   // Pixiv Web Crawler Version
   static readonly version = '1.0.0';
 
-  fetch = fetch;
-
-  constructor() {
-    if (!window.Addon) {
-      throw new Error('Addon API is not available');
-    }
-    this.fetch = window.Addon.fetch.bind(window.Addon);
-  }
-
   async getRank(
     options: Record<string, string>,
   ): Promise<Page<RemoteNovelListItem>> {
@@ -34,11 +25,16 @@ export class Pixiv implements WebNovelProvider {
     };
   }
 
-  async getMetadata(novelId: string): Promise<RemoteNovelMetadata> {
+  async getMetadata(novelId: string): Promise<RemoteNovelMetadata | null> {
+    const addon = window.Addon;
+    if (!addon) {
+      return null;
+    }
+
     if (novelId.startsWith('s')) {
       const chapterId = novelId.substring(1);
       const url = `https://www.pixiv.net/ajax/novel/${chapterId}`;
-      const resp = await this.fetch(url);
+      const resp = await addon.fetch(url);
       const data = await resp.json();
       console.debug(data);
       const obj = data.body;
@@ -85,7 +81,7 @@ export class Pixiv implements WebNovelProvider {
         ],
       };
     } else {
-      const resp = await this.fetch(
+      const resp = await addon.fetch(
         `https://www.pixiv.net/ajax/novel/series/${novelId}`,
       );
       const data = await resp.json();
@@ -106,7 +102,7 @@ export class Pixiv implements WebNovelProvider {
 
       if (keywords.length === 0) {
         const url = `https://www.pixiv.net/ajax/novel/series_content/${novelId}?limit=30&last_order=0&order_by=asc`;
-        const resp = await this.fetch(url);
+        const resp = await addon.fetch(url);
         const data = await resp.json();
         const obj = data.body;
         console.debug(obj);
@@ -143,7 +139,7 @@ export class Pixiv implements WebNovelProvider {
       toc.length = 0;
 
       const url2 = `https://www.pixiv.net/ajax/novel/series/${novelId}/content_titles`;
-      const resp2 = await this.fetch(url2);
+      const resp2 = await addon.fetch(url2);
       const data2 = await resp2.json();
       console.debug(data2);
       const arr2: [] = data2.body ?? [];
@@ -197,13 +193,17 @@ export class Pixiv implements WebNovelProvider {
     line: string,
     chapterId: string,
   ): Promise<string | null> {
+    const addon = window.Addon;
+    if (!addon) {
+      return null;
+    }
     const match = this.imagePattern2.exec(line);
     const id = match?.[1];
     if (!id) {
       return null;
     }
     const fetchUrl = `https://www.pixiv.net/ajax/novel/${chapterId}/insert_illusts?id%5B%5D=${id}`;
-    const response = await this.fetch(fetchUrl);
+    const response = await addon.fetch(fetchUrl);
     const data = await response.json();
     console.debug(data);
     const url = data?.body?.[id]?.illust?.images?.original;
@@ -223,8 +223,12 @@ export class Pixiv implements WebNovelProvider {
   }
 
   async getChapter(novelId: string, chapterId: string): Promise<RemoteChapter> {
+    const addon = window.Addon;
+    if (!addon) {
+      throw new Error('Addon not found');
+    }
     const url = `https://www.pixiv.net/ajax/novel/${chapterId}`;
-    const resp = await this.fetch(url);
+    const resp = await addon.fetch(url);
     const data = await resp.json();
     console.debug(data);
     const body = data.body;
