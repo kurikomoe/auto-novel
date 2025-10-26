@@ -58,12 +58,29 @@ const listRank = (providerId: string, params: { [key: string]: string }) =>
 const getMetadataFromAddonOrNull = async (
   providerId: string,
   novelId: string,
+  ignoreRateLimit = false,
 ): Promise<RemoteNovelMetadata | null> => {
-  // FIXME(kuriko): 这种情况下，用户每次刷新都会爬取 + 上传一次元数据。是否加一个 cache 机制防止过量请求？
-  // 其实感觉请求已经分布在用户侧了，不会有太大问题。
   if (!window.Addon) return null;
+
+  const key = `addon-${providerId}-${novelId}-getMetadata-lastAccess`;
+  if (!ignoreRateLimit) {
+    const lastAccessStr = localStorage.getItem(key);
+    let lastAccess;
+    if (lastAccessStr) {
+      lastAccess = new Date(lastAccessStr);
+    } else {
+      lastAccess = new Date();
+    }
+
+    // NOTE(kuriko): only access metadata within 1 hour
+    if (new Date().getUTCMinutes() - lastAccess.getTime() < 1000 * 60 * 60) {
+      return null;
+    }
+  }
+
   const provider = Providers[providerId];
   const metadata = await provider?.getMetadata(novelId);
+  localStorage.setItem(key, new Date().toISOString());
   return metadata;
 };
 
@@ -71,12 +88,14 @@ const getNovel = async (providerId: string, novelId: string) => {
   try {
     if (window.Addon) {
       const metadata = await getMetadataFromAddonOrNull(providerId, novelId);
-      const resp = await client.post(
-        `novel/${providerId}/${novelId}/upload/metadata`,
-        { json: metadata },
-      );
-      const ret = await resp.json<WebNovelDto>();
-      return ret;
+      if (metadata !== null) {
+        const resp = await client.post(
+          `novel/${providerId}/${novelId}/upload/metadata`,
+          { json: metadata },
+        );
+        const ret = await resp.json<WebNovelDto>();
+        return ret;
+      }
     }
   } catch (e) {
     console.debug(`Error: ${e}, fallback to server mode`);
@@ -88,7 +107,7 @@ const getNovel = async (providerId: string, novelId: string) => {
 
 const uploadChapters = async (providerId: string, novelId: string) => {
   if (!window.Addon) return;
-  const metadata = await getMetadataFromAddonOrNull(providerId, novelId);
+  const metadata = await getMetadataFromAddonOrNull(providerId, novelId, true);
   if (!metadata) return;
 
   const provider = Providers[providerId];
@@ -170,17 +189,14 @@ const createTranslationApi = (
 ) => {
   const endpointV2 = `novel/${providerId}/${novelId}/translate-v2/${translatorId}`;
 
-  const getTranslateTask = () => {
-    // try {
-    //   if (window.Addon) {
-    //     const metadata = getMetadataFromAddonOrNull(providerId, novelId);
-    //     const userProvidedData = {
-    //       metadata,
-    //       chapters: [],
-    //     }
-    //     return client.get(endpointV2, { signal, json: userProvidedData, }).json<WebTranslateTask>();
-    //   }
-    // } catch (e) { console.debug(`Error: ${e}, fallback to server mode`); }
+  const getTranslateTask = async () => {
+    // TODO(kuriko): add a trigger for uploadChapters here?
+    try {
+      await uploadChapters(providerId, novelId);
+    } catch (e) {
+      console.debug(`Error: ${e}, fallback to server mode`);
+    }
+
     return client.get(endpointV2, { signal }).json<WebTranslateTask>();
   };
 
