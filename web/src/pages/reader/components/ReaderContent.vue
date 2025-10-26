@@ -100,7 +100,6 @@ const chapterHref = computed(() => {
 <style scoped>
 .chapter {
   font-size: v-bind('`${readerSetting.fontSize}px`');
-  color: v-bind('fontColor');
   font-weight: v-bind('readerSetting.fontWeight');
 }
 .chapter-title {
@@ -112,6 +111,7 @@ const chapterHref = computed(() => {
   min-height: 65vh;
 }
 .chapter-content p {
+  color: v-bind('fontColor');
   margin: v-bind('`${readerSetting.fontSize * readerSetting.lineSpace}px 0`');
   font-size: 1em;
 }
