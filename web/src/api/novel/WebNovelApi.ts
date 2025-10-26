@@ -69,11 +69,11 @@ const getMetadataFromAddonOrNull = async (
     if (lastAccessStr) {
       lastAccess = new Date(lastAccessStr);
     } else {
-      lastAccess = new Date();
+      lastAccess = new Date(0); // aka 1970
     }
 
     // NOTE(kuriko): only access metadata within 1 hour
-    if (new Date().getUTCMinutes() - lastAccess.getTime() < 1000 * 60 * 60) {
+    if (new Date().getTime() - lastAccess.getTime() < 1000 * 60 * 60) {
       return null;
     }
   }
@@ -108,7 +108,7 @@ const getNovel = async (providerId: string, novelId: string) => {
 const uploadChapters = async (providerId: string, novelId: string) => {
   if (!window.Addon) return;
   const metadata = await getMetadataFromAddonOrNull(providerId, novelId, true);
-  if (!metadata) return;
+  if (!metadata) return null;
 
   const provider = Providers[providerId];
   const promises = metadata.toc

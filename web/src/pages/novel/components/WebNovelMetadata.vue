@@ -85,8 +85,14 @@ const isAddonExists = computed(() => {
   return window.Addon !== null;
 });
 
+const message = useMessage();
 const update = async () => {
-  WebNovelApi.uploadChapters(props.providerId, props.novelId);
+  try {
+    await WebNovelApi.uploadChapters(props.providerId, props.novelId);
+    message.info(`小说元数据和章节已更新`);
+  } catch (e) {
+    message.error(`更新小说元数据和章节失败: ${e}`);
+  }
 };
 </script>
 
