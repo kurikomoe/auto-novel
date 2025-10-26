@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { BookOutlined, EditNoteOutlined } from '@vicons/material';
+import { BookOutlined, EditNoteOutlined, WindowFilled } from '@vicons/material';
 import { NA, NText } from 'naive-ui';
 
 import type { WebNovelDto } from '@/model/WebNovel';
@@ -81,6 +81,10 @@ const latestChapterCreateAt = computed(() => {
   else return Math.max(...createAtList);
 });
 
+const isAddonExists = computed(() => {
+  return window.Addon !== null;
+});
+
 const update = async () => {
   WebNovelApi.uploadChapters(props.providerId, props.novelId);
 };
@@ -125,7 +129,12 @@ const update = async () => {
       :novel="{ type: 'web', providerId, novelId }"
     />
 
-    <c-button label="更新 " :icon="EditNoteOutlined" @click="update" />
+    <c-button
+      v-show="isAddonExists"
+      label="更新 "
+      :icon="EditNoteOutlined"
+      @click="update"
+    />
 
     <router-link v-if="novel.wenkuId" :to="`/wenku/${novel.wenkuId}`">
       <c-button label="文库" :icon="BookOutlined" />
