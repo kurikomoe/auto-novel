@@ -64,6 +64,7 @@ const chapterHref = computed(() => {
       <n-text depth="3">{{ chapter.titleZh }}</n-text>
       <br />
     </div>
+    <n-divider />
 
     <div class="chapter-content">
       <template
@@ -104,7 +105,7 @@ const chapterHref = computed(() => {
 }
 .chapter-title {
   font-size: 1.3em;
-  padding: 36px 0;
+  padding: 24px 0 0 0;
   font-weight: 500;
 }
 .chapter-content {
