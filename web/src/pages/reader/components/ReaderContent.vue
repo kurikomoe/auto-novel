@@ -58,12 +58,12 @@ const chapterHref = computed(() => {
 
 <template>
   <div class="chapter" data-chapter :data-id="chapterId">
-    <div class="chapter-title">
+    <n-h4 class="chapter-title">
       <n-a :href="chapterHref">{{ chapter.titleJp }}</n-a>
       <br />
       <n-text depth="3">{{ chapter.titleZh }}</n-text>
       <br />
-    </div>
+    </n-h4>
     <n-divider />
 
     <div class="chapter-content">
@@ -104,9 +104,11 @@ const chapterHref = computed(() => {
   font-weight: v-bind('readerSetting.fontWeight');
 }
 .chapter-title {
-  font-size: 1.3em;
+  display: inline-block;
   padding: 24px 0 0 0;
-  font-weight: 500;
+  margin: 0;
+  text-align: center;
+  width: 100%;
 }
 .chapter-content {
   min-height: 65vh;
