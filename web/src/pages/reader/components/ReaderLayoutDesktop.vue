@@ -32,7 +32,7 @@ const router = useRouter();
       <n-flex
         size="large"
         vertical
-        style="margin-left: 20px; position: fixed; bottom: 20px"
+        style="position: fixed; right: 8px; bottom: 20px"
       >
         <side-button
           :disabled="!chapter.prevId"
