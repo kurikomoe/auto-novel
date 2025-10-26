@@ -28,9 +28,13 @@ import io.ktor.server.resources.post
 import io.ktor.server.resources.put
 import io.ktor.server.routing.*
 import io.ktor.util.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.serialization.Serializable
 import org.bson.types.ObjectId
 import org.koin.ktor.ext.inject
+import kotlin.coroutines.coroutineContext
 
 @Resource("/novel")
 private class WebNovelRes {
@@ -76,8 +80,8 @@ private class WebNovelRes {
             @Resource("/metadata")
             class Metadata(val parent: Upload)
 
-            @Resource("/chapter/{chapterId}")
-            class Chapter(val parent: Upload, val chapterId: String)
+            @Resource("/chapters")
+            class Chapters(val parent: Upload)
         }
 
         @Resource("/file")
@@ -265,16 +269,32 @@ fun Route.routeWebNovel() {
 
         // Upload
         post<WebNovelRes.Id.Upload.Metadata> { loc ->
-            val body = call.receive<RemoteNovelMetadata>();
+            val body = call.receive<RemoteNovelMetadata>()
+            val user = call.userOrNull()
             call.tryRespond {
-                "Unimplemented: $body"
+                service.getMetadata(
+                    user = user,
+                    providerId = loc.parent.providerId,
+                    novelId = loc.parent.novelId,
+                    userProvidedMetadata = body,
+                )
             }
         }
 
-        post<WebNovelRes.Id.Upload.Chapter> { loc ->
-            val body = call.receive<RemoteChapter>();
+        post<WebNovelRes.Id.Upload.Chapters> { loc ->
+            @Serializable
+            data class Body (
+                val metadata: RemoteNovelMetadata,
+                val chapters: Map<String, RemoteChapter>,
+            )
+            val body = call.receive<Body>()
             call.tryRespond {
-                "Unimplemented: $body"
+                service.uploadChapters(
+                    providerId = loc.parent.providerId,
+                    novelId = loc.parent.novelId,
+                    metadata = body.metadata,
+                    chapters = body.chapters,
+                )
             }
         }
     }
@@ -491,9 +511,10 @@ class WebNovelApi(
         user: User?,
         providerId: String,
         novelId: String,
+        userProvidedMetadata: RemoteNovelMetadata? = null,
     ): NovelDto {
         validateId(providerId, novelId)
-        val novel = metadataRepo.getNovelAndSave(providerId, novelId)
+        val novel = metadataRepo.getNovelAndSave(providerId, novelId, userProvidedMetadata=userProvidedMetadata)
             .getOrElse {
                 if (it is NovelIdShouldBeReplacedException) {
                     throwBadRequest(it.message!!)
@@ -657,6 +678,35 @@ class WebNovelApi(
                 new = glossary,
             )
         )
+    }
+
+    // Addon
+    suspend fun uploadChapters(
+        providerId: String,
+        novelId: String,
+        metadata: RemoteNovelMetadata,
+        chapters: Map<String, RemoteChapter>,
+    ) {
+        // update the metadata first
+        getMetadata(
+            user = null,
+            novelId = novelId,
+            providerId = providerId,
+            userProvidedMetadata = metadata,
+        )
+        coroutineScope {
+            val deferredResults = chapters.map { (chapterId, chapterData) ->
+                async {
+                    chapterRepo.getOrSyncRemote(
+                        providerId = providerId,
+                        novelId = novelId,
+                        chapterId = chapterId,
+                        userProvidedChapter = chapterData
+                    )
+                }
+            }
+            deferredResults.awaitAll()
+        }
     }
 
     // File
