@@ -62,24 +62,42 @@ const getMetadataFromAddonOrNull = async (
 ): Promise<RemoteNovelMetadata | null> => {
   if (!window.Addon) return null;
 
-  // const key = `addon-${providerId}-${novelId}-getMetadata-lastAccess`;
-  // if (!ignoreRateLimit) {
-  //   const lastAccessStr = localStorage.getItem(key);
-  //   let lastAccess;
-  //   if (lastAccessStr) {
-  //     lastAccess = new Date(lastAccessStr);
-  //   } else {
-  //     lastAccess = new Date(0); // aka 1970
-  //   }
+  type LastAccessItem = {
+    time: number;
+    data: object | null;
+  };
 
-  //   // NOTE(kuriko): only access metadata within 1 hour
-  //   if (new Date().getTime() - lastAccess.getTime() < 1000 * 60 * 60) {
-  //     return null;
-  //   }
-  // }
+  const key = `addon-${providerId}-${novelId}-getMetadata-lastAccess`;
+
+  const lastAccessTime = (() => {
+    const empty: LastAccessItem = {
+      time: 0,
+      data: null,
+    };
+    if (ignoreRateLimit) return empty;
+
+    const lastAccessData = localStorage.getItem(key);
+    if (!lastAccessData) return empty;
+
+    const lastAccess = JSON.parse(lastAccessData) as LastAccessItem;
+
+    return lastAccess;
+  })();
+
+  // NOTE(kuriko): only access metadata within 1 hour
+  if (new Date().getTime() - lastAccessTime.time < 1000 * 60 * 60) {
+    return null; // Use metadata from server
+  }
 
   const provider = Providers[providerId];
   const metadata = await provider?.getMetadata(novelId);
+  localStorage.setItem(
+    key,
+    JSON.stringify(<LastAccessItem>{
+      time: new Date().getTime(),
+      data: metadata,
+    }),
+  );
   return metadata;
 };
 
