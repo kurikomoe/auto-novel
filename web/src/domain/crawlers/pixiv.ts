@@ -60,7 +60,8 @@ export class Pixiv implements WebNovelProvider {
 
       const attentions = obj.xRestrict == 0 ? [] : [WebNovelAttention.R18];
       const totalCharacters = obj.characterCount;
-      const introduction = obj.description.replace(/<br ?\/>/g, '\n');
+      const introduction =
+        obj.description?.replace(/<br ?\/>/g, '\n') || obj.caption || '';
       const createAt = obj.createDate;
 
       return {
@@ -95,7 +96,8 @@ export class Pixiv implements WebNovelProvider {
       };
       const attentions = obj.xRestrict == 0 ? [] : [WebNovelAttention.R18];
       const totalCharacters = obj.publishedTotalCharacterCount;
-      const introduction = obj.description;
+      const introduction =
+        obj.description?.replace(/<br ?\/>/g, '\n') || obj.caption || '';
 
       const toc: TocItem[] = [];
       const keywords = obj.tags ?? [];
