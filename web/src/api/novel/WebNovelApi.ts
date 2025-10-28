@@ -62,42 +62,50 @@ const getMetadataFromAddonOrNull = async (
 ): Promise<RemoteNovelMetadata | null> => {
   if (!window.Addon) return null;
 
+  type LastAccessData = Record<string, LastAccessItem>;
   type LastAccessItem = {
-    time: number;
+    time: Date;
     data: object | null;
   };
 
-  const key = `addon-${providerId}-${novelId}-getMetadata-lastAccess`;
+  const primaryKey = `addon-getMetadata-lastAccess`;
+  const key = `${providerId}-${novelId}`;
 
-  const lastAccessTime = (() => {
-    const empty: LastAccessItem = {
-      time: 0,
-      data: null,
-    };
-    if (ignoreRateLimit) return empty;
+  const empty: LastAccessItem = {
+    time: new Date(0),
+    data: null,
+  };
 
-    const lastAccessData = localStorage.getItem(key);
-    if (!lastAccessData) return empty;
+  const lastAccessData: LastAccessData = (() => {
+    if (ignoreRateLimit) return {};
 
-    const lastAccess = JSON.parse(lastAccessData) as LastAccessItem;
+    const _lastAccessData = localStorage.getItem(primaryKey);
+    if (!_lastAccessData) {
+      localStorage.setItem(primaryKey, JSON.stringify(<LastAccessData>{}));
+      return {};
+    }
 
-    return lastAccess;
+    const lastAccessData = JSON.parse(_lastAccessData) as LastAccessData;
+    return lastAccessData;
   })();
 
+  const lastAccess = lastAccessData[key] ?? empty;
+
   // NOTE(kuriko): only access metadata within 1 hour
-  if (new Date().getTime() - lastAccessTime.time < 1000 * 60 * 60) {
+  if (
+    new Date().getTime() - new Date(lastAccess.time).getTime() <
+    1000 * 60 * 60
+  ) {
     return null; // Use metadata from server
   }
 
   const provider = Providers[providerId];
   const metadata = await provider?.getMetadata(novelId);
-  localStorage.setItem(
-    key,
-    JSON.stringify(<LastAccessItem>{
-      time: new Date().getTime(),
-      data: metadata,
-    }),
-  );
+  lastAccessData[key] = {
+    time: new Date(),
+    data: metadata,
+  };
+  localStorage.setItem(primaryKey, JSON.stringify(lastAccessData));
   return metadata;
 };
 
