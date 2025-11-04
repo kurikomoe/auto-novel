@@ -2,6 +2,7 @@
 import { formatError } from '@/api';
 import { WebNovelRepo } from '@/repos';
 import { useIsWideScreen } from '@/pages/util';
+import { computedAsync } from '@vueuse/core';
 
 const { providerId, novelId } = defineProps<{
   providerId: string;
@@ -17,6 +18,12 @@ watch(novel, (novel) => {
   if (novel) {
     document.title = novel.titleJp;
   }
+});
+
+const formatedError = computedAsync(async () => {
+  if (!error.value) return '';
+  const message = await formatError(error.value);
+  return message;
 });
 
 watch(error, async (error) => {
@@ -47,10 +54,10 @@ watch(error, async (error) => {
     </template>
 
     <n-result
-      v-else-if="error"
+      v-else-if="formatedError"
       status="error"
       title="加载错误"
-      :description="error.message"
+      :description="formatedError"
     />
   </div>
 </template>
