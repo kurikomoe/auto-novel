@@ -108,7 +108,7 @@ const moveToFavored = async () => {
           <c-modal
             :title="`确定删除 ${
               selectedNovels.length === 1
-                ? selectedNovels[0].titleZh ?? selectedNovels[0].title
+                ? (selectedNovels[0].titleZh ?? selectedNovels[0].title)
                 : `${selectedNovels.length}本小说`
             }？`"
             v-model:show="showDeleteModal"

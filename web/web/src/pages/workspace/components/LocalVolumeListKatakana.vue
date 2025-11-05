@@ -25,7 +25,8 @@ const deleteVolume = (volumeId: string) =>
         <n-text>{{ volume.id }}</n-text>
 
         <n-text depth="3">
-          <n-time :time="volume.createAt" type="relative" /> / 总计
+          <n-time :time="volume.createAt" type="relative" />
+          / 总计
           {{ volume.toc.length }}
         </n-text>
 
