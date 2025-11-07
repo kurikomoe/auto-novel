@@ -10,8 +10,9 @@ import type {
   WebNovelOutlineDto,
 } from '@/model/WebNovel';
 import { client } from './client';
-import { Providers } from '@/domain/crawlers';
 import { type RemoteNovelMetadata } from '@/domain/crawlers/types';
+
+import { Providers } from '@auto-novel/crawler';
 
 const listNovel = ({
   page,
@@ -92,14 +93,14 @@ const getMetadataFromAddonOrNull = async (
   const lastAccess = lastAccessData[key] ?? empty;
 
   // NOTE(kuriko): only access metadata within 1 hour
-  if (
-    new Date().getTime() - new Date(lastAccess.time).getTime() <
-    1000 * 60 * 60
-  ) {
+  const diffTime = new Date().getTime() - new Date(lastAccess.time).getTime();
+  if (false && diffTime < 1000 * 60 * 60) {
     return null; // Use metadata from server
   }
 
-  const provider = Providers[providerId];
+  const providerInitFn = Providers[providerId];
+  if (!providerInitFn || !window.Addon) return null;
+  const provider = providerInitFn(window.Addon.fetch as any);
   const metadata = await provider?.getMetadata(novelId);
   lastAccessData[key] = {
     time: new Date(),
@@ -135,7 +136,9 @@ const uploadChapters = async (providerId: string, novelId: string) => {
   const metadata = await getMetadataFromAddonOrNull(providerId, novelId, true);
   if (!metadata) return null;
 
-  const provider = Providers[providerId];
+  const providerInitFn = Providers[providerId];
+  if (!providerInitFn || !window.Addon) return null;
+  const provider = providerInitFn(window.Addon.fetch as any);
   const promises = metadata.toc
     .filter((tocItem) => tocItem.chapterId != null)
     .map(async (tocItem) => [
