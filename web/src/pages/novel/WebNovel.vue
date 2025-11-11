@@ -54,7 +54,7 @@ watch(error, async (error) => {
     </template>
 
     <n-result
-      v-else-if="formatedError"
+      v-else-if="error"
       status="error"
       title="加载错误"
       :description="formatedError"
