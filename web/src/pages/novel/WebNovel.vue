@@ -26,11 +26,9 @@ const formatedError = computedAsync(async () => {
   return message;
 });
 
-watch(error, async (error) => {
-  if (!error) return;
-  const message = await formatError(error);
-  if (message.includes('小说ID不合适，应当使用：')) {
-    const targetNovelPath = message.split('小说ID不合适，应当使用：')[1];
+watch(formatedError, async (error) => {
+  if (error.includes('小说ID不合适，应当使用：')) {
+    const targetNovelPath = error.split('小说ID不合适，应当使用：')[1];
     router.push({ path: `/novel${targetNovelPath}` });
   }
 });
