@@ -14,7 +14,6 @@ export const formatError = async (error: unknown) => {
     const msg = await body.then(
       (message) => `[${error.response.status}]${messageOverride ?? message}`,
     );
-    console.log(msg);
     return msg;
   } else if (error instanceof TimeoutError) {
     return '请求超时';
