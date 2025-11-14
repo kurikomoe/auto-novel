@@ -10,8 +10,8 @@ export const AuthUrl = (() => {
       return 'https://n.novelia.cc';
     } else {
       // NOTE(kuriko): 本地开发情况，Caddy 代理其他端口，转发到 5173
-      //   此时默认 Auth 服务部署在 4000 端口
-      return `${protocol}//localhost:4000`;
+      //   此时默认 Auth 服务部署在 8000 端口
+      return `${protocol}//localhost:8000`;
     }
   }
 
