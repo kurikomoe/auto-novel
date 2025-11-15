@@ -29,7 +29,10 @@ export type ResponseLike = {
 };
 
 export interface WebNovelProvider {
-  version(): string;
+  readonly id: string;
+  readonly version: string;
+  fetch: FetchType;
+
   getRank(
     options: Record<string, string>,
   ): Promise<Page<RemoteNovelListItem> | null>;

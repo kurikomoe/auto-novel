@@ -1,20 +1,18 @@
 {
   "compilerOptions": {
-    "lib": ["ES2022"],
-    "module": "ESNext",
+    "lib": ["ESNext"],
+    "target": "ESNext",
     "composite": true,
-    "types": ["node"],
-    "noEmit": true,
+    "module": "ESNext",
     "strict": true,
     "skipLibCheck": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
     "moduleResolution": "bundler",
     "useDefineForClassFields": true,
-    "allowImportingTsExtensions": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*", "./src/app/*"]
     }
   },
-  "include": ["src/app/*"]
+  "include": ["./src/app/**/*"]
 }

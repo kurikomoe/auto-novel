@@ -16,6 +16,7 @@ export default defineConfig({
       bundle: true,
       source: {
         entry: { app: 'src/app/index.ts' },
+        tsconfigPath: 'tsconfig.app.json',
       },
       output: {
         target: 'node',
@@ -28,6 +29,7 @@ export default defineConfig({
       bundle: true,
       source: {
         entry: { lib: 'src/index.ts' },
+        tsconfigPath: 'tsconfig.lib.json',
       },
       output: { target: 'web' },
       banner,

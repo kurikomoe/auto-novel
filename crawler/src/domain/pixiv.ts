@@ -13,12 +13,8 @@ import {
 } from './types';
 
 export class Pixiv implements WebNovelProvider {
-  static readonly id = 'pixiv';
-  static readonly version = '1.0.0';
-
-  version(): string {
-    return Pixiv.version;
-  }
+  readonly id = 'pixiv';
+  readonly version = '1.0.0';
 
   fetch: FetchType;
 
@@ -47,9 +43,7 @@ export class Pixiv implements WebNovelProvider {
       const seriesData = obj.seriesNavData;
       if (seriesData != null) {
         const targetNovelId = seriesData.seriesId;
-        throw new Error(
-          `小说ID不合适，应当使用：/${Pixiv.id}/${targetNovelId}`,
-        );
+        throw new Error(`小说ID不合适，应当使用：/${this.id}/${targetNovelId}`);
       }
 
       const title = obj.title;

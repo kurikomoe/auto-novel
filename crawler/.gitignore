@@ -1,3 +1,6 @@
+
+.env
+
 # Local
 .DS_Store
 *.local
@@ -12,3 +15,9 @@ storybook-static
 .vscode/*
 !.vscode/extensions.json
 .idea
+
+/src/generated/prisma
+
+/src/generated/prisma
+
+/src/generated/prisma
