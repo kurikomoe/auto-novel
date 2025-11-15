@@ -28,7 +28,7 @@ export default defineConfig({
       dts: true,
       bundle: true,
       source: {
-        entry: { lib: 'src/index.ts' },
+        entry: { lib: 'src/lib/index.ts' },
         tsconfigPath: 'tsconfig.lib.json',
       },
       output: { target: 'web' },

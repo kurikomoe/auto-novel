@@ -10,10 +10,10 @@
     "resolveJsonModule": true,
     "moduleResolution": "bundler",
     "useDefineForClassFields": true,
+    "rootDir": "./src",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/lib/*"]
     }
   },
-  "include": ["./src/**/*"],
-  "exclude": ["./src/app/**/*"]
+  "include": ["./src/lib/**/*"]
 }

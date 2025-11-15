@@ -1,3 +1,5 @@
+import { KyInstance } from 'ky';
+
 export type FetchType = (
   input: URL | string | RequestLike,
   requestInit?: any,
@@ -31,7 +33,8 @@ export type ResponseLike = {
 export interface WebNovelProvider {
   readonly id: string;
   readonly version: string;
-  fetch: FetchType;
+
+  client: KyInstance;
 
   getRank(
     options: Record<string, string>,

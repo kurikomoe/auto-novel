@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { squared } from '../src/index';
+import { squared } from '../src/lib/index';
 
 test('squared', () => {
   expect(squared(2)).toBe(4);

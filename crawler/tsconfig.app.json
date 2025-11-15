@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["ESNext"],
+    "lib": ["ESNext", "DOM"],
     "target": "ESNext",
     "composite": true,
     "module": "ESNext",
@@ -10,9 +10,10 @@
     "resolveJsonModule": true,
     "moduleResolution": "bundler",
     "useDefineForClassFields": true,
+    "rootDir": "./src",
     "paths": {
-      "@/*": ["./src/*", "./src/app/*"]
+      "@/*": ["./src/lib/*", "./src/app/*", "./package.json"]
     }
   },
-  "include": ["./src/app/**/*"]
+  "include": ["./src/lib/**/*", "./src/app/**/*"]
 }

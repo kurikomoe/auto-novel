@@ -1,3 +1,4 @@
+import { KyInstance } from 'ky';
 import {
   WebNovelProvider,
   FetchType,
@@ -11,10 +12,10 @@ export class Syosetu implements WebNovelProvider {
   readonly id = 'syosetu';
   readonly version = '1.0.0';
 
-  fetch: FetchType;
+  client: KyInstance;
 
-  constructor(fetch: FetchType) {
-    this.fetch = fetch;
+  constructor(client: KyInstance) {
+    this.client = client;
   }
 
   getRank(

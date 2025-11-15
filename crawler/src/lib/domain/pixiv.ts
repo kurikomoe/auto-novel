@@ -1,4 +1,3 @@
-import { FetchType } from '@/domain/types';
 import {
   NovelAccessDeniedException,
   type TocItem,
@@ -12,14 +11,17 @@ import {
   WebNovelType,
 } from './types';
 
+import type ky from 'ky';
+import type { KyInstance } from 'ky';
+
 export class Pixiv implements WebNovelProvider {
   readonly id = 'pixiv';
   readonly version = '1.0.0';
 
-  fetch: FetchType;
+  client: KyInstance;
 
-  constructor(fetch: FetchType) {
-    this.fetch = fetch;
+  constructor(client: KyInstance) {
+    this.client = client;
   }
 
   async getRank(
@@ -35,9 +37,7 @@ export class Pixiv implements WebNovelProvider {
     if (novelId.startsWith('s')) {
       const chapterId = novelId.substring(1);
       const url = `https://www.pixiv.net/ajax/novel/${chapterId}`;
-      const resp = await this.fetch(url);
-      const data = await resp.json();
-      console.debug(data);
+      const data: any = await this.client.get(url).json();
       const obj = data.body;
 
       const seriesData = obj.seriesNavData;
@@ -53,7 +53,6 @@ export class Pixiv implements WebNovelProvider {
       };
 
       const keywords = obj.tags?.tags
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ?.map((tagItem: any) => tagItem?.tag)
         .filter((tag: string) => tag != 'R-18');
 
@@ -81,11 +80,9 @@ export class Pixiv implements WebNovelProvider {
         ],
       };
     } else {
-      const resp = await this.fetch(
-        `https://www.pixiv.net/ajax/novel/series/${novelId}`,
-      );
-      const data = await resp.json();
-      console.debug(data);
+      const data: any = await this.client
+        .get(`https://www.pixiv.net/ajax/novel/series/${novelId}`)
+        .json();
       const obj = data.body;
 
       const title = obj.title;
@@ -103,13 +100,10 @@ export class Pixiv implements WebNovelProvider {
 
       if (keywords.length === 0) {
         const url = `https://www.pixiv.net/ajax/novel/series_content/${novelId}?limit=30&last_order=0&order_by=asc`;
-        const resp = await this.fetch(url);
-        const data = await resp.json();
+        const data: any = await this.client.get(url).json();
         const obj = data.body;
-        console.debug(obj);
         const arr: [] = obj.page?.seriesContents ?? [];
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         arr.forEach((seriesContent: any) => {
           if (seriesContent.title == undefined)
             throw NovelAccessDeniedException();
@@ -140,12 +134,9 @@ export class Pixiv implements WebNovelProvider {
       toc.length = 0;
 
       const url2 = `https://www.pixiv.net/ajax/novel/series/${novelId}/content_titles`;
-      const resp2 = await this.fetch(url2);
-      const data2 = await resp2.json();
-      console.debug(data2);
+      const data2: any = await this.client.get(url2).json();
       const arr2: [] = data2.body ?? [];
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       arr2.forEach((item: any) => {
         if (item.available) {
           toc.push({
@@ -200,9 +191,7 @@ export class Pixiv implements WebNovelProvider {
       return null;
     }
     const fetchUrl = `https://www.pixiv.net/ajax/novel/${chapterId}/insert_illusts?id%5B%5D=${id}`;
-    const response = await this.fetch(fetchUrl);
-    const data = await response.json();
-    console.debug(data);
+    const data: any = await this.client.get(fetchUrl).json();
     const url = data?.body?.[id]?.illust?.images?.original;
     return url ?? null;
   }
@@ -219,9 +208,7 @@ export class Pixiv implements WebNovelProvider {
 
   async getChapter(novelId: string, chapterId: string): Promise<RemoteChapter> {
     const url = `https://www.pixiv.net/ajax/novel/${chapterId}`;
-    const resp = await this.fetch(url);
-    const data = await resp.json();
-    console.debug(data);
+    const data: any = await this.client.get(url).json();
     const body = data.body;
 
     const embeddedImages = body.textEmbeddedImages ?? null;

@@ -11,12 +11,12 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./dist/lib",
       "import": "./dist/lib.js"
     }
   },
   "module": "./dist/lib.js",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/lib",
   "scripts": {
     "build": "rslib build",
     "dev": "rslib build --watch",
@@ -44,6 +44,8 @@
     "commander": "^14.0.2",
     "dotenv-defaults": "^5.0.2",
     "express": "^5.1.0",
-    "ky": "^1.14.0"
+    "ky": "^1.14.0",
+    "undici": "^7.16.0",
+    "zod": "^4.1.12"
   }
 }
