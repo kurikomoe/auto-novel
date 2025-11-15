@@ -81,7 +81,8 @@ const latestChapterCreateAt = computed(() => {
   else return Math.max(...createAtList);
 });
 
-const isShowManuallyUpdate = () => isProviderAvailable(props.providerId);
+const isShowManuallyUpdate = () =>
+  window.Addon && isProviderAvailable(props.providerId);
 
 const message = useMessage();
 const update = async () => {

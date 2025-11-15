@@ -135,6 +135,7 @@ const getNovel = async (providerId: string, novelId: string) => {
     }
   } catch (e) {
     console.debug(`Error: ${e}, fallback to server mode`);
+    throw e;
   }
 
   // 有任何问题，则 fallback 到直接从服务器获取。
@@ -148,18 +149,24 @@ const uploadChapters = async (providerId: string, novelId: string) => {
 
   const providerInitFn = Providers[providerId];
   const _client = ky.create({
+    timeout: false,
     fetch: window.Addon.fetch,
   });
   // NOTE(kuriko): ky version mismatch between web and addon, so use 'any' here.
   const provider = providerInitFn(_client as any);
-  const promises = metadata.toc
+  const futs = metadata.toc
     .filter((tocItem) => tocItem.chapterId != null)
-    .map(async (tocItem) => [
-      tocItem.chapterId,
-      await provider?.getChapter(novelId, tocItem.chapterId!),
-    ]);
+    .map(async (tocItem) => {
+      let data = null;
+      try {
+        data = await provider?.getChapter(novelId, tocItem.chapterId!);
+      } catch (_) {
+        console.error(`failed chapter: ${novelId} - ${tocItem.chapterId}`);
+      }
+      return [tocItem.chapterId, data];
+    });
 
-  const chapterEntries = await Promise.all(promises);
+  let chapterEntries = await Promise.all(futs);
   const chapterEntriesNotNull = chapterEntries.filter(
     ([, chapter]) => chapter != null,
   );

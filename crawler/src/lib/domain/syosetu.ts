@@ -238,7 +238,7 @@ export class Syosetu implements WebNovelProvider {
         const tocs = await Promise.all(
           tasks.map((task) => queue.add(() => task)),
         );
-        return [tocFirstPage].concat(tocs.flat());
+        return tocFirstPage.concat(tocs.flat());
       }
     };
 
