@@ -11,7 +11,6 @@ import {
   WebNovelType,
 } from './types';
 
-import type ky from 'ky';
 import type { KyInstance } from 'ky';
 
 export class Pixiv implements WebNovelProvider {
@@ -27,10 +26,7 @@ export class Pixiv implements WebNovelProvider {
   async getRank(
     options: Record<string, string>,
   ): Promise<Page<RemoteNovelListItem>> {
-    return {
-      items: [],
-      hasNext: false,
-    };
+    throw new Error('Not implemented');
   }
 
   async getMetadata(novelId: string): Promise<RemoteNovelMetadata | null> {
