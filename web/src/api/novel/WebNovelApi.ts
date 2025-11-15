@@ -104,7 +104,8 @@ const getMetadataFromAddonOrNull = async (
   const _client = ky.create({
     fetch: window.Addon.fetch,
   });
-  const provider = providerInitFn(_client);
+  // NOTE(kuriko): ky version mismatch between web and addon, so use 'any' here.
+  const provider = providerInitFn(_client as any);
   const metadata = await provider?.getMetadata(novelId);
   lastAccessData[key] = {
     time: new Date(),
@@ -145,7 +146,8 @@ const uploadChapters = async (providerId: string, novelId: string) => {
   const _client = ky.create({
     fetch: window.Addon.fetch,
   });
-  const provider = providerInitFn(_client);
+  // NOTE(kuriko): ky version mismatch between web and addon, so use 'any' here.
+  const provider = providerInitFn(_client as any);
   const promises = metadata.toc
     .filter((tocItem) => tocItem.chapterId != null)
     .map(async (tocItem) => [
