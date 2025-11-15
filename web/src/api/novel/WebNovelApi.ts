@@ -13,6 +13,7 @@ import { client } from './client';
 import { type RemoteNovelMetadata } from '@/domain/crawlers/types';
 
 import { Providers } from '@auto-novel/crawler';
+import ky from 'ky';
 
 const listNovel = ({
   page,
@@ -100,7 +101,10 @@ const getMetadataFromAddonOrNull = async (
 
   const providerInitFn = Providers[providerId];
   if (!providerInitFn || !window.Addon) return null;
-  const provider = providerInitFn(window.Addon.fetch as any);
+  const _client = ky.create({
+    fetch: window.Addon.fetch,
+  });
+  const provider = providerInitFn(_client);
   const metadata = await provider?.getMetadata(novelId);
   lastAccessData[key] = {
     time: new Date(),
@@ -138,7 +142,10 @@ const uploadChapters = async (providerId: string, novelId: string) => {
 
   const providerInitFn = Providers[providerId];
   if (!providerInitFn || !window.Addon) return null;
-  const provider = providerInitFn(window.Addon.fetch as any);
+  const _client = ky.create({
+    fetch: window.Addon.fetch,
+  });
+  const provider = providerInitFn(_client);
   const promises = metadata.toc
     .filter((tocItem) => tocItem.chapterId != null)
     .map(async (tocItem) => [

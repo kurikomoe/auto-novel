@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import Express, { Router } from 'express';
 import { Providers } from '@/index';
 import ky from 'ky';

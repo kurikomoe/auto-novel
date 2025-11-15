@@ -81,9 +81,9 @@ const latestChapterCreateAt = computed(() => {
   else return Math.max(...createAtList);
 });
 
-const isAddonExists = computed(() => {
-  return window.Addon !== null;
-});
+const isAddonExists = () => {
+  return window.Addon;
+};
 
 const message = useMessage();
 const update = async () => {
@@ -136,7 +136,7 @@ const update = async () => {
     />
 
     <c-button
-      v-show="isAddonExists"
+      v-show="isAddonExists()"
       label="更新 "
       :icon="EditNoteOutlined"
       @click="update"

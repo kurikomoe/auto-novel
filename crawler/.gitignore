@@ -1,6 +1,7 @@
 
 .env
 config.json
+tsconfig.lib.tsbuildinfo
 
 # Local
 .DS_Store
