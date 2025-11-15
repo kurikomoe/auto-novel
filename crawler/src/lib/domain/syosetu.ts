@@ -1,7 +1,6 @@
 import { KyInstance } from 'ky';
 import {
   WebNovelProvider,
-  FetchType,
   Page,
   RemoteChapter,
   RemoteNovelListItem,

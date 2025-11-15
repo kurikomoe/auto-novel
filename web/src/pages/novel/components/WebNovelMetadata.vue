@@ -7,7 +7,7 @@ import { useWhoamiStore } from '@/stores';
 import { WebUtil } from '@/util/web';
 
 import { useIsWideScreen } from '@/pages/util';
-import { WebNovelApi } from '@/api/novel/WebNovelApi';
+import { isProviderAvailable, WebNovelApi } from '@/api/novel/WebNovelApi';
 
 const props = defineProps<{
   providerId: string;
@@ -81,9 +81,7 @@ const latestChapterCreateAt = computed(() => {
   else return Math.max(...createAtList);
 });
 
-const isAddonExists = () => {
-  return window.Addon;
-};
+const isShowManuallyUpdate = () => isProviderAvailable(props.providerId);
 
 const message = useMessage();
 const update = async () => {
@@ -136,7 +134,7 @@ const update = async () => {
     />
 
     <c-button
-      v-show="isAddonExists()"
+      v-show="isShowManuallyUpdate()"
       label="更新 "
       :icon="EditNoteOutlined"
       @click="update"

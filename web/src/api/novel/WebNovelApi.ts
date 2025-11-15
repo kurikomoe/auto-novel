@@ -15,6 +15,12 @@ import { type RemoteNovelMetadata } from '@/domain/crawlers/types';
 import { Providers } from '@auto-novel/crawler';
 import ky from 'ky';
 
+export const isProviderAvailable = (
+  providerId: string,
+): providerId is keyof typeof Providers => {
+  return Object.keys(Providers).includes(providerId);
+};
+
 const listNovel = ({
   page,
   pageSize,
@@ -62,7 +68,7 @@ const getMetadataFromAddonOrNull = async (
   novelId: string,
   ignoreRateLimit = false,
 ): Promise<RemoteNovelMetadata | null> => {
-  if (!window.Addon) return null;
+  if (!window.Addon || !isProviderAvailable(providerId)) return null;
 
   type LastAccessData = Record<string, LastAccessItem>;
   type LastAccessItem = {
@@ -100,7 +106,6 @@ const getMetadataFromAddonOrNull = async (
   }
 
   const providerInitFn = Providers[providerId];
-  if (!providerInitFn || !window.Addon) return null;
   const _client = ky.create({
     fetch: window.Addon.fetch,
   });
@@ -137,12 +142,11 @@ const getNovel = async (providerId: string, novelId: string) => {
 };
 
 const uploadChapters = async (providerId: string, novelId: string) => {
-  if (!window.Addon) return;
+  if (!window.Addon || !isProviderAvailable(providerId)) return null;
   const metadata = await getMetadataFromAddonOrNull(providerId, novelId, true);
   if (!metadata) return null;
 
   const providerInitFn = Providers[providerId];
-  if (!providerInitFn || !window.Addon) return null;
   const _client = ky.create({
     fetch: window.Addon.fetch,
   });
