@@ -9,7 +9,6 @@ export const AuthUrl = (() => {
   }
 
   // 不考虑 a.co.uk 这种顶级域名
-  //  books.fishhawk.top => auth.fishhawk.top
   //  n.novelia.cc => auth.novelia.cc
   //  test.com => auth.test.com
   const parts = host.split('.');
