@@ -1,21 +1,14 @@
 import ky from 'ky';
 
 export const AuthUrl = (() => {
-  const { protocol, host, port } = window.location;
-  console.log('AuthUrl calculation:', { protocol, host, port });
+  const { protocol, host } = window.location;
 
+  // 让 kuriko 的开发环境可以跑起来，后续需要支持开发环境免登录
   if (host.startsWith('localhost:')) {
-    if (port === '5173') {
-      // NOTE(kuriko): pnpm dev 情况下，Auth 转发到 n.novelia.cc
-      return 'https://n.novelia.cc';
-    } else {
-      // NOTE(kuriko): 本地开发情况，Caddy 代理其他端口，转发到 5173
-      //   此时默认 Auth 服务部署在 8000 端口
-      return `${protocol}//localhost:8000`;
-    }
+    return `${protocol}//localhost:8000`;
   }
 
-  // ALERT(kuriko): 这里不考虑 a.co.uk 这种顶级域名。
+  // 不考虑 a.co.uk 这种顶级域名
   //  books.fishhawk.top => auth.fishhawk.top
   //  n.novelia.cc => auth.novelia.cc
   //  test.com => auth.test.com
