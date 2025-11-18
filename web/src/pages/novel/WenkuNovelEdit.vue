@@ -460,6 +460,14 @@ const levelOptions = [
           :options="levelOptions"
         />
       </n-form-item-row>
+      <n-p style="margin-top: -16px; margin-left: 32px">
+        <n-text type="warning" style="font-size: 12px">
+          <b>
+            *
+            由于管理员精力有限，严肃向目前以亚马逊文学分类为准，如果觉得分类有误请不要修改。等AI分类搞定会调整。
+          </b>
+        </n-text>
+      </n-p>
 
       <n-form-item-row path="content" label="简介">
         <n-input
