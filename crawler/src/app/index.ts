@@ -37,25 +37,12 @@ async function main() {
     });
 
   const app = Express();
-  app.get('/ping', async (_, res) => res.send('pong'));
-  app.get('/test', async (req, res) =>
-    res.json({
-      ip: req.ip,
-      headers: req.headers,
-      query: req.query,
-      params: req.params,
-    }),
-  );
-  app.get('/version', async (_, res) => {
-    res.send(manifest.version);
-  });
-  app.use('/:providerId/:novelId', router);
+  app.use('/', router);
   return new Promise<void>((resolve, reject) => {
     const server = app.listen(config.port, config.host, () => {
       console.log(`Server is running on http://${config.host}:${config.port}`);
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const shutdown = async (_: any, res: any) => {
       res.send('Server is gracefully shutting down...');
       server.close();

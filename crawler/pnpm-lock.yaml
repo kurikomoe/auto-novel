@@ -25,6 +25,9 @@ importers:
       express:
         specifier: ^5.1.0
         version: 5.1.0
+      fp-ts:
+        specifier: ^2.16.11
+        version: 2.16.11
       ky:
         specifier: ^1.14.0
         version: 1.14.0
@@ -1729,6 +1732,12 @@ packages:
         integrity: sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==,
       }
     engines: { node: '>= 0.6' }
+
+  fp-ts@2.16.11:
+    resolution:
+      {
+        integrity: sha512-LaI+KaX2NFkfn1ZGHoKCmcfv7yrZsC3b8NtWsTVQeHkq4F27vI5igUuO53sxqDEa2gNQMHFPmpojDw/1zmUK7w==,
+      }
 
   fresh@2.0.0:
     resolution:
@@ -3728,6 +3737,8 @@ snapshots:
   flatted@3.3.3: {}
 
   forwarded@0.2.0: {}
+
+  fp-ts@2.16.11: {}
 
   fresh@2.0.0: {}
 

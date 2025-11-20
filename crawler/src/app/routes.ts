@@ -2,6 +2,7 @@ import Express, { Router } from 'express';
 import { Providers } from '@/index';
 import ky from 'ky';
 import { ProxyAgent } from 'undici';
+import manifest from '@/package.json';
 
 const router: Router = Express.Router({ mergeParams: true });
 
@@ -16,7 +17,22 @@ function getClientWithProxy(proxyUrl: string) {
   return client;
 }
 
-router.get('/metadata', async (req, res) => {
+router.get('/ping', async (_, res) => res.send('pong'));
+
+router.get('/test', async (req, res) =>
+  res.json({
+    ip: req.ip,
+    headers: req.headers,
+    query: req.query,
+    params: req.params,
+  }),
+);
+
+router.get('/version', async (_, res) => {
+  res.send(manifest.version);
+});
+
+router.get('/metadata/:providerId/:novelId', async (req, res) => {
   const { providerId, novelId } = req.params as any;
   const providerInitFn = Providers[providerId];
   if (!providerInitFn) {
@@ -29,8 +45,8 @@ router.get('/metadata', async (req, res) => {
   res.json(ret);
 });
 
-router.get('/rank', async (req, res) => {
-  const { providerId, novelId } = req.params as any;
+router.get('/rank/:providerId', async (req, res) => {
+  const { providerId } = req.params as any;
   const providerInitFn = Providers[providerId];
   if (!providerInitFn) {
     res.status(400).send({ error: 'Unknown providerId' });
@@ -38,11 +54,13 @@ router.get('/rank', async (req, res) => {
   }
   const client = getClientWithProxy(DEBUG_PROXY);
   const provider = providerInitFn(client);
-  const ret = await provider.getRank(req.body);
+  const ret = await provider.getRank(
+    req.query as unknown as Record<string, string>,
+  );
   res.json(ret);
 });
 
-router.get('/:chapterId/chapter', async (req, res) => {
+router.get('/chapter/:providerId/:novelId/:chapterId', async (req, res) => {
   const { providerId, novelId, chapterId } = req.params as any;
   const providerInitFn = Providers[providerId];
   if (!providerInitFn) {
