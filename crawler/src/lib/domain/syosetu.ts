@@ -18,7 +18,7 @@ import { range } from 'lodash-es';
 import PQueue from 'p-queue';
 import { pipe } from 'fp-ts/lib/function.js';
 import * as O from 'fp-ts/lib/Option.js';
-import { removeSuffix, substringAfterLast } from './utils';
+import { removeSuffix, stringToTagEnum, substringAfterLast } from './utils';
 
 const rangeIds = {
   每日: 'daily',
@@ -150,13 +150,12 @@ export class Syosetu implements WebNovelProvider {
         ?.find('a')
         ?.map((_, el) => $(el).text())
         ?.toArray()
-        .forEach((tag) => {
-          if (tag === 'R15') {
-            attentions.push(WebNovelAttention.R15);
-          } else if (tag === '残酷な描写あり') {
-            attentions.push(WebNovelAttention.Cruelty);
+        ?.forEach((tagStr) => {
+          const tag = stringToTagEnum(tagStr.trim());
+          if (tag !== null) {
+            attentions.push(tag);
           } else {
-            keywords.push(tag);
+            keywords.push(tagStr);
           }
         });
 

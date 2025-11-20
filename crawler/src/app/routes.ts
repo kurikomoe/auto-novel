@@ -8,8 +8,8 @@ const router: Router = Express.Router({ mergeParams: true });
 
 const DEBUG_PROXY = 'http://localhost:8899';
 
-function getClientWithProxy(proxyUrl: string) {
-  const proxyAgent = new ProxyAgent(proxyUrl);
+function getClientWithProxy(proxyUrl: string | null) {
+  const proxyAgent = proxyUrl ? new ProxyAgent(proxyUrl) : undefined;
   const client = ky.create({
     // @ts-expect-error - dispatcher is not in the type definition, but it's passed through to fetch.
     dispatcher: proxyAgent,
