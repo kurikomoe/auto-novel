@@ -13,8 +13,10 @@ import infra.user.UserRepository
 import infra.user.UserFavoredRepository
 import infra.web.datasource.WebNovelHttpDataSource
 import infra.web.repository.WebNovelChapterRepository
+import infra.web.repository.WebNovelAiGlossaryRepository
 import infra.web.repository.WebNovelFileRepository
 import infra.web.repository.WebNovelMetadataRepository
+import infra.web.repository.WebNovelTaskRepository
 import infra.web.datasource.WebNovelEsDataSource
 import infra.web.repository.WebNovelOplogRepository
 import infra.wenku.datasource.WenkuNovelEsDataSource
@@ -90,6 +92,7 @@ fun main() {
             //
             routeWebNovel()
             routeWenkuNovel()
+            routeExternalTask()
         }
     }.start(wait = true)
 }
@@ -137,7 +140,9 @@ val appModule = module {
     singleOf(::UserRepository)
     singleOf(::UserFavoredRepository)
     singleOf(::WebNovelMetadataRepository)
+    singleOf(::WebNovelTaskRepository)
     singleOf(::WebNovelChapterRepository)
+    singleOf(::WebNovelAiGlossaryRepository)
     singleOf(::WebNovelFileRepository)
     singleOf(::WebNovelFavoredRepository)
     singleOf(::WebNovelReadHistoryRepository)
@@ -159,6 +164,13 @@ val appModule = module {
 
     singleOf(::WebNovelApi)
     singleOf(::WebNovelTranslateV2Api)
+    singleOf(::ExternalTaskApi)
+    single {
+        ExternalTaskAuth(
+            apiKey = envNotNull("EXTERNAL_TASK_API_KEY"),
+            taskTokenSecret = envNotNull("EXTERNAL_TASK_TOKEN_SECRET"),
+        )
+    }
     singleOf(::WenkuNovelApi)
     singleOf(::WenkuNovelTranslateV2Api)
 }

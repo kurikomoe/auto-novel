@@ -26,6 +26,8 @@ services:
       - MAILGUN_API_URL
       - MAILGUN_FROM_EMAIL
       - ACCESS_TOKEN_SECRET
+      - EXTERNAL_TASK_API_KEY
+      - EXTERNAL_TASK_TOKEN_SECRET
       - HAMELN_TOKEN
       - PIXIV_COOKIE_PHPSESSID
       - DB_HOST_MONGO=mongo
@@ -51,7 +53,7 @@ services:
     environment:
       - xpack.security.enabled=false
       - discovery.type=single-node
-      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+      - 'ES_JAVA_OPTS=-Xms2g -Xmx2g'
     ulimits:
       memlock:
         soft: -1

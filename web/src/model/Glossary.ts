@@ -1,6 +1,25 @@
 export type Glossary = { [key: string]: string };
 
 export namespace Glossary {
+  export const merge = (ai: Glossary, human: Glossary): Glossary => {
+    const merged: Glossary = { ...ai };
+    for (const [source, target] of Object.entries(human)) {
+      if (source.trim() && target.trim()) {
+        merged[source] = target;
+      }
+    }
+    return merged;
+  };
+
+  export const comparisonTerms = (ai: Glossary, human: Glossary) => {
+    const humanTerms = Object.keys(human).reverse();
+    const humanTermSet = new Set(humanTerms);
+    return [
+      ...humanTerms,
+      ...Object.keys(ai).filter((term) => !humanTermSet.has(term)),
+    ];
+  };
+
   export const toJson = (glossary: Glossary) => {
     return JSON.stringify(glossary, null, 2);
   };

@@ -62,3 +62,15 @@ export interface WebNovelChapterDto {
   gptParagraphs?: string[];
   sakuraParagraphs?: string[];
 }
+
+export type WebNovelAiGlossaryStatus = 'missing' | 'stale' | 'current';
+
+export interface WebNovelAiGlossaryDto {
+  glossaryUuid?: string;
+  glossary: { [key: string]: string };
+  generatedAt?: number;
+  sourceRevision?: number;
+  currentRevision: number;
+  status: WebNovelAiGlossaryStatus;
+  stale: boolean;
+}

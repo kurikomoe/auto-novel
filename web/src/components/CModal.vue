@@ -6,6 +6,7 @@ defineProps<{
   extraHeight?: number;
   // 内容自身已是滚动容器时开启，跳过外层滚动条，避免嵌套出现两条滚动条
   contentScrollable?: boolean;
+  width?: number;
 }>();
 
 const { height } = useWindowSize();
@@ -20,7 +21,7 @@ const { height } = useWindowSize();
     size="large"
     transform-origin="center"
     :block-scroll="false"
-    style="width: min(600px, calc(100% - 16px))"
+    :style="`width: min(${width ?? 600}px, calc(100% - 16px))`"
   >
     <template #header v-if="$slots.header">
       <slot name="header" />

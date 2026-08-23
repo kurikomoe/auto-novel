@@ -25,6 +25,27 @@ object WebNovelFilter {
 }
 
 @Serializable
+enum class WebNovelTaskSort {
+    @SerialName("updated_at")
+    UpdatedAt,
+
+    @SerialName("views")
+    Views,
+}
+
+@Serializable
+enum class WebNovelTaskR18 {
+    @SerialName("exclude")
+    Exclude,
+
+    @SerialName("include")
+    Include,
+
+    @SerialName("only")
+    Only,
+}
+
+@Serializable
 enum class WebNovelAttention {
     @SerialName("R15")
     R15,
@@ -190,6 +211,28 @@ data class WebNovelChapterTranslationState(
     val translated: Boolean,
     val sakuraVersion: String? = null,
 )
+
+@Serializable
+data class WebNovelAiGlossary(
+    @Contextual @SerialName("_id") val id: ObjectId,
+    val providerId: String,
+    @SerialName("bookId")
+    val novelId: String,
+    val glossaryUuid: String,
+    val glossary: Map<String, String>,
+    @Contextual val sourceUpdateAt: Instant,
+    @Contextual val createdAt: Instant,
+    val uploaderCredential: String,
+    val taskTokenId: String,
+) {
+    companion object {
+        fun byNovelId(providerId: String, novelId: String): Bson =
+            and(
+                eq(WebNovelAiGlossary::providerId.field(), providerId),
+                eq(WebNovelAiGlossary::novelId.field(), novelId),
+            )
+    }
+}
 
 @Serializable
 sealed interface WebNovelOperation {

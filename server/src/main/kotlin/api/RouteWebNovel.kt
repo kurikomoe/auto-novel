@@ -85,6 +85,9 @@ private class WebNovelRes {
         @Resource("/glossary")
         class Glossary(val parent: Id)
 
+        @Resource("/ai-glossary")
+        class AiGlossary(val parent: Id)
+
         @Resource("/chapter/{chapterId}")
         class Chapter(val parent: Id, val chapterId: String)
 
@@ -148,6 +151,16 @@ fun Route.routeWebNovel() {
                     },
                     page = loc.page,
                     pageSize = loc.pageSize,
+                )
+            }
+        }
+    }
+    authenticateDb {
+        get<WebNovelRes.Id.AiGlossary> { loc ->
+            call.tryRespond {
+                service.getAiGlossary(
+                    providerId = loc.parent.providerId,
+                    novelId = loc.parent.novelId,
                 )
             }
         }
@@ -413,7 +426,7 @@ private val disgustingFascistNovelList = mapOf(
     ),
 )
 
-private fun validateId(providerId: String, novelId: String) {
+internal fun validateId(providerId: String, novelId: String) {
     if (providerId == Syosetu.id && novelId != novelId.lowercase()) {
         throw BadRequestException("成为小说家id应当小写")
     }
@@ -424,6 +437,10 @@ private fun validateId(providerId: String, novelId: String) {
     }
 }
 
+internal fun isNovelIdAllowed(providerId: String, novelId: String): Boolean =
+    !(providerId == Syosetu.id && novelId != novelId.lowercase()) &&
+        novelId !in disgustingFascistNovelList.getOrDefault(providerId, emptyList())
+
 class WebNovelApi(
     private val metadataRepo: WebNovelMetadataRepository,
     private val chapterRepo: WebNovelChapterRepository,
@@ -433,6 +450,7 @@ class WebNovelApi(
     private val oplogRepo: WebNovelOplogRepository,
     private val wenkuMetadataRepo: WenkuNovelMetadataRepository,
     private val operationHistoryRepo: OperationHistoryRepository,
+    private val aiGlossaryRepo: WebNovelAiGlossaryRepository,
 ) {
     suspend fun list(
         user: User?,
@@ -588,6 +606,36 @@ class WebNovelApi(
             )
         }
         return dto
+    }
+
+    @Serializable
+    data class AiGlossaryDto(
+        val glossaryUuid: String?,
+        val glossary: Map<String, String>,
+        val generatedAt: Long?,
+        val sourceRevision: Long?,
+        val currentRevision: Long,
+        val status: WebNovelAiGlossaryStatus,
+        val stale: Boolean,
+    )
+
+    suspend fun getAiGlossary(
+        providerId: String,
+        novelId: String,
+    ): AiGlossaryDto {
+        validateId(providerId, novelId)
+        val novel = metadataRepo.get(providerId, novelId) ?: throwNovelNotFound()
+        val aiGlossary = aiGlossaryRepo.get(providerId, novelId)
+        val status = aiGlossaryRepo.status(aiGlossary, novel)
+        return AiGlossaryDto(
+            glossaryUuid = aiGlossary?.glossaryUuid,
+            glossary = aiGlossary?.glossary.orEmpty(),
+            generatedAt = aiGlossary?.createdAt?.epochSeconds,
+            sourceRevision = aiGlossary?.sourceUpdateAt?.toEpochMilliseconds(),
+            currentRevision = novel.updateAt.toEpochMilliseconds(),
+            status = status,
+            stale = status == WebNovelAiGlossaryStatus.Stale,
+        )
     }
 
     suspend fun updateNovel(
@@ -907,6 +955,7 @@ class WebNovelApi(
 class WebNovelTranslateV2Api(
     private val metadataRepo: WebNovelMetadataRepository,
     private val chapterRepo: WebNovelChapterRepository,
+    private val aiGlossaryRepo: WebNovelAiGlossaryRepository,
 ) {
     @Serializable
     data class TranslateTaskDto(
@@ -942,6 +991,7 @@ class WebNovelTranslateV2Api(
             novelId = novelId,
             translatorId = translatorId,
         )
+        val glossary = aiGlossaryRepo.effectiveGlossary(novel)
         val toc = novel.toc.map { item ->
             if (item.chapterId == null) {
                 return@map TranslateTaskDto.TocItem(
@@ -976,8 +1026,8 @@ class WebNovelTranslateV2Api(
             titleZh = novel.titleZh,
             introductionJp = novel.introductionJp,
             introductionZh = novel.introductionZh,
-            glossaryUuid = novel.glossaryUuid ?: "no glossary",
-            glossary = novel.glossary,
+            glossaryUuid = glossary.id,
+            glossary = glossary.map,
             toc = toc,
         )
     }
@@ -1001,6 +1051,7 @@ class WebNovelTranslateV2Api(
     ): ChapterTranslateTaskDto {
         val novel = metadataRepo.get(providerId, novelId)
             ?: throwNovelNotFound()
+        val glossary = aiGlossaryRepo.effectiveGlossary(novel)
 
         val chapter = chapterRepo.getOrSyncRemote(
             providerId = providerId,
@@ -1033,8 +1084,8 @@ class WebNovelTranslateV2Api(
         return ChapterTranslateTaskDto(
             paragraphJp = chapter.paragraphs,
             oldParagraphZh = oldTranslation.takeIf { !sakuraOutdated },
-            glossaryId = novel.glossaryUuid ?: "no glossary",
-            glossary = novel.glossary,
+            glossaryId = glossary.id,
+            glossary = glossary.map,
             oldGlossaryId = oldGlossaryId,
             oldGlossary = oldGlossary ?: emptyMap(),
         )
@@ -1093,7 +1144,8 @@ class WebNovelTranslateV2Api(
 
         val novel = metadataRepo.get(providerId, novelId)
             ?: throwNovelNotFound()
-        if ((glossaryId ?: "no glossary") != (novel.glossaryUuid ?: "no glossary")) {
+        val glossary = aiGlossaryRepo.effectiveGlossary(novel)
+        if ((glossaryId ?: "no glossary") != glossary.id) {
             throwBadRequest("术语表失效")
         }
 
@@ -1108,7 +1160,7 @@ class WebNovelTranslateV2Api(
             novelId = novelId,
             chapterId = chapterId,
             translatorId = translatorId,
-            glossary = novel.glossaryUuid?.let { Glossary(it, novel.glossary) },
+            glossary = glossary.takeIf { it.map.isNotEmpty() },
             paragraphsZh = paragraphsZh,
         )
         return TranslateStateDto(jp = novel.jp, zh = zh)

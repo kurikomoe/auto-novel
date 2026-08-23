@@ -6,6 +6,7 @@ import type {
 } from '@/model/Translator';
 import type {
   WebNovelChapterDto,
+  WebNovelAiGlossaryDto,
   WebNovelDto,
   WebNovelOutlineDto,
 } from '@/model/WebNovel';
@@ -138,6 +139,11 @@ const updateGlossary = (
   json: { [key: string]: string },
 ) => client.put(`novel/${providerId}/${novelId}/glossary`, { json });
 
+const getAiGlossary = (providerId: string, novelId: string) =>
+  client
+    .get(`novel/${providerId}/${novelId}/ai-glossary`)
+    .json<WebNovelAiGlossaryDto>();
+
 // Translate
 const createTranslationApi = (
   providerId: string,
@@ -248,6 +254,7 @@ export const WebNovelApi = {
   updateNovelTranslation,
   updateNovelWenkuId,
   updateGlossary,
+  getAiGlossary,
 
   createTranslationApi,
 

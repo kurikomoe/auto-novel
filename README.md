@@ -29,6 +29,8 @@ PIXIV_COOKIE_PHPSESSID=   # Pixiv Cookie，用于爬取P站小说，可以为空
 
 # 以下字段个人部署不需要填写
 ACCESS_TOKEN_SECRET=
+EXTERNAL_TASK_API_KEY=    # 第三方任务 API Key；不使用时可以为空
+EXTERNAL_TASK_TOKEN_SECRET= # 第三方任务快照签名密钥；不使用时可以为空
 MAILGUN_API_KEY=
 MAILGUN_API_URL=https://api.eu.mailgun.net/v3/verify.fishhawk.top/messages
 MAILGUN_FROM_EMAIL=postmaster@verify.fishhawk.top
